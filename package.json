@@ -21,12 +21,16 @@
     "@trpc/next": "^10.43.6",
     "@trpc/react-query": "^10.43.6",
     "@trpc/server": "^10.43.6",
+    "axios": "^1.6.5",
+    "lightweight-charts": "^4.1.1",
     "next": "^14.0.4",
     "next-auth": "^4.24.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "server-only": "^0.0.1",
     "superjson": "^2.2.1",
+    "upstox-js-sdk": "^2.2.0",
+    "ws": "^8.16.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

@@ -54,14 +54,16 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String           @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?          @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    Taccounts     TradingAccount[]
+
+    Post Post[]
 }
 
 model VerificationToken {
@@ -70,4 +72,66 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+// app schema
+
+model TradingAccount {
+    id        String          @id @default(cuid())
+    balance   Float           @default(1000)
+    margin    Int             @default(100)
+    assets    Assets[]
+    statement Transection[]
+    User      User?           @relation(fields: [userId], references: [id])
+    userId    String?
+    watchList WatchListItem[]
+}
+
+model WatchListItem {
+    name             String          @id @default(cuid())
+    TradingAccount   TradingAccount? @relation(fields: [tradingAccountId], references: [id])
+    tradingAccountId String?
+}
+
+model Transection {
+    id               String          @id @default(cuid())
+    type             String
+    amount           Float
+    order            FullOrder[]
+    TradingAccount   TradingAccount? @relation(fields: [tradingAccountId], references: [id])
+    tradingAccountId String?
+}
+
+model Assets {
+    id           String @id @default(cuid())
+    name         String
+    totalAmount  Float
+    lockedAmount Float
+    freeAmount   Float
+
+    TradingAccount   TradingAccount? @relation(fields: [tradingAccountId], references: [id])
+    tradingAccountId String?
+}
+
+model FullOrder {
+    id            String       @id @default(cuid())
+    createsAt     DateTime     @default(now())
+    name          String
+    price         Float
+    avgPrice      Float
+    totalAmount   Float
+    filledAmount  Float
+    suborders     Suborder[]
+    Transection   Transection? @relation(fields: [transectionId], references: [id])
+    transectionId String?
+}
+
+model Suborder {
+    id          String     @id @default(cuid())
+    createsAt   DateTime   @default(now())
+    name        String
+    Price       Float
+    Amount      Float
+    FullOrder   FullOrder? @relation(fields: [fullOrderId], references: [id])
+    fullOrderId String?
 }
