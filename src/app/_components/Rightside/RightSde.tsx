@@ -1,6 +1,6 @@
 import React from "react";
 import { Tdata } from "../../page";
-import Chart from "../chart";
+import Chart from "./chart";
 
 function RightSide({ data }: { data: Tdata }) {
   switch (data.rightSide) {
