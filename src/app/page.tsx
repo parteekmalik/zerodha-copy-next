@@ -2,7 +2,8 @@
 import { useState } from "react";
 import RightSide from "./_components/Rightside/RightSde";
 import Header from "./_components/hearder";
-import WatchList from "./_components/watchList";
+import WatchList, { Tsymbol } from "./_components/WatchList/watchList";
+import { shadowBox } from "./_components/tcss";
 
 export type Tdata = {
   rightSide:
@@ -12,19 +13,23 @@ export type Tdata = {
     | "funds"
     | "bills"
     | "Dashboard";
-  watchList: string[][];
+  watchList: Tsymbol[][];
 };
-export const shadowBox = " shadow-[0_0_5px_0_rgba(0,0,0,.1)] ";
 export default async function Home() {
   const [data, setData] = useState<Tdata>({
     rightSide: "chart",
-    watchList: [["gold", "silver"]],
+    watchList: [
+      [
+        { name: "gold", prevDayClose: 100, curPrice: 200000.01 },
+        { name: "silver", prevDayClose: 20, curPrice: 10.01 },
+      ],
+    ],
   });
 
   return (
-    <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center bg-[#f9f9f9]  ">
+    <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
       <Header />
-      <div className="text-red flex w-full max-w-[1536px] grow  gap-1 p-2">
+      <div className="text-red flex w-full max-w-[1536px] grow  gap-1 p-5">
         <WatchList data={data.watchList} />
         <div className={" flex grow" + shadowBox}>
           <RightSide data={data} />

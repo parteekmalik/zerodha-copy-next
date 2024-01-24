@@ -4,17 +4,18 @@ import React, { useEffect, useRef, memo } from "react";
 function TradingViewWidget({
   symbolName,
   charteheight,
-  chartewidth,
 }: {
   symbolName: string;
   charteheight: string;
   chartewidth: string;
 }) {
   // fix any type
-  const container: any = useRef();
-  let loading = useRef(true).current;
+  const container = useRef<HTMLDivElement | null>(null);
+
+  const loading = useRef(true);
+
   useEffect(() => {
-    if (!loading) return;
+    if (!loading.current) return;
     const script = document.createElement("script");
     script.src =
       "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
@@ -25,7 +26,7 @@ function TradingViewWidget({
           "height": "${charteheight}",
           "width": "${charteheight}",
           "symbol": "${symbolName}",
-          "interval": "D",
+          "interval": "5",
           "timezone": "Etc/UTC",
           "theme": "light",
           "style": "1",
@@ -35,8 +36,8 @@ function TradingViewWidget({
           "save_image": false,
           "support_host": "https://www.tradingview.com"
         }`;
-    container.current.appendChild(script);
-    loading = false;
+    container.current?.appendChild(script);
+    loading.current = false;
   }, []);
   return (
     <div

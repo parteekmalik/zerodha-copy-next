@@ -1,5 +1,4 @@
-import React from "react";
-import { shadowBox } from "../page";
+import { shadowBox } from "./tcss";
 
 function Header() {
   return (

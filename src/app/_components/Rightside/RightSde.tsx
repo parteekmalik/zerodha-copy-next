@@ -7,7 +7,7 @@ function RightSide({ data }: { data: Tdata }) {
     case "chart": {
       return (
         <Chart
-          symbolName={"BINANCE:" + "BTCUSDT"}
+          symbolName={"FOREXCOM:" + "XAUUSD"}
           chartewidth={"100%"}
           charteheight={"100%"}
         />
