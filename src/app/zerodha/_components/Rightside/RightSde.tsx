@@ -1,9 +1,9 @@
 import React from "react";
-import { Tdata } from "../../page";
+import { Tdata, TrightSideType } from "../../page";
 import Chart from "./chart";
 
-function RightSide({ data }: { data: Tdata }) {
-  switch (data.rightSide) {
+function RightSide({ data }: { data: TrightSideType }) {
+  switch (data.type) {
     case "chart": {
       return (
         <Chart
@@ -13,6 +13,7 @@ function RightSide({ data }: { data: Tdata }) {
         />
       );
     }
+    default:return(<div>{data.type}</div>)
   }
 }
 

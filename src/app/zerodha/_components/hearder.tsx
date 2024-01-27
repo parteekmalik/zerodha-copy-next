@@ -1,8 +1,31 @@
+import { Dispatch, SetStateAction } from "react";
+import { Tdata } from "../page";
 import { shadowBox } from "./tcss";
 
-function Header() {
+type RightSideType =
+  | "Dashboard"
+  | "Orders"
+  | "Holdings"
+  | "Positions"
+  | "Bids"
+  | "Funds";
+
+export interface IHeader {
+  data: Tdata;
+  setData: Dispatch<SetStateAction<Tdata>>;
+}
+function Header({ data, setData }: IHeader) {
+  const rightSideItems: RightSideType[] = [
+    "Dashboard",
+    "Orders",
+    "Holdings",
+    "Positions",
+    "Bids",
+    "Funds",
+  ];
+
   return (
-    <header className={" flex w-full justify-cente bg-white" + shadowBox}>
+    <header className={" justify-cente flex w-full bg-white" + shadowBox}>
       <div className="flex w-[1080px] max-w-[1080px]  gap-20  p-4">
         <div className="flex gap-5">
           <div>bitcoin</div>
@@ -14,12 +37,18 @@ function Header() {
             src="https://kite.zerodha.com/static/images/kite-logo.svg"
             alt=""
           />
-          <div>Dashboard</div>
-          <div>Orders</div>
-          <div>Holdings</div>
-          <div>Positions</div>
-          <div>Bids</div>
-          <div>Funds</div>
+          {rightSideItems.map((x: RightSideType) => (
+            <div
+              className="cursor-pointer border"
+              onClick={() => {
+                const newData = { ...data, rightSideData: { type: x } };
+                setData(newData);
+              }}
+              key={x}
+            >
+              {x}
+            </div>
+          ))}
         </div>
         <div className="flex gap-4">
           <div>notification</div>
