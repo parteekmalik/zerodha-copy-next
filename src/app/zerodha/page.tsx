@@ -39,7 +39,7 @@ export default function Home() {
   return (
     <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
       <Header data={data} setData={setData} />
-      <div className="text-red flex w-full max-w-[1536px] grow  gap-1 p-5">
+      <div className="text-red flex w-full max-w-[1536px] grow  ">
         <WatchList data={data.watchList} />
         <div className={" flex grow"}>
           <RightSide data={data.rightSideData} />

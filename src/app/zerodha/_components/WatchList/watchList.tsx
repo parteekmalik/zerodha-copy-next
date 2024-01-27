@@ -13,14 +13,20 @@ function WatchList({ data: list }: IWatchList) {
 
   return (
     <div className={"flex w-[430px] flex-col bg-white" + shadowBox}>
-      <div className="flex min-w-[0px] justify-center border-b p-3 items-center">
-        <div className="w-[15px] h-[15px] mr-2"><SearchIcon /></div>
+      <div className="flex min-w-[0px] items-center justify-center border-b p-3">
+        <div className=" h-[15px] w-[15px]">
+          <SearchIcon />
+        </div>
         <input
-          className="grow"
+          className="grow px-2 text-sm boarder-[0px] focus:outline-0"
           type="text"
+          autoComplete="off"
+          autoCorrect="off"
           placeholder="Search eg: infy bse, nifty fut, nifty weekly, gold mcx"
         />
-        <div></div>
+        <div className="text-[#cccccc]">
+          {list[watchListNo] ? list[watchListNo]?.length : 0} / 50
+        </div>
       </div>
       <SymbolInWL list={list[watchListNo]} />
       <WatchlistBittom
