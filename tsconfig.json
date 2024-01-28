@@ -37,6 +37,6 @@
     "**/*.cjs",
     "**/*.js",
     ".next/types/**/*.ts"
-  ],
+, "test.cjs"  ],
   "exclude": ["node_modules"]
 }
