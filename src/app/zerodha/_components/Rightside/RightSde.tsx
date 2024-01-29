@@ -1,12 +1,11 @@
-import React, { useContext } from "react";
-import { Tdata, TrightSideType } from "../../page";
-import Chart from "./chart";
-import Dashboard from "./Dashboard";
+import { useContext } from "react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
+import type { TrightSideType } from "../../page";
+import Dashboard from "./Dashboard";
+import Chart from "./chart";
 
 function RightSide({ data }: { data: TrightSideType }) {
-  const { symbolLiveState, symbolLiveDispatch, socketSend } =
-    useContext(SymbolLiveContext);
+  const { symbolLiveState } = useContext(SymbolLiveContext);
   switch (data.type) {
     case "chart": {
       return (

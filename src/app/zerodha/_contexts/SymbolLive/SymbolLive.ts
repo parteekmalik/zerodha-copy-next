@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { IsymbolLiveContextActions } from "./SymbolLiveReducer";
+import type { IsymbolLiveContextActions } from "./SymbolLiveReducer";
 
 export type TsymbolTrade = {
   e: string;
@@ -14,14 +14,13 @@ export type TsymbolTrade = {
   m: boolean;
   M: boolean;
 };
-export type IsymbolLiveContextState = {
-  [key: string]: TsymbolTrade;
-};
+export type IsymbolLiveContextState = Record<string, TsymbolTrade>;
+
 export const defaultsymbolLiveContextState = {};
 export interface IsymbolLiveContextProps {
   symbolLiveState: IsymbolLiveContextState;
   symbolLiveDispatch: React.Dispatch<IsymbolLiveContextActions>;
-  socketSend: (payload: any) => void;
+  socketSend: (payload: string) => void;
 }
 
 const SymbolLiveContext = createContext<IsymbolLiveContextProps>({

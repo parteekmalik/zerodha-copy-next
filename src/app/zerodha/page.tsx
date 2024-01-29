@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import WatchList, { Tsymbol } from "./_components/WatchList/watchList";
-import Header from "./_components/hearder";
 import RightSide from "./_components/Rightside/RightSde";
+import WatchList from "./_components/WatchList/watchList";
+import type { Tsymbol } from "./_components/WatchList/watchList";
+import Header from "./_components/hearder";
 import SymbolLiveContextComponent from "./_contexts/SymbolLive/SymbolLiveContextComponent";
 
 export type TrightSideType =

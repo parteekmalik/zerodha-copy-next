@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useContext, useEffect } from "react";
-import { Tdata } from "../page";
-import { shadowBox } from "./tcss";
 import SymbolLiveContext from "../_contexts/SymbolLive/SymbolLive";
+import type { Tdata } from "../page";
+import { shadowBox } from "./tcss";
 
 type RightSideType =
   | "Dashboard"
@@ -33,7 +33,7 @@ function Header({ data, setData }: IHeader) {
       id: 1,
     };
 
-    socketSend(msg);
+    socketSend(JSON.stringify(msg));
   }, []);
 
   return (
@@ -44,11 +44,19 @@ function Header({ data, setData }: IHeader) {
         <div className="flex h-full min-w-[430px] items-center justify-center gap-5 border-r">
           <div className="flex gap-1">
             <div>bitcoin</div>
-            <div>{parseFloat((symbolLiveState["BTCUSDT"]?.p as string)).toFixed(2)}</div>
+            <div>
+              {parseFloat(
+                symbolLiveState.BTCUSDT ? symbolLiveState.BTCUSDT.p : "00.0",
+              ).toFixed(2)}
+            </div>
           </div>
           <div className="flex gap-1">
             <div>etherium</div>
-            <div>{parseFloat((symbolLiveState["ETHUSDT"]?.p as string)).toFixed(2)}</div>
+            <div>
+              {parseFloat(
+                symbolLiveState.ETHUSDT ? symbolLiveState.ETHUSDT.p : "00.0",
+              ).toFixed(2)}
+            </div>
           </div>
         </div>
         <div className="flex h-full grow items-center ">

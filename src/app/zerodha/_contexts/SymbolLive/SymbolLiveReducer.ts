@@ -1,4 +1,4 @@
-import { IsymbolLiveContextState, TsymbolTrade } from "./SymbolLive";
+import type { IsymbolLiveContextState, TsymbolTrade } from "./SymbolLive";
 
 export type IsymbolLiveContextActions = {
   type: "update_symbol";
@@ -14,7 +14,7 @@ export const symbolLiveReducer = (
     action.payload,
   );
   const { type: Atype, payload } = action;
-  switch (action.type) {
+  switch (Atype) {
     case "update_symbol": {
       const updatesState = { ...state };
       updatesState[payload.s] = payload;
