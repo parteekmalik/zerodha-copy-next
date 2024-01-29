@@ -25,8 +25,8 @@ export interface IsymbolLiveContextProps {
 
 const SymbolLiveContext = createContext<IsymbolLiveContextProps>({
   symbolLiveState: defaultsymbolLiveContextState,
-  symbolLiveDispatch: () => {},
-  socketSend: () => {},
+  symbolLiveDispatch: () => {console.log("due to ts error")},
+  socketSend: () => {console.log("due to ts error")},
 });
 
 export const PageContextConsumer = SymbolLiveContext.Consumer;

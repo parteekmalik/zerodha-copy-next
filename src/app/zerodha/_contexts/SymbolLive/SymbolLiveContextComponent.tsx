@@ -21,16 +21,11 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     onMessage: (event) => processMessages(event),
   });
 
-  function processMessages(event: MessageEvent) {
-    const data: string = event.data; // Assuming event.data is a string
+  function processMessages(event: MessageEvent<any>) {
+    const data: TsymbolTrade = JSON.parse(event.data);
     console.log(data);
-    try {
-      const parsedData: TsymbolTrade = JSON.parse(data);
-      if (!parsedData.e) return;
-      symbolLiveDispatch({ type: "update_symbol", payload: parsedData });
-    } catch (error) {
-      console.error("Error parsing data:", error);
-    }
+    if (!data.e) return;
+    symbolLiveDispatch({ type: "update_symbol", payload: data });
   }
 
   const [symbolLiveState, symbolLiveDispatch] = useReducer(
