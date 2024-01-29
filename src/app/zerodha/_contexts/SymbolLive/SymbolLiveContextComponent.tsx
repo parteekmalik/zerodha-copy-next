@@ -21,8 +21,8 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     onMessage: (event) => processMessages(event),
   });
 
-  function processMessages(event: MessageEvent<any>) {
-    const data: TsymbolTrade = JSON.parse(event.data);
+  function processMessages(event: MessageEvent) {
+    const data: TsymbolTrade = (JSON.parse((event.data as string)) as TsymbolTrade);
     console.log(data);
     if (!data.e) return;
     symbolLiveDispatch({ type: "update_symbol", payload: data });
