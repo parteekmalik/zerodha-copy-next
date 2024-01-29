@@ -1,6 +1,6 @@
 import { useState } from "react";
-import SymbolInWL from "./symbolInWL";
 import { shadowBox } from "../tcss";
+import SymbolInWL from "./symbolInWL";
 import WatchlistBittom from "./watchlistBittom";
 
 export interface IWatchList {
@@ -10,6 +10,7 @@ export type Tsymbol = { name: string; prevDayClose: number; curPrice: number };
 
 function WatchList({ data: list }: IWatchList) {
   const [watchListNo, setWatchListNo] = useState(0);
+  
 
   return (
     <div className={"flex w-[430px] flex-col bg-white" + shadowBox}>

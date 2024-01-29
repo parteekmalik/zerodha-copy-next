@@ -1,6 +1,7 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect } from "react";
 import { Tdata } from "../page";
 import { shadowBox } from "./tcss";
+import SymbolLiveContext from "../_contexts/SymbolLive/SymbolLive";
 
 type RightSideType =
   | "Dashboard"
@@ -22,14 +23,33 @@ function Header({ data, setData }: IHeader) {
     "Funds",
   ];
 
+  const { symbolLiveState, symbolLiveDispatch, socketSend } =
+    useContext(SymbolLiveContext);
+
+  useEffect(() => {
+    const msg = {
+      method: "SUBSCRIBE",
+      params: ["btcusdt@trade", "ethusdt@trade"],
+      id: 1,
+    };
+
+    socketSend(msg);
+  }, []);
+
   return (
     <header
       className={" flex w-full justify-center bg-white text-xs " + shadowBox}
     >
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
         <div className="flex h-full min-w-[430px] items-center justify-center gap-5 border-r">
-          <div>bitcoin</div>
-          <div>etherium</div>
+          <div className="flex gap-1">
+            <div>bitcoin</div>
+            <div>{parseFloat((symbolLiveState["BTCUSDT"]?.p as string)).toFixed(2)}</div>
+          </div>
+          <div className="flex gap-1">
+            <div>etherium</div>
+            <div>{parseFloat((symbolLiveState["ETHUSDT"]?.p as string)).toFixed(2)}</div>
+          </div>
         </div>
         <div className="flex h-full grow items-center ">
           <div className="flex  w-full border-r">
@@ -41,7 +61,7 @@ function Header({ data, setData }: IHeader) {
             <div className="flex grow justify-end gap-4">
               {rightSideItems.map((x: RightSideType) => (
                 <div
-                  className="cursor-pointer text-center px-[15px]"
+                  className="cursor-pointer px-[15px] text-center"
                   onClick={() => {
                     const newData = { ...data, rightSideData: { type: x } };
                     setData(newData);

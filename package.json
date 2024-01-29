@@ -29,11 +29,9 @@
     "next-auth": "^4.24.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-use-websocket": "^4.5.0",
     "server-only": "^0.0.1",
-    "socket.io": "^4.7.4",
     "superjson": "^2.2.1",
-    "upstox-js-sdk": "^2.2.0",
-    "ws": "^8.16.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

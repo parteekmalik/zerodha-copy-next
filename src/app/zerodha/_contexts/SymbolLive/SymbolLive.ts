@@ -21,11 +21,13 @@ export const defaultsymbolLiveContextState = {};
 export interface IsymbolLiveContextProps {
   symbolLiveState: IsymbolLiveContextState;
   symbolLiveDispatch: React.Dispatch<IsymbolLiveContextActions>;
+  socketSend: (payload: any) => void;
 }
 
 const SymbolLiveContext = createContext<IsymbolLiveContextProps>({
   symbolLiveState: defaultsymbolLiveContextState,
   symbolLiveDispatch: () => {},
+  socketSend: () => {},
 });
 
 export const PageContextConsumer = SymbolLiveContext.Consumer;
