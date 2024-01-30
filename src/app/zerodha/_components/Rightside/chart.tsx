@@ -12,10 +12,14 @@ function TradingViewWidget({
   // fix any type
   const container = useRef<HTMLDivElement | null>(null);
 
-  const loading = useRef(true);
 
   useEffect(() => {
-    if (!loading.current) return;
+    if (container.current) {
+      while (container.current.firstChild) {
+        // Remove the first child element
+        container.current.removeChild(container.current.firstChild);
+      }
+    }
     const script = document.createElement("script");
     script.src =
       "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
@@ -37,13 +41,13 @@ function TradingViewWidget({
           "support_host": "https://www.tradingview.com"
         }`;
     container.current?.appendChild(script);
-    loading.current = false;
-  }, []);
+    console.log("Chart modified", container.current);
+  }, [charteheight, symbolName]);
   return (
     <div
       className="tradingview-widget-container h-[100vh] min-h-[100%]  min-w-[100%]"
       ref={container}
-    />
+    ></div>
   );
 }
 

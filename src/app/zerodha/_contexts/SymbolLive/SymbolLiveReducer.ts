@@ -1,8 +1,6 @@
-import { cursorTo } from "readline";
 import type {
   IsymbolLiveContextState,
-  Tlast24hr,
-  TsymbolTrade,
+  Tlast24hr
 } from "./SymbolLive";
 
 export type IsymbolLiveContextActions =
@@ -15,7 +13,7 @@ export type IsymbolLiveContextActions =
       payload: Tlast24hr;
     };
 
-const excludeType = [""];
+const excludeType = ["update_symbol"];
 export const symbolLiveReducer = (
   state: IsymbolLiveContextState,
   action: IsymbolLiveContextActions,

@@ -20,7 +20,7 @@ function SymbolInWL({ list }: ISymbolInWL) {
       msg.params.push(symbol.name + "@ticker");
     });
     socketSend(JSON.stringify(msg));
-  }, []);
+  }, [list]);
   return (
     <div className="flex grow flex-col">
       {list

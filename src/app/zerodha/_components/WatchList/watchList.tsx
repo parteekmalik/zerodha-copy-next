@@ -6,7 +6,7 @@ import WatchlistBittom from "./watchlistBittom";
 export interface IWatchList {
   data: Tsymbol[][];
 }
-export type Tsymbol = { name: string; prevDayClose: number; curPrice: number };
+export type Tsymbol = { name: string;  };
 
 function WatchList({ data: list }: IWatchList) {
   const [watchListNo, setWatchListNo] = useState(0);

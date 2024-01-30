@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import React, { useReducer } from "react";
 import { useSocket } from "../../_hooks/useWS";
-import type { Tlast24hr, TsymbolTrade } from "./SymbolLive";
+import type { Tlast24hr } from "./SymbolLive";
 import {
   SymbolLiveContextProvider,
   defaultsymbolLiveContextState,

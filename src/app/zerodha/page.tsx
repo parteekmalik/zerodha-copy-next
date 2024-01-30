@@ -28,10 +28,10 @@ export default function Home() {
     rightSideData: { type: "Dashboard" },
     watchList: [
       [
-        { name: "rvnusdt", prevDayClose: 100, curPrice: 200000.01 },
-        { name: "barusdt", prevDayClose: 20, curPrice: 10.01 },
-        { name: "btcusdt", prevDayClose: 20, curPrice: 10.01 },
-        { name: "ethusdt", prevDayClose: 20, curPrice: 10.01 },
+        { name: "rvnusdt" },
+        { name: "barusdt" },
+        { name: "btcusdt" },
+        { name: "ethusdt" },
       ],
     ],
   });

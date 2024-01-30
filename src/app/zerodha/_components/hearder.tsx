@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import SymbolLiveContext from "../_contexts/SymbolLive/SymbolLive";
 import type { Tdata } from "../page";
 import { shadowBox } from "./tcss";
@@ -23,7 +24,7 @@ function Header({ data, setData }: IHeader) {
     "Funds",
   ];
 
-  const { symbolLiveState, symbolLiveDispatch, socketSend } =
+  const { symbolLiveState, socketSend } =
     useContext(SymbolLiveContext);
 
   useEffect(() => {
@@ -42,7 +43,21 @@ function Header({ data, setData }: IHeader) {
     >
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
         <div className="flex h-full min-w-[430px] items-center justify-center gap-5 border-r">
-          <div className="flex gap-1">
+          <div
+            className="flex cursor-pointer gap-1 "
+            onClick={() => {
+              setData((prev) => {
+                return {
+                  ...prev,
+                  rightSideData: {
+                    type: "chart",
+                    symbol: "BTCUSDT",
+                    TimeFrame: "5",
+                  },
+                };
+              });
+            }}
+          >
             <div>bitcoin</div>
             <div>
               {parseFloat(
@@ -50,7 +65,21 @@ function Header({ data, setData }: IHeader) {
               ).toFixed(2)}
             </div>
           </div>
-          <div className="flex gap-1">
+          <div
+            className="flex cursor-pointer gap-1"
+            onClick={() => {
+              setData((prev) => {
+                return {
+                  ...prev,
+                  rightSideData: {
+                    type: "chart",
+                    symbol: "ETHUSDT",
+                    TimeFrame: "5",
+                  },
+                };
+              });
+            }}
+          >
             <div>etherium</div>
             <div>
               {parseFloat(
