@@ -29,7 +29,7 @@ export default function Home() {
     watchList: [
       [
         { name: "rvnusdt", prevDayClose: 100, curPrice: 200000.01 },
-        { name: "ctxcusdt", prevDayClose: 20, curPrice: 10.01 },
+        { name: "barusdt", prevDayClose: 20, curPrice: 10.01 },
       ],
     ],
   });
@@ -44,7 +44,7 @@ export default function Home() {
         <Header data={data} setData={setData} />
         <div className="text-red flex w-full max-w-[1536px] grow  ">
           <WatchList data={data.watchList} />
-          <div className={" flex grow"}>
+          <div className={" flex grow max-w-[1110px]"}>
             <RightSide data={data.rightSideData} />
           </div>
         </div>

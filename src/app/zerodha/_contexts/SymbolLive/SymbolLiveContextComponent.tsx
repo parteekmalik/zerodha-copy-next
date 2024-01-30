@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import React, { useReducer } from "react";
 import { useSocket } from "../../_hooks/useWS";
-import type { TsymbolTrade } from "./SymbolLive";
+import type { Tlast24hr, TsymbolTrade } from "./SymbolLive";
 import {
   SymbolLiveContextProvider,
   defaultsymbolLiveContextState,
@@ -22,10 +22,14 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   });
 
   function processMessages(event: MessageEvent) {
-    const data: TsymbolTrade = (JSON.parse((event.data as string)) as TsymbolTrade);
-    console.log(data);
-    if (!data.e) return;
-    symbolLiveDispatch({ type: "update_symbol", payload: data });
+    const data = JSON.parse(event.data as string) as Tlast24hr;
+    if (!data.e) {
+      return;
+    }
+    if (data.e !== "trade") {
+      // console.log(data);
+      symbolLiveDispatch({ type: "update_symbol", payload: data });
+    }
   }
 
   const [symbolLiveState, symbolLiveDispatch] = useReducer(

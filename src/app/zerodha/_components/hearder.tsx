@@ -29,7 +29,7 @@ function Header({ data, setData }: IHeader) {
   useEffect(() => {
     const msg = {
       method: "SUBSCRIBE",
-      params: ["btcusdt@trade", "ethusdt@trade"],
+      params: ["btcusdt@ticker", "ethusdt@ticker"],
       id: 1,
     };
 
@@ -46,7 +46,7 @@ function Header({ data, setData }: IHeader) {
             <div>bitcoin</div>
             <div>
               {parseFloat(
-                symbolLiveState.BTCUSDT ? symbolLiveState.BTCUSDT.p : "00.0",
+                symbolLiveState.BTCUSDT ? symbolLiveState.BTCUSDT.c : "00.0",
               ).toFixed(2)}
             </div>
           </div>
@@ -54,7 +54,7 @@ function Header({ data, setData }: IHeader) {
             <div>etherium</div>
             <div>
               {parseFloat(
-                symbolLiveState.ETHUSDT ? symbolLiveState.ETHUSDT.p : "00.0",
+                symbolLiveState.ETHUSDT ? symbolLiveState.ETHUSDT.c : "00.0",
               ).toFixed(2)}
             </div>
           </div>

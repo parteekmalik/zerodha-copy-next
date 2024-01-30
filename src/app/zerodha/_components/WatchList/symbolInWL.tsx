@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
 import type { Tsymbol } from "./watchList";
+import { parsePrice } from "../../utils";
 
 export type Twsbinance = { method: "SUBSCRIBE"; params: string[]; id: number };
 
@@ -16,7 +17,7 @@ function SymbolInWL({ list }: ISymbolInWL) {
       id: 2,
     };
     list?.map((symbol) => {
-      msg.params.push(symbol.name + "@trade");
+      msg.params.push(symbol.name + "@ticker");
     });
     socketSend(JSON.stringify(msg));
   }, []);
@@ -25,14 +26,14 @@ function SymbolInWL({ list }: ISymbolInWL) {
       {list
         ? list.map((symbol) => {
             const symbolName = symbol.name.toUpperCase();
-            const price = Number(
-              parseFloat(symbolLiveState[symbolName]?.p ?? "0.0").toFixed(2),
-            );
+            const price = parsePrice(symbolLiveState[symbolName]?.c);
             const diff = (
-              symbolLiveState[symbolName] ? symbolLiveState[symbolName]?.m : 0
+              symbolLiveState[symbolName]
+                ? symbolLiveState[symbolName]?.m
+                : 0
             )
-              ? -1
-              : 1;
+              ? 1
+              : -1;
 
             return (
               <div
@@ -44,11 +45,11 @@ function SymbolInWL({ list }: ISymbolInWL) {
                 <div className="flex">
                   <div className="flex opacity-[.7]">
                     <div className="pr-[3px] text-black opacity-[.65] ">
-                      {diff}
+                      {parsePrice(symbolLiveState[symbolName]?.p)}
                     </div>
                     <div className="flex   min-w-[45px]  text-right  text-black  ">
                       <div className="">
-                        {(price / symbol.prevDayClose) * 100}
+                        {symbolLiveState[symbolName]?.P}
                       </div>
                       <span className="my-auto text-[.652rem]  ">%</span>
                     </div>

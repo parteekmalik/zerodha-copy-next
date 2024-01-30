@@ -14,9 +14,35 @@ export type TsymbolTrade = {
   m: boolean;
   M: boolean;
 };
-export type IsymbolLiveContextState = Record<string, TsymbolTrade>;
+export type Tlast24hr = {
+  e: string;
+  E: number;
+  s: string;
+  p: string;
+  P: string;
+  w: string;
+  x: string;
+  c: string;
+  Q: string;
+  b: string;
+  B: string;
+  a: string;
+  A: string;
+  o: string;
+  h: string;
+  l: string;
+  v: string;
+  q: string;
+  O: number;
+  C: number;
+  F: number;
+  L: number;
+  m: boolean;
+  n: number;
+};
+export type IsymbolLiveContextState = Record<string, Tlast24hr>;
 
-export const defaultsymbolLiveContextState = {};
+export const defaultsymbolLiveContextState = { };
 export interface IsymbolLiveContextProps {
   symbolLiveState: IsymbolLiveContextState;
   symbolLiveDispatch: React.Dispatch<IsymbolLiveContextActions>;
@@ -25,8 +51,12 @@ export interface IsymbolLiveContextProps {
 
 const SymbolLiveContext = createContext<IsymbolLiveContextProps>({
   symbolLiveState: defaultsymbolLiveContextState,
-  symbolLiveDispatch: () => {console.log("due to ts error")},
-  socketSend: () => {console.log("due to ts error")},
+  symbolLiveDispatch: () => {
+    console.log("due to ts error");
+  },
+  socketSend: () => {
+    console.log("due to ts error");
+  },
 });
 
 export const PageContextConsumer = SymbolLiveContext.Consumer;
