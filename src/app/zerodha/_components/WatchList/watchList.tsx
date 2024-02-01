@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { shadowBox } from "../tcss";
 import SymbolInWL from "./symbolInWL";
 import WatchlistBittom from "./watchlistBittom";
+import { Tdata } from "../../page";
 
 export interface IWatchList {
   data: Tsymbol[][];
+  setData : Dispatch<SetStateAction<Tdata>>
 }
 export type Tsymbol = { name: string;  };
 
-function WatchList({ data: list }: IWatchList) {
+function WatchList({ data: list ,setData }: IWatchList) {
   const [watchListNo, setWatchListNo] = useState(0);
   
 
@@ -29,7 +31,7 @@ function WatchList({ data: list }: IWatchList) {
           {list[watchListNo] ? list[watchListNo]?.length : 0} / 50
         </div>
       </div>
-      <SymbolInWL list={list[watchListNo]} />
+      <SymbolInWL list={list[watchListNo]} setData={setData} />
       <WatchlistBittom
         watchListNo={watchListNo}
         setWatchListNo={setWatchListNo}

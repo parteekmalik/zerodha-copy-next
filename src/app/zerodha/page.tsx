@@ -44,8 +44,8 @@ export default function Home() {
     <SymbolLiveContextComponent>
       <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
         <Header data={data} setData={setData} />
-        <div className="text-red flex w-full max-w-[1536px] grow  ">
-          <WatchList data={data.watchList} />
+        <div className="text-red flex w-full max-w-[1536px] grow select-none ">
+          <WatchList data={data.watchList} setData={setData} />
           <div className={" flex max-w-[1110px] grow"}>
             <RightSide data={data.rightSideData} />
           </div>

@@ -1,7 +1,7 @@
 export const parsePrice = (price: string | undefined) => {
   if (price === undefined) return 0.0;
   const Fprice = parseFloat(price);
-  const pointOnePer = String(Fprice );
+  const pointOnePer = String(Fprice);
   let count = 1;
   let index = 0;
   for (; index < pointOnePer.length; index++) {
@@ -13,5 +13,6 @@ export const parsePrice = (price: string | undefined) => {
     count++;
   }
   count += 4;
-  return Number(parseFloat(price).toFixed(Math.max(2, count)));
+  // return Number(parseFloat(price).toFixed(Math.max(2, count)));
+  return Number(price);
 };

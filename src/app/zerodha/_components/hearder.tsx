@@ -24,8 +24,7 @@ function Header({ data, setData }: IHeader) {
     "Funds",
   ];
 
-  const { symbolLiveState, socketSend } =
-    useContext(SymbolLiveContext);
+  const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
 
   useEffect(() => {
     const msg = {
@@ -36,51 +35,53 @@ function Header({ data, setData }: IHeader) {
 
     socketSend(JSON.stringify(msg));
   }, []);
-
+  // ff5722
   return (
     <header
       className={" flex w-full justify-center bg-white text-xs " + shadowBox}
     >
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
         <div className="flex h-full min-w-[430px] items-center justify-center gap-5 border-r">
-          <div
-            className="flex cursor-pointer gap-1 "
-            onClick={() => {
-              setData((prev) => {
-                return {
-                  ...prev,
-                  rightSideData: {
-                    type: "chart",
-                    symbol: "BTCUSDT",
-                    TimeFrame: "5",
-                  },
-                };
-              });
-            }}
-          >
-            <div>bitcoin</div>
+          <div className="flex cursor-pointer gap-1 ">
+            <div
+              onClick={() => {
+                setData((prev) => {
+                  return {
+                    ...prev,
+                    rightSideData: {
+                      type: "chart",
+                      symbol: "BTCUSDT",
+                      TimeFrame: "5",
+                    },
+                  };
+                });
+              }}
+            >
+              bitcoin
+            </div>
             <div>
               {parseFloat(
                 symbolLiveState.BTCUSDT ? symbolLiveState.BTCUSDT.c : "00.0",
               ).toFixed(2)}
             </div>
           </div>
-          <div
-            className="flex cursor-pointer gap-1"
-            onClick={() => {
-              setData((prev) => {
-                return {
-                  ...prev,
-                  rightSideData: {
-                    type: "chart",
-                    symbol: "ETHUSDT",
-                    TimeFrame: "5",
-                  },
-                };
-              });
-            }}
-          >
-            <div>etherium</div>
+          <div className="flex cursor-pointer gap-1">
+            <div
+              onClick={() => {
+                setData((prev) => {
+                  return {
+                    ...prev,
+                    rightSideData: {
+                      type: "chart",
+                      symbol: "ETHUSDT",
+                      TimeFrame: "5",
+                    },
+                  };
+                });
+              }}
+            >
+              etherium
+            </div>
             <div>
               {parseFloat(
                 symbolLiveState.ETHUSDT ? symbolLiveState.ETHUSDT.c : "00.0",
@@ -98,7 +99,10 @@ function Header({ data, setData }: IHeader) {
             <div className="flex grow justify-end gap-4">
               {rightSideItems.map((x: RightSideType) => (
                 <div
-                  className="cursor-pointer px-[15px] text-center"
+                  className={
+                    "cursor-pointer select-none px-[15px] text-center hover:text-[#ff5722] " +
+                    (data.rightSideData.type === x ? "text-[#ff5722]" : "")
+                  }
                   onClick={() => {
                     const newData = { ...data, rightSideData: { type: x } };
                     setData(newData);
