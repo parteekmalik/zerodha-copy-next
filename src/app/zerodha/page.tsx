@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import RightSide from "./_components/Rightside/RightSde";
-import WatchList from "./_components/WatchList/watchList";
 import type { Tsymbol } from "./_components/WatchList/watchList";
+import WatchList from "./_components/WatchList/watchList";
 import Header from "./_components/hearder";
+import OrderForm, { TorderForm } from "./_components/OrderForm/orderForm";
 import SymbolLiveContextComponent from "./_contexts/SymbolLive/SymbolLiveContextComponent";
 
 export type TrightSideType =
@@ -35,6 +36,19 @@ export default function Home() {
       ],
     ],
   });
+  const [FormData, setFormData] = useState<TorderForm>({
+    isvisible: true,
+    symbol: "btcusd",
+    market: "SPOT",
+    type: "LIMIT",
+    oderdetails: {
+      orderType: "BUY",
+      quantity: 10,
+      price: 1010,
+      sl: 1000,
+      tp: 2000,
+    },
+  });
 
   useEffect(() => {
     console.log(data);
@@ -51,6 +65,9 @@ export default function Home() {
           </div>
         </div>
         <div>{JSON.stringify(data)}</div>
+        {FormData.isvisible ? (
+          <OrderForm data={FormData} setData={setFormData} />
+        ) : null}
       </main>
     </SymbolLiveContextComponent>
   );
