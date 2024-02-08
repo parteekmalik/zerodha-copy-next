@@ -1,17 +1,20 @@
 import { Dispatch, SetStateAction, useContext, useEffect } from "react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
-import type { Tsymbol } from "./watchList";
-import { parsePrice } from "../../utils";
 import { Tdata } from "../../page";
+import { parsePrice } from "../../utils";
+import { TorderForm } from "../OrderForm/orderForm";
+import type { Tsymbol } from "./watchList";
 
 export type Twsbinance = { method: "SUBSCRIBE"; params: string[]; id: number };
 
 interface ISymbolInWL {
   list: Tsymbol[] | undefined;
   setData: Dispatch<SetStateAction<Tdata>>;
+  setFormData: Dispatch<SetStateAction<TorderForm>>;
 }
-function SymbolInWL({ list, setData }: ISymbolInWL) {
+function SymbolInWL({ list, setData, setFormData }: ISymbolInWL) {
   const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
+
   useEffect(() => {
     const msg: Twsbinance = {
       method: "SUBSCRIBE",
@@ -75,7 +78,13 @@ function SymbolInWL({ list, setData }: ISymbolInWL) {
                 text_color: "text-white",
                 text: "B",
                 clickHandle: () => {
-                  console.log("dumy function ");
+                  setFormData((prev) => {
+                    return {
+                      ...prev,
+                      isvisible: true,
+                      oderdetails: { ...prev.oderdetails, orderType: "BUY" },
+                    };
+                  });
                 },
               },
               {
@@ -84,7 +93,13 @@ function SymbolInWL({ list, setData }: ISymbolInWL) {
 
                 text: "S",
                 clickHandle: () => {
-                  console.log("dumy function ");
+                  setFormData((prev) => {
+                    return {
+                      ...prev,
+                      isvisible: true,
+                      oderdetails: { ...prev.oderdetails, orderType: "SELL" },
+                    };
+                  });
                 },
               },
               {

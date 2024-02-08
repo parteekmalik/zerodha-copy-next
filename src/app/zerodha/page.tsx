@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
+import OrderForm, { TorderForm } from "./_components/OrderForm/orderForm";
 import RightSide from "./_components/Rightside/RightSde";
 import type { Tsymbol } from "./_components/WatchList/watchList";
 import WatchList from "./_components/WatchList/watchList";
 import Header from "./_components/hearder";
-import OrderForm, { TorderForm } from "./_components/OrderForm/orderForm";
 import SymbolLiveContextComponent from "./_contexts/SymbolLive/SymbolLiveContextComponent";
 
 export type TrightSideType =
@@ -43,10 +43,10 @@ export default function Home() {
     type: "LIMIT",
     oderdetails: {
       orderType: "BUY",
-      quantity: 10,
+      quantity: 1,
       price: 1010,
-      sl: 1000,
-      tp: 2000,
+      sl: 0,
+      tp: 0,
     },
   });
 
@@ -59,7 +59,7 @@ export default function Home() {
       <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
         <Header data={data} setData={setData} />
         <div className="text-red flex w-full max-w-[1536px] grow select-none ">
-          <WatchList data={data.watchList} setData={setData} />
+          <WatchList data={data.watchList} setData={setData} setFormData={setFormData} />
           <div className={" flex max-w-[1110px] grow"}>
             <RightSide data={data.rightSideData} />
           </div>

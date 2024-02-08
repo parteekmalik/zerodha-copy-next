@@ -1,10 +1,14 @@
-import React, { Dispatch, SetStateAction } from "react";
-
+import React, { useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import InputDiv from "./InputDiv";
+import OrderTypeDiv, { CheckBox } from "./OrderTypeDiv";
+export type TOrderType = "LIMIT" | "MARKET" | "STOP";
+export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
 export type TorderForm = {
   isvisible: boolean;
   symbol: string;
   market: TmarketType;
-  type: "LIMIT" | "MARKET" | "STOP";
+  type: TOrderType;
   oderdetails: {
     orderType: "BUY" | "SELL";
     quantity: number;
@@ -31,9 +35,18 @@ function OrderForm({ data, setData }: IOrderForm) {
         ? "border-b-[#4184f3]"
         : "border-b-[#ff5722]",
   };
-
+  const [selected, setSelected] = useState<TOrderType>("MARKET");
+  const [IsSLTP, setIsSLTP] = useState<{ sl: boolean; tp: boolean }>({
+    sl: false,
+    tp: false,
+  });
+  const disableimage =
+    "data:image/svg+xml;charset=utf-8,%3Csvg width='6' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 0h1L0 6V5zm1 5v1H5z' fill='%23ddd' fill-rule='evenodd'/%3E%3C/svg%3E";
+  function handleSubmit(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    console.log("send order");
+  }
   return (
-    <div className={` fixed w-[600px] text-[.75rem] `}>
+    <div className={` fixed w-[600px] bg-white text-[.75rem] `}>
       <header
         className={`rounded-[3px_3px_0px_0px]  p-[15px_20px] text-white ${style.bgcolor}`}
       >
@@ -72,65 +85,111 @@ function OrderForm({ data, setData }: IOrderForm) {
         </div>
       </div>
       <div className="m-2 ">
-        <div className="flex ">
-          <InputDiv
-            label="Qty."
-            changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setData((prev) => {
-                return {
-                  ...prev,
-                  oderdetails: {
-                    ...prev.oderdetails,
-                    quantity: Number(e.target.value),
-                  },
-                };
-              });
-            }}
-          />
-          <InputDiv
-            changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setData((prev) => {
-                return {
-                  ...prev,
-                  oderdetails: {
-                    ...prev.oderdetails,
-                    price: Number(e.target.value),
-                  },
-                };
-              });
-            }}
-            label="Price"
-          />
+        <div>
+          <div className="flex ">
+            <InputDiv
+              data={{
+                label: "Qty.",
+                number: data.oderdetails.quantity,
+                isSelected: true,
+              }}
+              changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setData((prev) => {
+                  return {
+                    ...prev,
+                    oderdetails: {
+                      ...prev.oderdetails,
+                      quantity: Number(e.target.value),
+                    },
+                  };
+                });
+              }}
+            />
+            <InputDiv
+              changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setData((prev) => {
+                  return {
+                    ...prev,
+                    oderdetails: {
+                      ...prev.oderdetails,
+                      price: Number(e.target.value),
+                    },
+                  };
+                });
+              }}
+              data={{
+                label: "Price",
+                number: selected !== "MARKET" ? data.oderdetails.price : 0,
+                isSelected: selected !== "MARKET",
+              }}
+            />
+          </div>
+          <div className="m-2 mr-3">
+            <OrderTypeDiv selected={selected} setSelected={setSelected} />
+          </div>
         </div>
+
         <div className="flex ">
-          <InputDiv
-            changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setData((prev) => {
-                return {
-                  ...prev,
-                  oderdetails: {
-                    ...prev.oderdetails,
-                    sl: Number(e.target.value),
-                  },
-                };
-              });
-            }}
-            label="SL"
-          />
-          <InputDiv
-            changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setData((prev) => {
-                return {
-                  ...prev,
-                  oderdetails: {
-                    ...prev.oderdetails,
-                    tp: Number(e.target.value),
-                  },
-                };
-              });
-            }}
-            label="TP"
-          />
+          <div className="flex flex-col items-end ">
+            <InputDiv
+              changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setData((prev) => {
+                  return {
+                    ...prev,
+                    oderdetails: {
+                      ...prev.oderdetails,
+                      sl: Number(e.target.value),
+                    },
+                  };
+                });
+              }}
+              data={{
+                label: "SL",
+                number: IsSLTP.sl ? data.oderdetails.sl : 0,
+                isSelected: IsSLTP.sl,
+              }}
+            />
+            <div className="m-2">
+              <CheckBox
+                data={{ isSelected: IsSLTP.sl, type: "SL" }}
+                clickHandler={(e) => {
+                  setIsSLTP((prev) => {
+                    return { ...prev, sl: !prev.sl };
+                  });
+                }}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col items-end ">
+            <InputDiv
+              changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setData((prev) => {
+                  return {
+                    ...prev,
+                    oderdetails: {
+                      ...prev.oderdetails,
+                      tp: Number(e.target.value),
+                    },
+                  };
+                });
+              }}
+              data={{
+                label: "TP",
+                number: IsSLTP.tp ? data.oderdetails.tp : 0,
+                isSelected: IsSLTP.tp,
+              }}
+            />
+            <div className="m-2">
+              <CheckBox
+                data={{ isSelected: IsSLTP.tp, type: "TP" }}
+                clickHandler={(e) => {
+                  setIsSLTP((prev) => {
+                    return { ...prev, tp: !prev.tp };
+                  });
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div className="relative flex w-full gap-2 bg-[rgb(249,249,249)] p-[15px_20px] text-[#444444] ">
@@ -144,35 +203,29 @@ function OrderForm({ data, setData }: IOrderForm) {
           </div>
         </div>
         <div className="flex gap-2 text-right">
-          <div className={"p-[8px_12px] text-white " + style.bgcolor}>
+          <div
+            className={
+              "cursor-pointer p-[8px_12px] text-white " + style.bgcolor
+            }
+            onClick={handleSubmit}
+          >
             {data.oderdetails.orderType}
           </div>
-          <div className="border border-[#444444] bg-white p-[8px_12px] text-[#444444] hover:bg-[#444444] hover:text-white">
+          <div
+            className="cursor-pointer border border-[#444444] bg-white p-[8px_12px] text-[#444444] hover:bg-[#444444] hover:text-white"
+            onClick={(e) =>
+              setData((prev) => {
+                return { ...prev, isvisible: false };
+              })
+            }
+          >
             Cancel
           </div>
         </div>
       </div>
+      <div className="h-10"></div>
     </div>
   );
 }
-function InputDiv({
-  label,
-  changeHandler,
-}: {
-  label: string;
-  changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
-  return (
-    <div className="relative">
-      <input
-        type="number"
-        onChange={changeHandler}
-        className="m-2 rounded-[3px] border p-[10px_15px] focus:border-black focus:outline-none"
-      />
-      <div className=" absolute " style={{ top: "0px", left: "0px" }}>
-        <div className="ml-5 bg-white ">{label}</div>
-      </div>
-    </div>
-  );
-}
+
 export default OrderForm;
