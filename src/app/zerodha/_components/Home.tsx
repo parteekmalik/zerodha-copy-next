@@ -15,19 +15,19 @@ interface IHome {
 export default function Home() {
   const { dataDispatch } = useContext(DataContext);
 
-  // const watchlist = api.accountInfo.watchList.useQuery().data ?? [];
-  // const userInfo = api.accountInfo.info.useQuery().data ?? {
-  //   name: "not_found",
-  //   email: "not_found@gmail.com",
-  //   image: "not_found",
-  //   id: "not_found",
-  // };
-  // useEffect(() => {
-  //   if (userInfo.id !== "not_found")
-  //     dataDispatch({ type: "update_userDetails", payload: userInfo });
-  //   if (watchlist.length !== 0)
-  //     dataDispatch({ type: "update_watchList", payload: watchlist });
-  // }, [watchlist, userInfo]);
+  const watchlist = api.accountInfo.watchList.useQuery().data ?? [];
+  const userInfo = api.accountInfo.info.useQuery().data ?? {
+    name: "not_found",
+    email: "not_found@gmail.com",
+    image: "not_found",
+    id: "not_found",
+  };
+  useEffect(() => {
+    if (userInfo.id !== "not_found")
+      dataDispatch({ type: "update_userDetails", payload: userInfo });
+    if (watchlist.length !== 0)
+      dataDispatch({ type: "update_watchList", payload: watchlist });
+  }, [watchlist, userInfo]);
 
   return (
     <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
