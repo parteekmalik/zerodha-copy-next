@@ -3,11 +3,7 @@ import { api } from "~/trpc/server";
 import ContextLayer from "./contetLayer";
 
 async function page() {
-  const watchListData = await api.accountInfo.watchList.query();
-  const session = await getServerAuthSession();
-
-
-  return <ContextLayer watchlist={watchListData} userDetails={session?.user} />;
+  return <ContextLayer />;
 }
 
 export default page;

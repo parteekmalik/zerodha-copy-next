@@ -7,20 +7,28 @@ import RightSide from "./Rightside/RightSde";
 import WatchList from "./WatchList/watchList";
 import Debugdata from "./debugdata";
 import Header from "./hearder";
+import { api } from "~/trpc/react";
 
 interface IHome {
   watchlist: string[][];
   userDetails: TuserDetails;
 }
-export default function Home({ watchlist, userDetails }: IHome) {
+export default function Home() {
   const { dataDispatch } = useContext(DataContext);
 
+  const watchlist = api.accountInfo.watchList.useQuery().data ?? [];
+  const userInfo = api.accountInfo.info.useQuery().data ?? {
+    name: "not_found",
+    email: "not_found@gmail.com",
+    image: "not_found",
+    id: "not_found",
+  };
   useEffect(() => {
-    if (watchlist && userDetails) {
-      dataDispatch({ type: "update_userDetails", payload: userDetails });
+    if (userInfo.id !== "not_found")
+      dataDispatch({ type: "update_userDetails", payload: userInfo });
+    if (watchlist.length !== 0)
       dataDispatch({ type: "update_watchList", payload: watchlist });
-    }
-  }, [watchlist, userDetails]);
+  }, [watchlist, userInfo]);
 
   return (
     <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">

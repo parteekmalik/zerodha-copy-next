@@ -38,10 +38,10 @@ export const defaultdataContextState: IdataContextState = {
   rightSideData: { type: "Dashboard" },
   watchList: [],
   userDetails: {
-    name: "parteek_87025",
-    email: "parteekmalik5@gmail.com",
-    image: "https://cdn.discordapp.com/embed/avatars/0.png",
-    id: "clsu1f2rj0005bo3jgl6wvejg",
+    name: "not_found",
+    email: "not_found@gmail.com",
+    image: "not_found",
+    id: "not_found",
   },
   headerPin: ["btcusdt", "ethusdt"],
   FormData: {
