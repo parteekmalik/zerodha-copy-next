@@ -6,7 +6,7 @@ import { CreatePost } from "./zerodha/_components/create-post";
 export default async function BasePage() {
   const hello = await api.post.hello.query({ text: "from tRPC" });
   const session = await getServerAuthSession();
-  const list = await api.accountInfo.watchList.query();
+  // const list = await api.accountInfo.watchList.query();
 
   return (
     <main className="flex h-screen flex-col items-center justify-center bg-blue-400">
@@ -36,7 +36,7 @@ export default async function BasePage() {
       </Link>
       <div className=" flex flex-col">
         <div>{JSON.stringify(session)}</div>
-        <div>{JSON.stringify(list)}</div>
+        {/* <div>{JSON.stringify(list)}</div> */}
       </div>
     </main>
   );
