@@ -1,36 +1,52 @@
-import { Dispatch, SetStateAction, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
-import { Tdata } from "../../page";
+import DataContext from "../../_contexts/data/data";
 import { parsePrice } from "../../utils";
-import { TorderForm } from "../OrderForm/orderForm";
 import type { Tsymbol } from "./watchList";
 
-export type Twsbinance = { method: "SUBSCRIBE"; params: string[]; id: number };
+export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
+export type Twsbinance = {
+  method: WS_method;
+  params: string[];
+  id: number;
+};
 
 interface ISymbolInWL {
   list: Tsymbol[] | undefined;
-  setData: Dispatch<SetStateAction<Tdata>>;
-  setFormData: Dispatch<SetStateAction<TorderForm>>;
 }
-function SymbolInWL({ list, setData, setFormData }: ISymbolInWL) {
+function SymbolInWL({ list }: ISymbolInWL) {
   const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
+  const { dataDispatch, dataState } = useContext(DataContext);
 
   useEffect(() => {
+    if (!list) return;
     const msg: Twsbinance = {
       method: "SUBSCRIBE",
       params: [],
-      id: 2,
+      id: 1,
     };
     list?.map((symbol) => {
-      msg.params.push(symbol.name + "@ticker");
+      msg.params.push(symbol + "@ticker");
     });
-    socketSend(JSON.stringify(msg));
+    socketSend(msg);
+    return () => {
+      if (!list) return;
+      const msg: Twsbinance = {
+        method: "UNSUBSCRIBE",
+        params: [],
+        id: 1,
+      };
+      list?.map((symbol) => {
+        msg.params.push(symbol + "@ticker");
+      });
+      socketSend(msg);
+    };
   }, [list]);
   return (
     <div className="flex grow flex-col">
       {list
         ? list.map((symbol) => {
-            const symbolName = symbol.name.toUpperCase();
+            const symbolName = symbol.toUpperCase();
             const symbolLiveTemp = symbolLiveState[symbolName] ?? {
               m: true,
               c: "0",
@@ -43,7 +59,7 @@ function SymbolInWL({ list, setData, setFormData }: ISymbolInWL) {
             function BaseSymbolLayout() {
               return (
                 <>
-                  <div className="grow">{symbol.name.toUpperCase()}</div>
+                  <div className="grow">{symbol.toUpperCase()}</div>
                   <div className="flex">
                     <div className="flex opacity-[.7]">
                       <div className="pr-[3px] text-black opacity-[.65] ">
@@ -78,12 +94,18 @@ function SymbolInWL({ list, setData, setFormData }: ISymbolInWL) {
                 text_color: "text-white",
                 text: "B",
                 clickHandle: () => {
-                  setFormData((prev) => {
-                    return {
-                      ...prev,
+                  dataDispatch({
+                    type: "update_FormData",
+                    payload: {
+                      ...dataState.FormData,
                       isvisible: true,
-                      oderdetails: { ...prev.oderdetails, orderType: "BUY" },
-                    };
+                      oderdetails: {
+                        ...dataState.FormData.oderdetails,
+                        orderType: "BUY",
+                      },
+                      symbol: symbolName,
+                      orderType: "MARKET",
+                    },
                   });
                 },
               },
@@ -93,12 +115,18 @@ function SymbolInWL({ list, setData, setFormData }: ISymbolInWL) {
 
                 text: "S",
                 clickHandle: () => {
-                  setFormData((prev) => {
-                    return {
-                      ...prev,
+                  dataDispatch({
+                    type: "update_FormData",
+                    payload: {
+                      ...dataState.FormData,
                       isvisible: true,
-                      oderdetails: { ...prev.oderdetails, orderType: "SELL" },
-                    };
+                      oderdetails: {
+                        ...dataState.FormData.oderdetails,
+                        orderType: "SELL",
+                      },
+                      symbol: symbolName,
+                      orderType: "MARKET",
+                    },
                   });
                 },
               },
@@ -115,15 +143,13 @@ function SymbolInWL({ list, setData, setFormData }: ISymbolInWL) {
                 bgcolor: " bg-white",
                 text: "C",
                 clickHandle: () => {
-                  setData((prev) => {
-                    return {
-                      ...prev,
-                      rightSideData: {
-                        type: "chart",
-                        symbol: symbolName,
-                        TimeFrame: "5",
-                      },
-                    };
+                  dataDispatch({
+                    type: "update_rightHandSide",
+                    payload: {
+                      type: "chart",
+                      symbol: symbolName,
+                      TimeFrame: "5",
+                    },
                   });
                 },
               },
@@ -177,7 +203,7 @@ function SymbolInWL({ list, setData, setFormData }: ISymbolInWL) {
                   getColor(diff)
                 }
                 style={{ fontSize: ".8125rem" }}
-                key={"symbol" + symbol.name}
+                key={"symbol" + symbol}
               >
                 <BaseSymbolLayout />
                 <div className=" invisible absolute right-0 top-0 flex h-full gap-2 p-[8px_15px_8px_2px] text-white group-hover/item:visible">

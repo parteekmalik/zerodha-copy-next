@@ -38,13 +38,11 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   );
 
   return (
-    <>
-      <SymbolLiveContextProvider
-        value={{ symbolLiveState, symbolLiveDispatch, socketSend }}
-      >
-        {children}
-      </SymbolLiveContextProvider>
-    </>
+    <SymbolLiveContextProvider
+      value={{ symbolLiveState, symbolLiveDispatch, socketSend }}
+    >
+      {children}
+    </SymbolLiveContextProvider>
   );
 };
 

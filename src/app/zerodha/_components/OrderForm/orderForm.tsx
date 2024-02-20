@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import type { Dispatch, SetStateAction } from "react";
+import React, { useContext, useState } from "react";
+import DataContext from "../../_contexts/data/data";
 import InputDiv from "./InputDiv";
 import OrderTypeDiv, { CheckBox } from "./OrderTypeDiv";
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
@@ -8,7 +8,7 @@ export type TorderForm = {
   isvisible: boolean;
   symbol: string;
   market: TmarketType;
-  type: TOrderType;
+  orderType: TOrderType;
   oderdetails: {
     orderType: "BUY" | "SELL";
     quantity: number;
@@ -18,11 +18,14 @@ export type TorderForm = {
   };
 };
 type TmarketType = "SPOT" | "MARGIN";
-export interface IOrderForm {
-  data: TorderForm;
-  setData: Dispatch<SetStateAction<TorderForm>>;
-}
-function OrderForm({ data, setData }: IOrderForm) {
+export type TformState = {
+  sl: boolean;
+  tp: boolean;
+};
+function OrderForm() {
+  const data = useContext(DataContext).dataState.FormData;
+  const { dataDispatch } = useContext(DataContext);
+
   const style = {
     bgcolor:
       data.oderdetails.orderType === "BUY" ? "bg-[#4184f3]" : "bg-[#ff5722]",
@@ -35,16 +38,22 @@ function OrderForm({ data, setData }: IOrderForm) {
         ? "border-b-[#4184f3]"
         : "border-b-[#ff5722]",
   };
-  const [selected, setSelected] = useState<TOrderType>("MARKET");
-  const [IsSLTP, setIsSLTP] = useState<{ sl: boolean; tp: boolean }>({
+
+  const [state, setState] = useState<TformState>({
     sl: false,
     tp: false,
   });
+
   const disableimage =
     "data:image/svg+xml;charset=utf-8,%3Csvg width='6' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 0h1L0 6V5zm1 5v1H5z' fill='%23ddd' fill-rule='evenodd'/%3E%3C/svg%3E";
   function handleSubmit(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     console.log("send order");
+    e.preventDefault();
   }
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data]);
+  if (!data.isvisible) return null;
   return (
     <div className={` fixed w-[600px] bg-white text-[.75rem] `}>
       <header
@@ -63,8 +72,9 @@ function OrderForm({ data, setData }: IOrderForm) {
             <div
               key={"form" + x}
               onClick={() => {
-                setData((prev) => {
-                  return { ...prev, market: x };
+                dataDispatch({
+                  type: "update_FormData",
+                  payload: { ...data, market: x },
                 });
               }}
               className={
@@ -94,38 +104,41 @@ function OrderForm({ data, setData }: IOrderForm) {
                 isSelected: true,
               }}
               changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setData((prev) => {
-                  return {
-                    ...prev,
+                dataDispatch({
+                  type: "update_FormData",
+                  payload: {
+                    ...data,
                     oderdetails: {
-                      ...prev.oderdetails,
+                      ...data.oderdetails,
                       quantity: Number(e.target.value),
                     },
-                  };
+                  },
                 });
               }}
             />
             <InputDiv
               changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setData((prev) => {
-                  return {
-                    ...prev,
+                dataDispatch({
+                  type: "update_FormData",
+                  payload: {
+                    ...data,
                     oderdetails: {
-                      ...prev.oderdetails,
+                      ...data.oderdetails,
                       price: Number(e.target.value),
                     },
-                  };
+                  },
                 });
               }}
               data={{
                 label: "Price",
-                number: selected !== "MARKET" ? data.oderdetails.price : 0,
-                isSelected: selected !== "MARKET",
+                number:
+                  data.orderType !== "MARKET" ? data.oderdetails.price : 0,
+                isSelected: data.orderType !== "MARKET",
               }}
             />
           </div>
           <div className="m-2 mr-3">
-            <OrderTypeDiv selected={selected} setSelected={setSelected} />
+            <OrderTypeDiv />
           </div>
         </div>
 
@@ -133,27 +146,28 @@ function OrderForm({ data, setData }: IOrderForm) {
           <div className="flex flex-col items-end ">
             <InputDiv
               changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setData((prev) => {
-                  return {
-                    ...prev,
+                dataDispatch({
+                  type: "update_FormData",
+                  payload: {
+                    ...data,
                     oderdetails: {
-                      ...prev.oderdetails,
+                      ...data.oderdetails,
                       sl: Number(e.target.value),
                     },
-                  };
+                  },
                 });
               }}
               data={{
                 label: "SL",
-                number: IsSLTP.sl ? data.oderdetails.sl : 0,
-                isSelected: IsSLTP.sl,
+                number: state.sl ? data.oderdetails.sl : 0,
+                isSelected: state.sl,
               }}
             />
             <div className="m-2">
               <CheckBox
-                data={{ isSelected: IsSLTP.sl, type: "SL" }}
+                data={{ isSelected: state.sl, type: "SL" }}
                 clickHandler={(e) => {
-                  setIsSLTP((prev) => {
+                  setState((prev) => {
                     return { ...prev, sl: !prev.sl };
                   });
                 }}
@@ -163,27 +177,28 @@ function OrderForm({ data, setData }: IOrderForm) {
           <div className="flex flex-col items-end ">
             <InputDiv
               changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setData((prev) => {
-                  return {
-                    ...prev,
+                dataDispatch({
+                  type: "update_FormData",
+                  payload: {
+                    ...data,
                     oderdetails: {
-                      ...prev.oderdetails,
-                      tp: Number(e.target.value),
+                      ...data.oderdetails,
+                      sl: Number(e.target.value),
                     },
-                  };
+                  },
                 });
               }}
               data={{
                 label: "TP",
-                number: IsSLTP.tp ? data.oderdetails.tp : 0,
-                isSelected: IsSLTP.tp,
+                number: state.tp ? data.oderdetails.tp : 0,
+                isSelected: state.tp,
               }}
             />
             <div className="m-2">
               <CheckBox
-                data={{ isSelected: IsSLTP.tp, type: "TP" }}
+                data={{ isSelected: state.tp, type: "TP" }}
                 clickHandler={(e) => {
-                  setIsSLTP((prev) => {
+                  setState((prev) => {
                     return { ...prev, tp: !prev.tp };
                   });
                 }}
@@ -214,8 +229,12 @@ function OrderForm({ data, setData }: IOrderForm) {
           <div
             className="cursor-pointer border border-[#444444] bg-white p-[8px_12px] text-[#444444] hover:bg-[#444444] hover:text-white"
             onClick={(e) =>
-              setData((prev) => {
-                return { ...prev, isvisible: false };
+              dataDispatch({
+                type: "update_FormData",
+                payload: {
+                  ...data,
+                  isvisible: false,
+                },
               })
             }
           >
@@ -223,7 +242,7 @@ function OrderForm({ data, setData }: IOrderForm) {
           </div>
         </div>
       </div>
-      <div className="h-10"></div>
+      {JSON.stringify(state)}
     </div>
   );
 }

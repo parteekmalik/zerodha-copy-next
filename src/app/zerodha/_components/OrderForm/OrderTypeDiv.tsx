@@ -1,26 +1,27 @@
-import { useEffect } from "react";
-import { OrderTypeList, TOrderType } from "./orderForm";
+import { useContext, useEffect } from "react";
+import DataContext from "../../_contexts/data/data";
+import { OrderTypeList } from "./orderForm";
 
-function OrderTypeDiv({
-  selected,
-  setSelected,
-}: {
-  selected: TOrderType;
-  setSelected: React.Dispatch<React.SetStateAction<TOrderType>>;
-}) {
+function OrderTypeDiv() {
+  const Formdata = useContext(DataContext).dataState.FormData;
+  const { dataDispatch } = useContext(DataContext);
   useEffect(() => {
-    console.log(selected);
-  }, [selected]);
+    console.log(Formdata);
+  }, [Formdata]);
+
   return (
     <div className="flex w-full items-center justify-center gap-2">
       {OrderTypeList.map((type) => {
         return (
           <CheckBox
             key={type + "123"}
-            data={{ isSelected: selected === type, type }}
-            clickHandler={(e) => {
-              setSelected(type);
-            }}
+            data={{ isSelected: Formdata.orderType === type, type }}
+            clickHandler={() =>
+              dataDispatch({
+                type: "update_FormData",
+                payload: { ...Formdata, orderType: type },
+              })
+            }
           />
         );
       })}

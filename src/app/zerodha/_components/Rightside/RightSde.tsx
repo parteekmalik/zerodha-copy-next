@@ -1,11 +1,12 @@
 import { useContext } from "react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
-import type { TrightSideType } from "../../page";
 import Dashboard from "./Dashboard";
 import Chart from "./chart";
+import DataContext from "../../_contexts/data/data";
 
-function RightSide({ data }: { data: TrightSideType }) {
+function RightSide() {
   const { symbolLiveState } = useContext(SymbolLiveContext);
+  const data = useContext(DataContext).dataState.rightSideData;
   switch (data.type) {
     case "chart": {
       return (

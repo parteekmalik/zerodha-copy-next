@@ -1,5 +1,6 @@
 import { createContext } from "react";
 import type { IsymbolLiveContextActions } from "./SymbolLiveReducer";
+import { Twsbinance } from "../../_components/WatchList/symbolInWL";
 
 export type TsymbolTrade = {
   e: string;
@@ -46,7 +47,7 @@ export const defaultsymbolLiveContextState = { };
 export interface IsymbolLiveContextProps {
   symbolLiveState: IsymbolLiveContextState;
   symbolLiveDispatch: React.Dispatch<IsymbolLiveContextActions>;
-  socketSend: (payload: string) => void;
+  socketSend: (payload: Twsbinance) => void;
 }
 
 const SymbolLiveContext = createContext<IsymbolLiveContextProps>({

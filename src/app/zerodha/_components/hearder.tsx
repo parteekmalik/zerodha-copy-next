@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
-import type { Dispatch, SetStateAction } from "react";
 import SymbolLiveContext from "../_contexts/SymbolLive/SymbolLive";
-import type { Tdata } from "../page";
+import DataContext from "../_contexts/data/data";
+import { Twsbinance } from "./WatchList/symbolInWL";
 import { shadowBox } from "./tcss";
 
 type RightSideType =
@@ -11,11 +11,7 @@ type RightSideType =
   | "Positions"
   | "Funds";
 
-export interface IHeader {
-  data: Tdata;
-  setData: Dispatch<SetStateAction<Tdata>>;
-}
-function Header({ data, setData }: IHeader) {
+function Header() {
   const rightSideItems: RightSideType[] = [
     "Dashboard",
     "Orders",
@@ -25,15 +21,19 @@ function Header({ data, setData }: IHeader) {
   ];
 
   const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
+  const { dataDispatch, dataState } = useContext(DataContext);
 
   useEffect(() => {
-    const msg = {
+    const msg:Twsbinance = {
       method: "SUBSCRIBE",
-      params: ["btcusdt@ticker", "ethusdt@ticker"],
+      params: [
+        dataState.headerPin[0] + "@ticker",
+        dataState.headerPin[1] + "@ticker",
+      ],
       id: 1,
     };
 
-    socketSend(JSON.stringify(msg));
+    socketSend(msg);
   }, []);
   // ff5722
   return (
@@ -45,19 +45,17 @@ function Header({ data, setData }: IHeader) {
           <div className="flex cursor-pointer gap-1 ">
             <div
               onClick={() => {
-                setData((prev) => {
-                  return {
-                    ...prev,
-                    rightSideData: {
-                      type: "chart",
-                      symbol: "BTCUSDT",
-                      TimeFrame: "5",
-                    },
-                  };
+                dataDispatch({
+                  type: "update_rightHandSide",
+                  payload: {
+                    type: "chart",
+                    symbol: dataState.headerPin[0].toUpperCase(),
+                    TimeFrame: "5",
+                  },
                 });
               }}
             >
-              bitcoin
+              {dataState.headerPin[0].toUpperCase()}
             </div>
             <div>
               {parseFloat(
@@ -68,19 +66,17 @@ function Header({ data, setData }: IHeader) {
           <div className="flex cursor-pointer gap-1">
             <div
               onClick={() => {
-                setData((prev) => {
-                  return {
-                    ...prev,
-                    rightSideData: {
-                      type: "chart",
-                      symbol: "ETHUSDT",
-                      TimeFrame: "5",
-                    },
-                  };
+                dataDispatch({
+                  type: "update_rightHandSide",
+                  payload: {
+                    type: "chart",
+                    symbol: dataState.headerPin[1].toUpperCase(),
+                    TimeFrame: "5",
+                  },
                 });
               }}
             >
-              etherium
+              {dataState.headerPin[1].toUpperCase()}
             </div>
             <div>
               {parseFloat(
@@ -101,11 +97,13 @@ function Header({ data, setData }: IHeader) {
                 <div
                   className={
                     "cursor-pointer select-none px-[15px] text-center hover:text-[#ff5722] " +
-                    (data.rightSideData.type === x ? "text-[#ff5722]" : "")
+                    (dataState.rightSideData.type === x ? "text-[#ff5722]" : "")
                   }
                   onClick={() => {
-                    const newData = { ...data, rightSideData: { type: x } };
-                    setData(newData);
+                    dataDispatch({
+                      type: "update_rightHandSide",
+                      payload: { type: x },
+                    });
                   }}
                   key={x}
                 >
@@ -123,7 +121,9 @@ function Header({ data, setData }: IHeader) {
                 src="https://img.icons8.com/material-outlined/24/filled-appointment-reminders.png"
                 alt="filled-appointment-reminders"
               />
-              <div className="cursor-pointer text-center">#gtdc546</div>
+              <div className="cursor-pointer text-center">
+                #{dataState.userDetails?.name}
+              </div>
             </div>
           </div>
         </div>

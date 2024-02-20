@@ -1,11 +1,12 @@
 import { useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import type { Options } from "react-use-websocket";
+import { Twsbinance } from "../_components/WatchList/symbolInWL";
 
 export const useSocket = (
   url: string,
   opt: Options,
-): [(payload: string) => void, MessageEvent<string> | null] => {
+): [(payload: Twsbinance) => void, MessageEvent<string> | null] => {
   //   const socketRef = useRef<WebSocket>(new WebSocket(url)); // Changed to allow initialization to
   const { sendMessage, lastMessage, readyState } = useWebSocket(url, {
     ...opt,
@@ -29,13 +30,17 @@ export const useSocket = (
 
   const [messageQ, setMessageQ] = useState<string[]>([]);
 
-  const socketSend = (payload: string) => {
-    if (connectionStatus === "Open") {
-      console.log(payload);
+  const socketSend = (payload: Twsbinance) => {
+    if (payload.params.length === 0) return;
+    const Spayload = JSON.stringify(payload);
+    if (messageQ.includes(Spayload)) return;
 
-      sendMessage(payload);
+    if (connectionStatus === "Open") {
+      console.log(Spayload);
+
+      sendMessage(Spayload);
     } else {
-      setMessageQ((prevMessageQ) => [...prevMessageQ, payload]);
+      setMessageQ((prevMessageQ) => [...prevMessageQ, Spayload]);
     }
   };
 

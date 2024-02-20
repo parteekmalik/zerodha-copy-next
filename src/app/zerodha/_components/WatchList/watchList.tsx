@@ -1,20 +1,15 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { Tdata } from "../../page";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { TorderForm } from "../OrderForm/orderForm";
 import { shadowBox } from "../tcss";
 import SymbolInWL from "./symbolInWL";
 import WatchlistBittom from "./watchlistBittom";
+import DataContext from "../../_contexts/data/data";
 
-export interface IWatchList {
-  data: Tsymbol[][];
-  setData : Dispatch<SetStateAction<Tdata>>
-  setFormData :Dispatch<SetStateAction<TorderForm>>
-}
-export type Tsymbol = { name: string;  };
+export type Tsymbol = string;
 
-function WatchList({ data: list ,setData,setFormData }: IWatchList) {
+function WatchList() {
   const [watchListNo, setWatchListNo] = useState(0);
-  
+  const list = useContext(DataContext).dataState.watchList;
 
   return (
     <div className={"flex w-[430px] flex-col bg-white" + shadowBox}>
@@ -23,7 +18,7 @@ function WatchList({ data: list ,setData,setFormData }: IWatchList) {
           <SearchIcon />
         </div>
         <input
-          className="grow px-2 text-sm boarder-[0px] focus:outline-0"
+          className="boarder-[0px] grow px-2 text-sm focus:outline-0"
           type="text"
           autoComplete="off"
           autoCorrect="off"
@@ -33,7 +28,7 @@ function WatchList({ data: list ,setData,setFormData }: IWatchList) {
           {list[watchListNo] ? list[watchListNo]?.length : 0} / 50
         </div>
       </div>
-      <SymbolInWL list={list[watchListNo]} setData={setData}  setFormData={setFormData} />
+      <SymbolInWL list={list[watchListNo]}  />
       <WatchlistBittom
         watchListNo={watchListNo}
         setWatchListNo={setWatchListNo}
