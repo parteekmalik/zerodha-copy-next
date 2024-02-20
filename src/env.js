@@ -1,5 +1,13 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
+const dbTypeSchema = z.union([
+  z.literal("sqlserver"),
+  z.literal("cockroachdb"),
+  z.literal("mongodb"),
+  z.literal("mysql"),
+  z.literal("postgresql"),
+  z.literal("sqlite"),
+]);
 
 export const env = createEnv({
   /**
@@ -7,7 +15,7 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    DATABASE_TYPE: z.string(),
+    DATABASE_TYPE: dbTypeSchema.default("sqlite"),
     DATABASE_URL: z
       .string()
       .url()
