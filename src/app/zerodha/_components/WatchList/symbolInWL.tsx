@@ -89,81 +89,6 @@ function SymbolInWL({ list }: ISymbolInWL) {
                 </>
               );
             }
-            const hiddendata: {
-              bgcolor: string;
-              text_color: string;
-              text: string;
-              payload: null | IdataContextActions;
-            }[] = [
-              {
-                bgcolor: "bg-[#4184f3]",
-                text_color: "text-white",
-                text: "B",
-                payload: {
-                  type: "update_FormData",
-                  payload: {
-                    ...dataState.FormData,
-                    isvisible: true,
-                    oderdetails: {
-                      ...dataState.FormData.oderdetails,
-                      orderType: "BUY",
-                    },
-                    symbol: symbolName,
-                    orderType: "MARKET",
-                  },
-                },
-              },
-              {
-                text_color: "text-white",
-                bgcolor: "bg-[#ff5722]",
-
-                text: "S",
-                payload: {
-                  type: "update_FormData",
-                  payload: {
-                    ...dataState.FormData,
-                    isvisible: true,
-                    oderdetails: {
-                      ...dataState.FormData.oderdetails,
-                      orderType: "SELL",
-                    },
-                    symbol: symbolName,
-                    orderType: "MARKET",
-                  },
-                },
-              },
-              {
-                text_color: "text-black",
-                bgcolor: " bg-white",
-                text: "d",
-                payload: null,
-              },
-              {
-                text_color: " text-black",
-                bgcolor: " bg-white",
-                text: "C",
-                payload: {
-                  type: "update_rightHandSide",
-                  payload: {
-                    type: "chart",
-                    symbol: symbolName,
-                    TimeFrame: "5",
-                  },
-                },
-              },
-              {
-                text_color: " text-black",
-                bgcolor: " bg-white",
-                text: "D",
-                payload: null,
-              },
-              {
-                text_color: " text-black",
-                bgcolor: " bg-white",
-                text: "O",
-                payload: null,
-              },
-            ];
 
             return (
               <div
@@ -176,7 +101,7 @@ function SymbolInWL({ list }: ISymbolInWL) {
               >
                 <BaseSymbolLayout />
                 <div className=" invisible absolute right-0 top-0 flex h-full gap-2 p-[8px_15px_8px_2px] text-white group-hover/item:visible">
-                  <HiddenLayout data={hiddendata} />
+                  <HiddenLayout symbolName={symbolName} />
                 </div>
               </div>
             );
@@ -185,19 +110,86 @@ function SymbolInWL({ list }: ISymbolInWL) {
     </div>
   );
 }
-function HiddenLayout(prop: {
-  data: {
-    bgcolor: string;
-    text: string;
-    text_color: string;
-    payload: null | IdataContextActions;
-  }[];
-}) {
+function HiddenLayout({ symbolName }: { symbolName: string }) {
   const { dataDispatch, dataState } = useContext(DataContext);
+  const hiddendata: {
+    bgcolor: string;
+    text_color: string;
+    text: string;
+    payload: null | IdataContextActions;
+  }[] = [
+    {
+      bgcolor: "bg-[#4184f3]",
+      text_color: "text-white",
+      text: "B",
+      payload: {
+        type: "update_FormData",
+        payload: {
+          ...dataState.FormData,
+          isvisible: true,
+          oderdetails: {
+            ...dataState.FormData.oderdetails,
+            orderType: "BUY",
+          },
+          symbol: symbolName,
+          orderType: "MARKET",
+        },
+      },
+    },
+    {
+      text_color: "text-white",
+      bgcolor: "bg-[#ff5722]",
 
+      text: "S",
+      payload: {
+        type: "update_FormData",
+        payload: {
+          ...dataState.FormData,
+          isvisible: true,
+          oderdetails: {
+            ...dataState.FormData.oderdetails,
+            orderType: "SELL",
+          },
+          symbol: symbolName,
+          orderType: "MARKET",
+        },
+      },
+    },
+    {
+      text_color: "text-black",
+      bgcolor: " bg-white",
+      text: "d",
+      payload: null,
+    },
+    {
+      text_color: " text-black",
+      bgcolor: " bg-white",
+      text: "C",
+      payload: {
+        type: "update_rightHandSide",
+        payload: {
+          type: "chart",
+          symbol: symbolName,
+          TimeFrame: "5",
+        },
+      },
+    },
+    {
+      text_color: " text-black",
+      bgcolor: " bg-white",
+      text: "D",
+      payload: null,
+    },
+    {
+      text_color: " text-black",
+      bgcolor: " bg-white",
+      text: "O",
+      payload: null,
+    },
+  ];
   return (
     <>
-      {prop.data.map(({ payload, text_color, bgcolor, text }) => {
+      {hiddendata.map(({ payload, text_color, bgcolor, text }) => {
         return (
           <div
             className={`h-full w-[35px] cursor-pointer rounded  p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color}`}
