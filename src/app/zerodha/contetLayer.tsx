@@ -13,10 +13,10 @@ interface IHome {
 }
 export default function ContextLayer() {
   return (
-    <SymbolLiveContextComponent>
-      <DataContextComponent>
+    <DataContextComponent>
+      <SymbolLiveContextComponent>
         <Home />
-      </DataContextComponent>
-    </SymbolLiveContextComponent>
+      </SymbolLiveContextComponent>
+    </DataContextComponent>
   );
 }

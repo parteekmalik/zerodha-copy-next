@@ -37,10 +37,15 @@ export const accountInfoRouter = createTRPCRouter({
       })
     )?.Taccounts[0]?.watchList;
 
-    const watchlistFinal: string[][] = [[]];
+    const watchlistFinal: string[][] = [];
     watchlist?.map((symbol) => {
-      watchlistFinal.push(symbol.split(" "));
+      watchlistFinal.push(
+        symbol.split(" ").filter((x) => {
+          if (x !== "") return x;
+        }),
+      );
     });
+    console.log(watchlistFinal);
     return watchlistFinal;
   }),
   updateWatchList: protectedProcedure
@@ -56,18 +61,11 @@ export const accountInfoRouter = createTRPCRouter({
         select: { Taccounts: { select: { watchList: true, id: true } } },
       });
       const tradingAccountId = details?.Taccounts[0]?.id;
-      const watchList = details?.Taccounts[0]?.watchList ?? [
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-      ];
+      const watchList =
+        details?.Taccounts[0]?.watchList ?? (Array(7).fill("") as string[]);
 
+      console.log(watchList, input);
       watchList[input.row] = input.name;
-
       const res = (
         await ctx.db.tradingAccount.update({
           where: { id: tradingAccountId },
@@ -76,8 +74,13 @@ export const accountInfoRouter = createTRPCRouter({
       ).watchList;
       const watchlistFinal: string[][] = [];
       res?.map((symbol) => {
-        watchlistFinal.push(symbol.split(" "));
+        watchlistFinal.push(
+          symbol.split(" ").filter((x) => {
+            if (x !== "") return x;
+          }),
+        );
       });
+      console.log(watchlistFinal);
       return watchlistFinal;
     }),
 });
