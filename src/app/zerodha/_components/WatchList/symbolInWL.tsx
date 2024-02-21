@@ -3,6 +3,7 @@ import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
 import DataContext from "../../_contexts/data/data";
 import { parsePrice } from "../../utils";
 import type { Tsymbol } from "./watchList";
+import { IdataContextActions } from "../../_contexts/data/dataReduer";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
 export type Twsbinance = {
@@ -88,25 +89,28 @@ function SymbolInWL({ list }: ISymbolInWL) {
                 </>
               );
             }
-            const hiddendata = [
+            const hiddendata: {
+              bgcolor: string;
+              text_color: string;
+              text: string;
+              payload: null | IdataContextActions;
+            }[] = [
               {
                 bgcolor: "bg-[#4184f3]",
                 text_color: "text-white",
                 text: "B",
-                clickHandle: () => {
-                  dataDispatch({
-                    type: "update_FormData",
-                    payload: {
-                      ...dataState.FormData,
-                      isvisible: true,
-                      oderdetails: {
-                        ...dataState.FormData.oderdetails,
-                        orderType: "BUY",
-                      },
-                      symbol: symbolName,
-                      orderType: "MARKET",
+                payload: {
+                  type: "update_FormData",
+                  payload: {
+                    ...dataState.FormData,
+                    isvisible: true,
+                    oderdetails: {
+                      ...dataState.FormData.oderdetails,
+                      orderType: "BUY",
                     },
-                  });
+                    symbol: symbolName,
+                    orderType: "MARKET",
+                  },
                 },
               },
               {
@@ -114,88 +118,53 @@ function SymbolInWL({ list }: ISymbolInWL) {
                 bgcolor: "bg-[#ff5722]",
 
                 text: "S",
-                clickHandle: () => {
-                  dataDispatch({
-                    type: "update_FormData",
-                    payload: {
-                      ...dataState.FormData,
-                      isvisible: true,
-                      oderdetails: {
-                        ...dataState.FormData.oderdetails,
-                        orderType: "SELL",
-                      },
-                      symbol: symbolName,
-                      orderType: "MARKET",
+                payload: {
+                  type: "update_FormData",
+                  payload: {
+                    ...dataState.FormData,
+                    isvisible: true,
+                    oderdetails: {
+                      ...dataState.FormData.oderdetails,
+                      orderType: "SELL",
                     },
-                  });
+                    symbol: symbolName,
+                    orderType: "MARKET",
+                  },
                 },
               },
               {
                 text_color: "text-black",
                 bgcolor: " bg-white",
                 text: "d",
-                clickHandle: () => {
-                  console.log("dumy function ");
-                },
+                payload: null,
               },
               {
                 text_color: " text-black",
                 bgcolor: " bg-white",
                 text: "C",
-                clickHandle: () => {
-                  dataDispatch({
-                    type: "update_rightHandSide",
-                    payload: {
-                      type: "chart",
-                      symbol: symbolName,
-                      TimeFrame: "5",
-                    },
-                  });
+                payload: {
+                  type: "update_rightHandSide",
+                  payload: {
+                    type: "chart",
+                    symbol: symbolName,
+                    TimeFrame: "5",
+                  },
                 },
               },
               {
                 text_color: " text-black",
                 bgcolor: " bg-white",
                 text: "D",
-                clickHandle: () => {
-                  console.log("dumy function ");
-                },
+                payload: null,
               },
               {
                 text_color: " text-black",
                 bgcolor: " bg-white",
                 text: "O",
-                clickHandle: () => {
-                  console.log("dumy function ");
-                },
+                payload: null,
               },
             ];
-            function HiddenLayout(prop: {
-              data: {
-                bgcolor: string;
-                text: string;
-                text_color: string;
-                clickHandle: () => void;
-              }[];
-            }) {
-              return (
-                <>
-                  {prop.data.map(
-                    ({ clickHandle, text_color, bgcolor, text }) => {
-                      return (
-                        <div
-                          className={`h-full w-[35px] cursor-pointer rounded  p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color}`}
-                          key={"hiddenitems" + text}
-                          onClick={clickHandle}
-                        >
-                          {text}
-                        </div>
-                      );
-                    },
-                  )}
-                </>
-              );
-            }
+
             return (
               <div
                 className={
@@ -216,7 +185,34 @@ function SymbolInWL({ list }: ISymbolInWL) {
     </div>
   );
 }
+function HiddenLayout(prop: {
+  data: {
+    bgcolor: string;
+    text: string;
+    text_color: string;
+    payload: null | IdataContextActions;
+  }[];
+}) {
+  const { dataDispatch, dataState } = useContext(DataContext);
 
+  return (
+    <>
+      {prop.data.map(({ payload, text_color, bgcolor, text }) => {
+        return (
+          <div
+            className={`h-full w-[35px] cursor-pointer rounded  p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color}`}
+            key={"hiddenitems" + text}
+            onMouseUp={() => {
+              if (payload) dataDispatch(payload);
+            }}
+          >
+            {text}
+          </div>
+        );
+      })}
+    </>
+  );
+}
 export default SymbolInWL;
 
 const getColor = (diff: number) => {
