@@ -4,6 +4,25 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const accountInfoRouter = createTRPCRouter({
   info: protectedProcedure.query(async ({ ctx, input }) => {
+    const Taccounts = (
+      await ctx.db.user.findFirst({
+        where: { name: ctx.session.user.name },
+        select: {
+          Taccounts: true,
+        },
+      })
+    )?.Taccounts;
+    console.log(" trading account -> ", Taccounts);
+
+    if (!Taccounts || Taccounts?.length === 0) {
+      const res = await ctx.db.tradingAccount.create({
+        data: {
+          User: { connect: { id: ctx.session.user.id } },
+        },
+      });
+      console.log("created new trading account -> ", res);
+    }
+    // return Taccounts;
     return ctx.session.user;
   }),
   watchList: protectedProcedure.query(async ({ ctx, input }) => {
