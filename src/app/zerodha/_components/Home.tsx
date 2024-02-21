@@ -14,7 +14,7 @@ interface IHome {
   userDetails: TuserDetails;
 }
 export default function Home() {
-  const { dataDispatch } = useContext(DataContext);
+  const { dataDispatch, dataState } = useContext(DataContext);
 
   const watchlist = api.accountInfo.watchList.useQuery().data ?? [];
   const userInfo = api.accountInfo.info.useQuery().data ?? {
@@ -24,9 +24,12 @@ export default function Home() {
     id: "not_found",
   };
   useEffect(() => {
-    if (userInfo.id !== "not_found")
+    if (
+      userInfo.id !== "not_found" &&
+      dataState.userDetails?.id === "not_found"
+    )
       dataDispatch({ type: "update_userDetails", payload: userInfo });
-    if (watchlist.length !== 0)
+    if (watchlist.length !== 0 && dataState.watchList.length === 0)
       dataDispatch({ type: "update_watchList", payload: watchlist });
   }, [watchlist, userInfo]);
 

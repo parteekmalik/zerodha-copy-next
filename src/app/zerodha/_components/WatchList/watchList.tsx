@@ -1,16 +1,30 @@
-import { Dispatch, SetStateAction, useContext, useState } from "react";
-import { TorderForm } from "../OrderForm/orderForm";
+import { KeyboardEvent, useContext, useState } from "react";
+import DataContext from "../../_contexts/data/data";
 import { shadowBox } from "../tcss";
 import SymbolInWL from "./symbolInWL";
 import WatchlistBittom from "./watchlistBittom";
-import DataContext from "../../_contexts/data/data";
+import { api } from "~/trpc/react";
 
 export type Tsymbol = string;
 
 function WatchList() {
   const [watchListNo, setWatchListNo] = useState(0);
+  const [search, setSearch] = useState("");
   const list = useContext(DataContext).dataState.watchList;
+  const { dataDispatch } = useContext(DataContext);
 
+  const updateWatchList = api.accountInfo.updateWatchList.useMutation({
+    onSuccess: async (data) => {
+      dataDispatch({ type: "update_watchList", payload: data });
+      setSearch("");
+    },
+  });
+
+  const handleEnter = async (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      updateWatchList.mutate({ name: search, row: watchListNo });
+    }
+  };
   return (
     <div className={"flex w-[430px] flex-col bg-white" + shadowBox}>
       <div className="flex min-w-[0px] items-center justify-center border-b p-3">
@@ -22,13 +36,17 @@ function WatchList() {
           type="text"
           autoComplete="off"
           autoCorrect="off"
+          spellCheck="false"
           placeholder="Search eg: infy bse, nifty fut, nifty weekly, gold mcx"
+          onKeyDown={handleEnter}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
         <div className="text-[#cccccc]">
           {list[watchListNo] ? list[watchListNo]?.length : 0} / 50
         </div>
       </div>
-      <SymbolInWL list={list[watchListNo]}  />
+      <SymbolInWL list={list[watchListNo]} />
       <WatchlistBittom
         watchListNo={watchListNo}
         setWatchListNo={setWatchListNo}

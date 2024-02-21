@@ -24,7 +24,7 @@ function Header() {
   const { dataDispatch, dataState } = useContext(DataContext);
 
   useEffect(() => {
-    const msg:Twsbinance = {
+    const msg: Twsbinance = {
       method: "SUBSCRIBE",
       params: [
         dataState.headerPin[0] + "@ticker",
@@ -121,8 +121,9 @@ function Header() {
                 src="https://img.icons8.com/material-outlined/24/filled-appointment-reminders.png"
                 alt="filled-appointment-reminders"
               />
-              <div className="cursor-pointer text-center">
-                #{dataState.userDetails?.name}
+              <div className="flex cursor-pointer text-center">
+                <img src={dataState.userDetails?.image ?? ""}></img>
+                <div>#{dataState.userDetails?.name}</div>
               </div>
             </div>
           </div>
