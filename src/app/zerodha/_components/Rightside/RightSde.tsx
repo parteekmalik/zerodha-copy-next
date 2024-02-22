@@ -21,7 +21,12 @@ function RightSide() {
       return <Dashboard />;
     }
     default:
-      return <div>{JSON.stringify(symbolLiveState)}</div>;
+      return (
+        <div>
+          <div>{JSON.stringify(symbolLiveState.Livestream)}</div>
+          <div>{JSON.stringify(Object.keys(symbolLiveState.symbolsList))}</div>
+        </div>
+      );
   }
 }
 

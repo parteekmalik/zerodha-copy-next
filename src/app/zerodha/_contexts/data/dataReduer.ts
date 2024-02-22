@@ -1,5 +1,6 @@
-import { TorderForm } from "../../_components/OrderForm/orderForm";
-import { IdataContextState, TrightSideType, TuserDetails } from "./data";
+import type { TorderForm } from "../../_components/OrderForm/orderForm";
+import type { IdataContextState, TuserDetails } from "./data";
+import type { TrightSideType } from "./data";
 
 export type IdataContextActions =
   | {

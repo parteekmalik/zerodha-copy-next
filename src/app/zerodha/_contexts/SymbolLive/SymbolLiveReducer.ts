@@ -1,12 +1,14 @@
-import type {
-  IsymbolLiveContextState,
-  Tlast24hr
-} from "./SymbolLive";
+import type { IsymbolLiveContextState, Tlast24hr } from "./SymbolLive";
+import type { TsymbolTypes } from "./SymbolLiveContextComponent";
 
 export type IsymbolLiveContextActions =
   | {
       type: "update_symbol";
       payload: Tlast24hr;
+    }
+  | {
+      type: "update_symbolList";
+      payload: TsymbolTypes[];
     }
   | {
       type: "update_last_symbol";
@@ -27,17 +29,25 @@ export const symbolLiveReducer = (
   }
   switch (Atype) {
     case "update_symbol": {
-      const updatesState = { ...state };
+      const Livestream = { ...state.Livestream };
       const isup = (curent: string, prev: string | undefined): boolean => {
         if (!prev) return true;
         return parseFloat(curent) >= parseFloat(prev);
       };
 
-      updatesState[payload.s] = {
+      Livestream[payload.s] = {
         ...payload,
-        m: isup(payload.c, updatesState[payload.s]?.c),
+        m: isup(payload.c, Livestream[payload.s]?.c),
       };
-      return updatesState;
+      return { ...state, Livestream };
+    }
+    case "update_symbolList": {
+      const symbolsList = { ...state.symbolsList };
+      payload.map((x) => {
+        symbolsList[x.symbol] = x;
+      });
+
+      return { ...state, symbolsList };
     }
     default:
       return state;

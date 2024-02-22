@@ -45,8 +45,8 @@ function OrderForm() {
     tp: false,
   });
 
-  const disableimage =
-    "data:image/svg+xml;charset=utf-8,%3Csvg width='6' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 0h1L0 6V5zm1 5v1H5z' fill='%23ddd' fill-rule='evenodd'/%3E%3C/svg%3E";
+  // const disableimage =
+  //   "data:image/svg+xml;charset=utf-8,%3Csvg width='6' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 0h1L0 6V5zm1 5v1H5z' fill='%23ddd' fill-rule='evenodd'/%3E%3C/svg%3E";
 
   const sendOrder = api.order.createOrder.useMutation({});
   function handleSubmit(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -177,7 +177,7 @@ function OrderForm() {
             <div className="m-2">
               <CheckBox
                 data={{ isSelected: state.sl, type: "SL" }}
-                clickHandler={(e) => {
+                clickHandler={() => {
                   setState((prev) => {
                     return { ...prev, sl: !prev.sl };
                   });
@@ -208,7 +208,7 @@ function OrderForm() {
             <div className="m-2">
               <CheckBox
                 data={{ isSelected: state.tp, type: "TP" }}
-                clickHandler={(e) => {
+                clickHandler={() => {
                   setState((prev) => {
                     return { ...prev, tp: !prev.tp };
                   });
@@ -239,7 +239,7 @@ function OrderForm() {
           </div>
           <div
             className="cursor-pointer border border-[#444444] bg-white p-[8px_12px] text-[#444444] hover:bg-[#444444] hover:text-white"
-            onClick={(e) =>
+            onClick={() =>
               dataDispatch({
                 type: "update_FormData",
                 payload: {

@@ -1,4 +1,5 @@
-import { KeyboardEvent, useContext, useState } from "react";
+import { useContext, useState } from "react";
+import type { KeyboardEvent } from "react";
 import DataContext from "../../_contexts/data/data";
 import { shadowBox } from "../tcss";
 import SymbolInWL from "./symbolInWL";
@@ -46,7 +47,7 @@ function WatchList() {
           {list[watchListNo] ? list[watchListNo]?.length : 0} / 50
         </div>
       </div>
-      <SymbolInWL list={list[watchListNo]} listNo={watchListNo}/>
+      <SymbolInWL list={list[watchListNo]} listNo={watchListNo} />
       <WatchlistBittom
         watchListNo={watchListNo}
         setWatchListNo={setWatchListNo}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import type { Options } from "react-use-websocket";
-import { Twsbinance } from "../_components/WatchList/symbolInWL";
+import type { Twsbinance } from "../_components/WatchList/symbolInWL";
 
 export const useSocket = (
   url: string,

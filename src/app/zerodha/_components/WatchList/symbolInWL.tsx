@@ -3,7 +3,7 @@ import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
 import DataContext from "../../_contexts/data/data";
 import { parsePrice } from "../../utils";
 import type { Tsymbol } from "./watchList";
-import { IdataContextActions } from "../../_contexts/data/dataReduer";
+import type { IdataContextActions } from "../../_contexts/data/dataReduer";
 import { api } from "~/trpc/react";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
@@ -19,7 +19,7 @@ interface ISymbolInWL {
 }
 function SymbolInWL({ list, listNo }: ISymbolInWL) {
   const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
-  const { dataDispatch, dataState } = useContext(DataContext);
+  // const { dataDispatch, dataState } = useContext(DataContext);
 
   useEffect(() => {
     if (!list) return;
@@ -50,7 +50,7 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
       {list
         ? list.map((symbol) => {
             const symbolName = symbol.toUpperCase();
-            const symbolLiveTemp = symbolLiveState[symbolName] ?? {
+            const symbolLiveTemp = symbolLiveState.Livestream[symbolName] ?? {
               m: true,
               c: "0",
               p: "0",

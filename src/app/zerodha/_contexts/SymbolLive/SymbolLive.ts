@@ -1,6 +1,7 @@
 import { createContext } from "react";
 import type { IsymbolLiveContextActions } from "./SymbolLiveReducer";
-import { Twsbinance } from "../../_components/WatchList/symbolInWL";
+import type { Twsbinance } from "../../_components/WatchList/symbolInWL";
+import type { TsymbolTypes } from "./SymbolLiveContextComponent";
 
 export type TsymbolTrade = {
   e: string;
@@ -41,9 +42,9 @@ export type Tlast24hr = {
   m: boolean;
   n: number;
 };
-export type IsymbolLiveContextState = Record<string, Tlast24hr>;
+export type IsymbolLiveContextState = {Livestream:Record<string, Tlast24hr>,symbolsList:Record<string, TsymbolTypes>};
 
-export const defaultsymbolLiveContextState = { };
+export const defaultsymbolLiveContextState = {Livestream:{},symbolsList:{} };
 export interface IsymbolLiveContextProps {
   symbolLiveState: IsymbolLiveContextState;
   symbolLiveDispatch: React.Dispatch<IsymbolLiveContextActions>;
