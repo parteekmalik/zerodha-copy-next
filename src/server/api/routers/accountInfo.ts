@@ -37,16 +37,7 @@ export const accountInfoRouter = createTRPCRouter({
       })
     )?.Taccounts[0]?.watchList;
 
-    const watchlistFinal: string[][] = [];
-    watchlist?.map((symbol) => {
-      watchlistFinal.push(
-        symbol.split(" ").filter((x) => {
-          if (x !== "") return x;
-        }),
-      );
-    });
-    console.log(watchlistFinal);
-    return watchlistFinal;
+    return convert1D_2D(watchlist ?? []);
   }),
   updateWatchList: protectedProcedure
     .input(
@@ -64,23 +55,60 @@ export const accountInfoRouter = createTRPCRouter({
       const watchList =
         details?.Taccounts[0]?.watchList ?? (Array(7).fill("") as string[]);
 
-      console.log(watchList, input);
-      watchList[input.row] = input.name;
+      watchList[input.row] += " " + input.name;
       const res = (
         await ctx.db.tradingAccount.update({
           where: { id: tradingAccountId },
           data: { watchList },
         })
       ).watchList;
-      const watchlistFinal: string[][] = [];
-      res?.map((symbol) => {
-        watchlistFinal.push(
-          symbol.split(" ").filter((x) => {
-            if (x !== "") return x;
-          }),
-        );
+
+      return convert1D_2D(res);
+    }),
+  deleteIteminWatchList: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        row: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const details = await ctx.db.user.findFirst({
+        where: { name: ctx.session.user.name },
+        select: { Taccounts: { select: { watchList: true, id: true } } },
       });
-      console.log(watchlistFinal);
-      return watchlistFinal;
+      const tradingAccountId = details?.Taccounts[0]?.id;
+      const watchList =
+        details?.Taccounts[0]?.watchList ?? (Array(7).fill("") as string[]);
+
+      console.log("before->", watchList, input);
+      watchList[input.row] = (watchList[input.row] ?? "")
+        ?.split(" ")
+        .filter((x) => {
+          if (x !== input.name.toLowerCase()) return x;
+        })
+        .join(" ");
+      console.log("after->", watchList, input);
+
+      const res = (
+        await ctx.db.tradingAccount.update({
+          where: { id: tradingAccountId },
+          data: { watchList },
+        })
+      ).watchList;
+
+      return convert1D_2D(res);
     }),
 });
+function convert1D_2D(input: string[]): string[][] {
+  const watchlistFinal: string[][] = [];
+  input?.map((symbol) => {
+    watchlistFinal.push(
+      symbol.split(" ").filter((x) => {
+        if (x !== "") return x;
+      }),
+    );
+  });
+  console.log(watchlistFinal);
+  return watchlistFinal;
+}

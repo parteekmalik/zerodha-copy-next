@@ -1,26 +1,23 @@
 import { z } from "zod";
+import { TorderForm } from "~/app/zerodha/_components/OrderForm/orderForm";
 
-import {
-  createTRPCRouter,
-  protectedProcedure
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const orderRouter = createTRPCRouter({
-  create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      return ctx.db.post.create({
-        data: {
-          name: input.name,
-          createdBy: { connect: { id: ctx.session.user.id } },
-        },
-      });
-    }),
   createOrder: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(
+      z.object({
+        orderType: z.enum(["BUY", "SELL"]),
+        quantity: z.number().min(0.0001),
+        price: z.number(),
+        sl: z.number(),
+        tp: z.number(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       //   return ctx.db.$transaction([
       //     ctx.db.
       //   ]);
+      console.log("order recieved");
     }),
 });

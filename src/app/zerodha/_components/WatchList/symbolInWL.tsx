@@ -4,6 +4,7 @@ import DataContext from "../../_contexts/data/data";
 import { parsePrice } from "../../utils";
 import type { Tsymbol } from "./watchList";
 import { IdataContextActions } from "../../_contexts/data/dataReduer";
+import { api } from "~/trpc/react";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
 export type Twsbinance = {
@@ -14,8 +15,9 @@ export type Twsbinance = {
 
 interface ISymbolInWL {
   list: Tsymbol[] | undefined;
+  listNo: number;
 }
-function SymbolInWL({ list }: ISymbolInWL) {
+function SymbolInWL({ list, listNo }: ISymbolInWL) {
   const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
   const { dataDispatch, dataState } = useContext(DataContext);
 
@@ -101,7 +103,7 @@ function SymbolInWL({ list }: ISymbolInWL) {
               >
                 <BaseSymbolLayout />
                 <div className=" invisible absolute right-0 top-0 flex h-full gap-2 p-[8px_15px_8px_2px] text-white group-hover/item:visible">
-                  <HiddenLayout symbolName={symbolName} />
+                  <HiddenLayout symbolName={symbolName} listNo={listNo} />
                 </div>
               </div>
             );
@@ -110,13 +112,19 @@ function SymbolInWL({ list }: ISymbolInWL) {
     </div>
   );
 }
-function HiddenLayout({ symbolName }: { symbolName: string }) {
+function HiddenLayout({
+  symbolName,
+  listNo,
+}: {
+  symbolName: string;
+  listNo: number;
+}) {
   const { dataDispatch, dataState } = useContext(DataContext);
   const hiddendata: {
     bgcolor: string;
     text_color: string;
     text: string;
-    payload: null | IdataContextActions;
+    payload: null | IdataContextActions | { type: "delete_watchListItem" };
   }[] = [
     {
       bgcolor: "bg-[#4184f3]",
@@ -178,7 +186,7 @@ function HiddenLayout({ symbolName }: { symbolName: string }) {
       text_color: " text-black",
       bgcolor: " bg-white",
       text: "D",
-      payload: null,
+      payload: { type: "delete_watchListItem" },
     },
     {
       text_color: " text-black",
@@ -187,6 +195,11 @@ function HiddenLayout({ symbolName }: { symbolName: string }) {
       payload: null,
     },
   ];
+  const deleteApi = api.accountInfo.deleteIteminWatchList.useMutation({
+    onSuccess: async (data) => {
+      dataDispatch({ type: "update_watchList", payload: data });
+    },
+  });
   return (
     <>
       {hiddendata.map(({ payload, text_color, bgcolor, text }) => {
@@ -195,7 +208,11 @@ function HiddenLayout({ symbolName }: { symbolName: string }) {
             className={`h-full w-[35px] cursor-pointer rounded  p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color}`}
             key={"hiddenitems" + text}
             onMouseUp={() => {
-              if (payload) dataDispatch(payload);
+              if (payload && payload.type !== "delete_watchListItem")
+                dataDispatch(payload);
+              else {
+                deleteApi.mutate({ name: symbolName, row: listNo });
+              }
             }}
           >
             {text}

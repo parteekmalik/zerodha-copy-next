@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import DataContext from "../../_contexts/data/data";
 import InputDiv from "./InputDiv";
 import OrderTypeDiv, { CheckBox } from "./OrderTypeDiv";
+import { api } from "~/trpc/react";
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
 export type TorderForm = {
@@ -46,9 +47,19 @@ function OrderForm() {
 
   const disableimage =
     "data:image/svg+xml;charset=utf-8,%3Csvg width='6' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 0h1L0 6V5zm1 5v1H5z' fill='%23ddd' fill-rule='evenodd'/%3E%3C/svg%3E";
+
+  const sendOrder = api.order.createOrder.useMutation({});
   function handleSubmit(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     console.log("send order");
     e.preventDefault();
+    sendOrder.mutate(data.oderdetails);
+    dataDispatch({
+      type: "update_FormData",
+      payload: {
+        ...data,
+        isvisible: false,
+      },
+    });
   }
   // useEffect(() => {
   //   console.log(data);

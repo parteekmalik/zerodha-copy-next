@@ -46,7 +46,7 @@ function WatchList() {
           {list[watchListNo] ? list[watchListNo]?.length : 0} / 50
         </div>
       </div>
-      <SymbolInWL list={list[watchListNo]} />
+      <SymbolInWL list={list[watchListNo]} listNo={watchListNo}/>
       <WatchlistBittom
         watchListNo={watchListNo}
         setWatchListNo={setWatchListNo}

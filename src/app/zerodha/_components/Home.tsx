@@ -1,13 +1,12 @@
 "use client";
 import { useContext, useEffect } from "react";
+import { api } from "~/trpc/react";
 import type { TuserDetails } from "../_contexts/data/data";
 import DataContext from "../_contexts/data/data";
 import OrderForm from "./OrderForm/orderForm";
 import RightSide from "./Rightside/RightSde";
 import WatchList from "./WatchList/watchList";
-import Debugdata from "./debugdata";
 import Header from "./hearder";
-import { api } from "~/trpc/react";
 
 interface IHome {
   watchlist: string[][];
@@ -43,7 +42,7 @@ export default function Home() {
           <RightSide />
         </div>
       </div>
-      <Debugdata />
+      <div>{JSON.stringify(dataState)}</div>
       <OrderForm />
     </main>
   );
