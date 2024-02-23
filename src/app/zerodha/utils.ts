@@ -18,15 +18,19 @@ export const parsePrice = (price: string | undefined) => {
 };
 export function searchAndSort(searchTerm: string, array: string[]): string[] {
   searchTerm = searchTerm.toUpperCase();
-  return array
-    .filter((item) => {
-      for (let i = 0; i < item.length - searchTerm.length; i++) {
-        if (item.slice(i, searchTerm.length) === searchTerm) {
-          // console.log(item);
-          return true;
-        }
+  const ranking: Record<number, string> = {};
+  let rankinglist: string[] = [];
+  array.filter((item) => {
+    for (let i = 0; i < item.length - searchTerm.length; i++) {
+      if (item.slice(i, i + searchTerm.length) === searchTerm) {
+        if (ranking[i]) ranking[i] += " " + item;
+        else ranking[i] = item;
+        return item;
       }
-    })
-    .slice(0, 20)
-    .sort();
+    }
+  });
+  Object.keys(ranking).map((key) => {
+    rankinglist = [...rankinglist, ...(ranking[Number(key)]?.split(" ") ?? [])];
+  });
+  return rankinglist.slice(0, 20);
 }
