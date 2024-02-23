@@ -1,5 +1,5 @@
+import { JSONType } from "../../symbolname";
 import type { IsymbolLiveContextState, Tlast24hr } from "./SymbolLive";
-import type { TsymbolTypes } from "./SymbolLiveContextComponent";
 
 export type IsymbolLiveContextActions =
   | {
@@ -8,14 +8,14 @@ export type IsymbolLiveContextActions =
     }
   | {
       type: "update_symbolList";
-      payload: TsymbolTypes[];
+      payload: JSONType[];
     }
   | {
       type: "update_last_symbol";
       payload: Tlast24hr;
     };
 
-const excludeType = ["update_symbol"];
+const excludeType = ["update_symbol","update_symbolList"];
 export const symbolLiveReducer = (
   state: IsymbolLiveContextState,
   action: IsymbolLiveContextActions,

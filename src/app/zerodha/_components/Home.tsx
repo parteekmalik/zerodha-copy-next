@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
       <Header />
-      <div className="text-red flex w-full max-w-[1536px] grow select-none ">
+      <div className="text-red flex w-full max-w-[1536px] grow overflow-hidden select-none ">
         <WatchList />
         <div className={" flex max-w-[1110px] grow"}>
           <RightSide />

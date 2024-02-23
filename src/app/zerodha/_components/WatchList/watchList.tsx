@@ -1,34 +1,65 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import type { KeyboardEvent } from "react";
 import DataContext from "../../_contexts/data/data";
 import { shadowBox } from "../tcss";
 import SymbolInWL from "./symbolInWL";
 import WatchlistBittom from "./watchlistBittom";
 import { api } from "~/trpc/react";
+import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
+import { searchAndSort } from "../../utils";
 
 export type Tsymbol = string;
 
 function WatchList() {
   const [watchListNo, setWatchListNo] = useState(0);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<{
+    data: string;
+    focus: boolean;
+    matchingSymbol: string[];
+  }>({
+    data: "",
+    focus: false,
+    matchingSymbol: [],
+  });
   const list = useContext(DataContext).dataState.watchList;
   const { dataDispatch } = useContext(DataContext);
 
   const updateWatchList = api.accountInfo.updateWatchList.useMutation({
     onSuccess: async (data) => {
       dataDispatch({ type: "update_watchList", payload: data });
-      setSearch("");
+      setSearch((prev) => {
+        return { ...prev, data: "", focus: false };
+      });
     },
   });
 
   const handleEnter = async (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      updateWatchList.mutate({ name: search, row: watchListNo });
+      updateWatchList.mutate({ name: search.data, row: watchListNo });
     }
   };
+  const { symbolLiveState } = useContext(SymbolLiveContext);
+
+  useEffect(() => {
+    const matchingSymbol = searchAndSort(
+      search.data,
+      Object.keys(symbolLiveState.symbolsList),
+    );
+    if (search.matchingSymbol.join("_") !== matchingSymbol.join("_"))
+      setSearch((prev) => {
+        return {
+          ...prev,
+          matchingSymbol,
+        };
+      });
+  }, [search]);
   return (
-    <div className={"flex w-[430px] flex-col bg-white" + shadowBox}>
-      <div className="flex min-w-[0px] items-center justify-center border-b p-3">
+    <div
+      className={
+        "flex h-full w-[430px] min-w-[430px] flex-col bg-white" + shadowBox
+      }
+    >
+      <div className=" flex min-h-[50px] min-w-[0px] items-center justify-center border-b p-3">
         <div className=" h-[15px] w-[15px]">
           <SearchIcon />
         </div>
@@ -40,19 +71,70 @@ function WatchList() {
           spellCheck="false"
           placeholder="Search eg: infy bse, nifty fut, nifty weekly, gold mcx"
           onKeyDown={handleEnter}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={search.data}
+          onChange={(e) =>
+            setSearch((prev) => {
+              return { ...prev, data: e.target.value };
+            })
+          }
+          onFocus={() =>
+            setSearch((prev) => {
+              return { ...prev, focus: true };
+            })
+          }
+          onBlur={() =>
+            setSearch((prev) => {
+              return { ...prev, focus: false };
+            })
+          }
         />
         <div className="text-[#cccccc]">
           {list[watchListNo] ? list[watchListNo]?.length : 0} / 50
         </div>
       </div>
-      <SymbolInWL list={list[watchListNo]} listNo={watchListNo} />
-      <WatchlistBittom
-        watchListNo={watchListNo}
-        setWatchListNo={setWatchListNo}
-      />
+      <div
+        className="relative flex h-full w-full flex-col"
+        style={{ maxHeight: "calc(100% - 100px)" }}
+      >
+        <div className="absolute z-10 h-[40vh]  w-full overflow-y-auto text-[.8125rem]    ">
+          {search.focus ? <SearchList list={search.matchingSymbol} /> : null}
+        </div>
+        <div className="flex grow flex-col overflow-y-auto    custom-scrollbar  scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-200">
+          <SymbolInWL list={list[watchListNo]} listNo={watchListNo} />
+        </div>
+      </div>
+      <div className="min-h-[50px]">
+        <WatchlistBittom
+          watchListNo={watchListNo}
+          setWatchListNo={setWatchListNo}
+        />
+      </div>
     </div>
+  );
+}
+function SearchList({ list }: { list: string[] }) {
+  const { symbolLiveState } = useContext(SymbolLiveContext);
+
+  return (
+    <>
+      {list.map((name, i) => {
+        return (
+          <div
+            className={
+              "flex w-full  p-[6px_15px] " +
+              (i === 0 ? " bg-[#f9f9f9]" : " bg-white")
+            }
+            key={"search" + name}
+          >
+            <div className="grow">
+              {name}
+              {i}
+            </div>
+            <div>{symbolLiveState.symbolsList[name]?.name}</div>
+          </div>
+        );
+      })}
+    </>
   );
 }
 const SearchIcon = () => {
@@ -69,4 +151,5 @@ const SearchIcon = () => {
     </svg>
   );
 };
+
 export default WatchList;

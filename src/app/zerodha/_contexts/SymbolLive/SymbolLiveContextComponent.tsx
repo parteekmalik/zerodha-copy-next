@@ -1,8 +1,8 @@
-import axios from "axios";
 import type { PropsWithChildren } from "react";
 import React, { useContext, useEffect, useReducer } from "react";
 import type { Twsbinance } from "../../_components/WatchList/symbolInWL";
 import { useSocket } from "../../_hooks/useWS";
+import { symbolList } from "../../symbolname";
 import DataContext from "../data/data";
 import type { Tlast24hr } from "./SymbolLive";
 import {
@@ -53,24 +53,30 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     defaultsymbolLiveContextState,
   );
 
+  function listToRecord<T>(list: T[], key: keyof T): Record<string, T> {
+    return list.reduce(
+      (record, item) => {
+        const keyValue = item[key];
+        if (keyValue !== undefined) {
+          record[String(keyValue)] = item;
+        }
+        return record;
+      },
+      {} as Record<string, T>,
+    );
+  }
+
   useEffect(() => {
-    async function updateList() {
-      return await axios
-        .get("https://api.binance.com/api/v3/exchangeInfo")
-        .then((data) => {
-          const symbols = (
-            data.data as { symbols: TsymbolTypes[] }
-          ).symbols.filter((s) => {
-            if (s.quoteAsset === "USDT" && s.status === "TRADING") return s;
-          });
-          return symbols;
-        });
+    console.log(
+      "record length ->",
+      Object.keys(symbolLiveState.symbolsList).length,
+    );
+    if (!Object.keys(symbolLiveState.symbolsList).length) {
+      symbolLiveDispatch({
+        type: "update_symbolList",
+        payload: symbolList,
+      });
     }
-    updateList()
-      .then((data) => {
-        symbolLiveDispatch({ type: "update_symbolList", payload: data });
-      })
-      .catch(() => console.log("failed to retieve symbolList"));
   }, []);
 
   return (
@@ -81,57 +87,5 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     </SymbolLiveContextProvider>
   );
 };
-export type TsymbolTypes = {
-  allowTrailingStop: boolean;
-  allowedSelfTradePreventionModes:
-    | "EXPIRE_TAKER"
-    | "EXPIRE_MAKER"
-    | "EXPIRE_BOTH";
-  baseAsset: string;
-  baseAssetPrecision: number;
-  baseCommissionPrecision: number;
-  cancelReplaceAllowed: boolean;
-  defaultSelfTradePreventionMode: string;
-  filters: [];
-  icebergAllowed: boolean;
-  isMarginTradingAllowed: boolean;
-  isSpotTradingAllowed: boolean;
-  ocoAllowed: boolean;
-  orderTypes:
-    | "LIMIT"
-    | "LIMIT_MAKER"
-    | "MARKET"
-    | "STOP_LOSS_LIMIT"
-    | "TAKE_PROFIT_LIMIT";
-  permissions:
-    | "SPOT"
-    | "MARGIN"
-    | "TRD_GRP_004"
-    | "TRD_GRP_005"
-    | "TRD_GRP_006"
-    | "TRD_GRP_009"
-    | "TRD_GRP_010"
-    | "TRD_GRP_011"
-    | "TRD_GRP_012"
-    | "TRD_GRP_013"
-    | "TRD_GRP_014"
-    | "TRD_GRP_015"
-    | "TRD_GRP_016"
-    | "TRD_GRP_017"
-    | "TRD_GRP_018"
-    | "TRD_GRP_019"
-    | "TRD_GRP_020"
-    | "TRD_GRP_021"
-    | "TRD_GRP_022"
-    | "TRD_GRP_023"
-    | "TRD_GRP_024"
-    | "TRD_GRP_025";
-  quoteAsset: string;
-  quoteAssetPrecision: number;
-  quoteCommissionPrecision: number;
-  quoteOrderQtyMarketAllowed: boolean;
-  quotePrecision: number;
-  status: "TRADING";
-  symbol: string;
-};
+
 export default SymbolLiveContextComponent;

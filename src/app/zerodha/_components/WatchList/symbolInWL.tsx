@@ -46,7 +46,7 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
     };
   }, [list]);
   return (
-    <div className="flex grow flex-col">
+    <>
       {list
         ? list.map((symbol) => {
             const symbolName = symbol.toUpperCase();
@@ -109,7 +109,8 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
             );
           })
         : null}
-    </div>
+    </>
+
   );
 }
 function HiddenLayout({

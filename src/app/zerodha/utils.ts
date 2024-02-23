@@ -16,3 +16,9 @@ export const parsePrice = (price: string | undefined) => {
   // return Number(parseFloat(price).toFixed(Math.max(2, count)));
   return Number(price);
 };
+export function searchAndSort(searchTerm: string, array: string[]): string[] {
+  return array
+    .filter((item) => item.includes(searchTerm.toUpperCase()))
+    .sort((a, b) => a.localeCompare(b))
+    .slice(0, 20);
+}
