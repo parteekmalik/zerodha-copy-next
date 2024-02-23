@@ -16,10 +16,12 @@ function WatchList() {
     data: string;
     focus: boolean;
     matchingSymbol: string[];
+    selected: number;
   }>({
     data: "",
     focus: false,
     matchingSymbol: [],
+    selected: 0,
   });
   const list = useContext(DataContext).dataState.watchList;
   const { dataDispatch } = useContext(DataContext);
@@ -35,24 +37,54 @@ function WatchList() {
 
   const handleEnter = async (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      updateWatchList.mutate({ name: search.data, row: watchListNo });
+      updateWatchList.mutate({
+        name: search.matchingSymbol[search.selected] ?? "dummy_string",
+        row: watchListNo,
+      });
+      e.currentTarget.blur();
     }
   };
   const { symbolLiveState } = useContext(SymbolLiveContext);
 
   useEffect(() => {
+    console.log(search);
     const matchingSymbol = searchAndSort(
       search.data,
       Object.keys(symbolLiveState.symbolsList),
     );
-    if (search.matchingSymbol.join("_") !== matchingSymbol.join("_"))
+    if (
+      search.matchingSymbol.join("_") !== matchingSymbol.join("_") &&
+      matchingSymbol.length > 0
+    )
       setSearch((prev) => {
         return {
           ...prev,
           matchingSymbol,
         };
       });
+    window.addEventListener("keydown", handleClickOutside);
+    return () => {
+      window.removeEventListener("keydown", handleClickOutside);
+    };
   }, [search]);
+  const handleClickOutside = (event: globalThis.KeyboardEvent) => {
+    if (event.key === "ArrowUp")
+      setSearch((prev) => ({
+        ...prev,
+        selected:
+          prev.selected === 0
+            ? prev.matchingSymbol.length - 1
+            : prev.selected - 1,
+      }));
+    else if (event.key === "ArrowDown")
+      setSearch((prev) => ({
+        ...prev,
+        selected:
+          prev.selected === prev.matchingSymbol.length - 1
+            ? 0
+            : prev.selected + 1,
+      }));
+  };
   return (
     <div
       className={
@@ -84,7 +116,7 @@ function WatchList() {
           }
           onBlur={() =>
             setSearch((prev) => {
-              return { ...prev, focus: false };
+              return { ...prev, focus: false, data: "" };
             })
           }
         />
@@ -96,10 +128,15 @@ function WatchList() {
         className="relative flex h-full w-full flex-col"
         style={{ maxHeight: "calc(100% - 100px)" }}
       >
-        <div className="absolute z-10 h-[40vh]  w-full overflow-y-auto text-[.8125rem]    ">
-          {search.focus ? <SearchList list={search.matchingSymbol} /> : null}
-        </div>
-        <div className="flex grow flex-col overflow-y-auto    custom-scrollbar  scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-200">
+        {search.focus ? (
+          <div className="absolute z-10 h-[40vh]  w-full overflow-y-auto text-[.8125rem]    ">
+            <SearchList
+              list={search.matchingSymbol}
+              selected={search.selected}
+            />
+          </div>
+        ) : null}
+        <div className="custom-scrollbar scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-200    flex  grow flex-col overflow-y-auto">
           <SymbolInWL list={list[watchListNo]} listNo={watchListNo} />
         </div>
       </div>
@@ -112,7 +149,7 @@ function WatchList() {
     </div>
   );
 }
-function SearchList({ list }: { list: string[] }) {
+function SearchList({ list, selected }: { list: string[]; selected: number }) {
   const { symbolLiveState } = useContext(SymbolLiveContext);
 
   return (
@@ -122,14 +159,11 @@ function SearchList({ list }: { list: string[] }) {
           <div
             className={
               "flex w-full  p-[6px_15px] " +
-              (i === 0 ? " bg-[#f9f9f9]" : " bg-white")
+              (i === selected ? " bg-[#f9f9f9]" : " bg-white")
             }
             key={"search" + name}
           >
-            <div className="grow">
-              {name}
-              {i}
-            </div>
+            <div className="grow">{name}</div>
             <div>{symbolLiveState.symbolsList[name]?.name}</div>
           </div>
         );

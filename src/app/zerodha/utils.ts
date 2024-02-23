@@ -17,8 +17,16 @@ export const parsePrice = (price: string | undefined) => {
   return Number(price);
 };
 export function searchAndSort(searchTerm: string, array: string[]): string[] {
+  searchTerm = searchTerm.toUpperCase();
   return array
-    .filter((item) => item.includes(searchTerm.toUpperCase()))
-    .sort((a, b) => a.localeCompare(b))
-    .slice(0, 20);
+    .filter((item) => {
+      for (let i = 0; i < item.length - searchTerm.length; i++) {
+        if (item.slice(i, searchTerm.length) === searchTerm) {
+          // console.log(item);
+          return true;
+        }
+      }
+    })
+    .slice(0, 20)
+    .sort();
 }

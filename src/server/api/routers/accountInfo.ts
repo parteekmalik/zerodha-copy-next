@@ -55,7 +55,7 @@ export const accountInfoRouter = createTRPCRouter({
       const watchList =
         details?.Taccounts[0]?.watchList ?? (Array(7).fill("") as string[]);
 
-      watchList[input.row] += " " + input.name;
+      watchList[input.row] += " " + input.name.toUpperCase();
       const res = (
         await ctx.db.tradingAccount.update({
           where: { id: tradingAccountId },
@@ -85,7 +85,7 @@ export const accountInfoRouter = createTRPCRouter({
       watchList[input.row] = (watchList[input.row] ?? "")
         ?.split(" ")
         .filter((x) => {
-          if (x !== input.name.toLowerCase()) return x;
+          if (x.toUpperCase() !== input.name.toUpperCase()) return x;
         })
         .join(" ");
       console.log("after->", watchList, input);
