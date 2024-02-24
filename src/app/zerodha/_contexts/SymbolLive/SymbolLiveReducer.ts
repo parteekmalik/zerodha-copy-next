@@ -1,10 +1,10 @@
 import { JSONType } from "../../symbolname";
-import type { IsymbolLiveContextState, Tlast24hr } from "./SymbolLive";
+import type { IsymbolLiveContextState, Tlast24hr, TsymbolTrade } from "./SymbolLive";
 
 export type IsymbolLiveContextActions =
   | {
       type: "update_symbol";
-      payload: Tlast24hr;
+      payload: TsymbolTrade;
     }
   | {
       type: "update_symbolList";
@@ -41,7 +41,7 @@ export const symbolLiveReducer = (
 
       Livestream[payload.s] = {
         ...payload,
-        m: isup(payload.c, Livestream[payload.s]?.c),
+        m: isup(payload.p, Livestream[payload.s]?.p),
       };
       return { ...state, Livestream };
     }

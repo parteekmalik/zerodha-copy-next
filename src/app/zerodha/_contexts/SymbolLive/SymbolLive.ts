@@ -44,7 +44,7 @@ export type Tlast24hr = {
   n: number;
 };
 export type IsymbolLiveContextState = {
-  Livestream: Record<string, Tlast24hr>;
+  Livestream: Record<string, TsymbolTrade>;
   symbolsList: Record<string, JSONType>;
   subscriptions: string[];
 };

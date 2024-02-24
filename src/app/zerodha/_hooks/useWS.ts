@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import type { Options } from "react-use-websocket";
 import type { Twsbinance } from "../_components/WatchList/symbolInWL";
-import { Tlast24hr } from "../_contexts/SymbolLive/SymbolLive";
+import { Tlast24hr, TsymbolTrade } from "../_contexts/SymbolLive/SymbolLive";
 
 export const useSocket = (
   url: string,
-  processMessages: (data: Tlast24hr) => void,
+  processMessages: (data: TsymbolTrade) => void,
   opt: Options,
 ): [(payload: Twsbinance) => void, string[], MessageEvent<string> | null] => {
   //   const socketRef = useRef<WebSocket>(new WebSocket(url)); // Changed to allow initialization to
@@ -15,20 +15,27 @@ export const useSocket = (
     onClose: () => console.log("WebSocket connection closed."),
     onOpen: () => {
       console.log("WebSocket connection opened.");
-      console.log(messageQ);
       if (messageQ.length > 0)
-        sendMessage(
+        console.log(
+          "mesageq send ->",
           JSON.stringify({
             method: "SUBSCRIBE",
             params: messageQ,
             id: 1,
           } as Twsbinance),
         );
+      sendMessage(
+        JSON.stringify({
+          method: "SUBSCRIBE",
+          params: messageQ,
+          id: 1,
+        } as Twsbinance),
+      );
       updatSubscription();
     },
     onMessage: (event) => {
       const data = JSON.parse(event.data as string) as
-        | Tlast24hr
+        | TsymbolTrade
         | { result: string[]; id: number };
       if ("id" in data) {
         console.log("websocket message or responce ->", data);
@@ -36,7 +43,7 @@ export const useSocket = (
           setsubscriptions(data.result);
         }
       } else {
-        console.log("is workibng!!!!!!!!!!!!!", data);
+        // console.log("is workibng!!!!!!!!!!!!!", data);
         processMessages(data);
       }
     },

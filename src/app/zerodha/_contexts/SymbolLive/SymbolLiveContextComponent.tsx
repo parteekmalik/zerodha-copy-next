@@ -4,7 +4,7 @@ import type { Twsbinance } from "../../_components/WatchList/symbolInWL";
 import { useSocket } from "../../_hooks/useWS";
 import { symbolList } from "../../symbolname";
 import DataContext from "../data/data";
-import type { Tlast24hr } from "./SymbolLive";
+import type { Tlast24hr, TsymbolTrade } from "./SymbolLive";
 import {
   SymbolLiveContextProvider,
   defaultsymbolLiveContextState,
@@ -53,7 +53,7 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     {},
   );
 
-  function processMessages(data: Tlast24hr) {
+  function processMessages(data: TsymbolTrade) {
     if (data.e !== "trade") {
       // console.log(data);
     }
@@ -72,13 +72,17 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     } else if (payload.method === "SUBSCRIBE") {
       // console.log(payload);
     }
+    payload.params = payload.params.map((item) => {
+      const [first, second] = item.split("@");
+      return first?.toLowerCase() + "@" + second;
+    });
     Ssend(payload);
   }
 
   useEffect(() => {
     const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
     const subSymbol = JSON.stringify(
-      subscriptions.map((item) => item.split("@")[0]),
+      subscriptions.map((item) => item.split("@")[0]?.toUpperCase()),
     );
 
     if (subSymbol !== "[]")

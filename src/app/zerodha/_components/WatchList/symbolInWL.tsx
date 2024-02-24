@@ -57,7 +57,7 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
               P: "0",
             };
 
-            const price = parsePrice(symbolLiveTemp?.c);
+            const price = parsePrice(symbolLiveTemp?.p);
             const diff = symbolLiveTemp.m ? 1 : -1;
             function BaseSymbolLayout() {
               return (
@@ -70,7 +70,7 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
                       </div>
                       <div className="flex   min-w-[45px]  text-right  text-black  ">
                         <div className="">
-                          {parseFloat(symbolLiveTemp.P).toFixed(2)}
+                          {parseFloat(symbolLiveTemp.p).toFixed(2)}
                         </div>
 
                         <span className="my-auto text-[.652rem]  ">%</span>

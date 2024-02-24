@@ -60,7 +60,7 @@ function Header() {
             <div>
               {parseFloat(
                 symbolLiveState.Livestream.BTCUSDT
-                  ? symbolLiveState.Livestream.BTCUSDT.c
+                  ? symbolLiveState.Livestream.BTCUSDT.p
                   : "00.0",
               ).toFixed(2)}
             </div>
@@ -83,7 +83,7 @@ function Header() {
             <div>
               {parseFloat(
                 symbolLiveState.Livestream.ETHUSDT
-                  ? symbolLiveState.Livestream.ETHUSDT.c
+                  ? symbolLiveState.Livestream.ETHUSDT.p
                   : "00.0",
               ).toFixed(2)}
             </div>
