@@ -1,4 +1,3 @@
-import type { KeyboardEvent } from "react";
 import { useContext, useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
@@ -32,6 +31,13 @@ function WatchList() {
       });
     },
   });
+  function submitUpdate(index: number) {
+    updateWatchList.mutate({
+      name: search.matchingSymbol[index] ?? "dummy_string",
+      row: watchListNo,
+    });
+  }
+  
   useEffect(() => {
     const temp = searchAndSort(
       search.data,
@@ -47,19 +53,7 @@ function WatchList() {
       });
   }, [search]);
 
-  function submitUpdate(index: number) {
-    updateWatchList.mutate({
-      name: search.matchingSymbol[index] ?? "dummy_string",
-      row: watchListNo,
-    });
-  }
 
-  const handleEnter = async (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      submitUpdate(search.Selected);
-      e.currentTarget.blur();
-    }
-  };
 
   return (
     <div
@@ -78,7 +72,12 @@ function WatchList() {
           autoCorrect="off"
           spellCheck="false"
           placeholder="Search eg: infy bse, nifty fut, nifty weekly, gold mcx"
-          onKeyDown={handleEnter}
+          onKeyDown={(e)=>{
+            if (e.key === "Enter") {
+              submitUpdate(search.Selected);
+              e.currentTarget.blur();
+            }
+          }}
           value={search.data}
           onChange={(e) =>
             setSearch((prev) => {
