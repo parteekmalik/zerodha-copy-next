@@ -27,8 +27,8 @@ function Header() {
     const msg: Twsbinance = {
       method: "SUBSCRIBE",
       params: [
-        dataState.headerPin[0] + "@ticker",
-        dataState.headerPin[1] + "@ticker",
+        dataState.headerPin[0] + "@trade",
+        dataState.headerPin[1] + "@trade",
       ],
       id: 1,
     };

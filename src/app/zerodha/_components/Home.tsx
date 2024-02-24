@@ -19,7 +19,7 @@ export default function Home() {
     id: "not_found",
   };
   useEffect(() => {
-    console.log("userInfo", userInfo);
+    // console.log("userInfo", userInfo);
     if (
       userInfo.id !== "not_found" &&
       dataState.userDetails?.id === "not_found"

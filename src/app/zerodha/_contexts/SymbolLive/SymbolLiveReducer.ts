@@ -11,11 +11,15 @@ export type IsymbolLiveContextActions =
       payload: JSONType[];
     }
   | {
+      type: "update_subsciptionList";
+      payload: string[];
+    }
+  | {
       type: "update_last_symbol";
       payload: Tlast24hr;
     };
 
-const excludeType = ["update_symbol","update_symbolList"];
+const excludeType = ["update_symbol", "update_symbolList"];
 export const symbolLiveReducer = (
   state: IsymbolLiveContextState,
   action: IsymbolLiveContextActions,
@@ -48,6 +52,9 @@ export const symbolLiveReducer = (
       });
 
       return { ...state, symbolsList };
+    }
+    case "update_subsciptionList": {
+      return { ...state, subscriptions: payload };
     }
     default:
       return state;

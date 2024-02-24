@@ -29,7 +29,7 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
       id: 1,
     };
     list?.map((symbol) => {
-      msg.params.push(symbol + "@ticker");
+      msg.params.push(symbol + "@trade");
     });
     socketSend(msg);
     return () => {
@@ -40,7 +40,7 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
         id: 1,
       };
       list?.map((symbol) => {
-        msg.params.push(symbol + "@ticker");
+        msg.params.push(symbol + "@trade");
       });
       socketSend(msg);
     };
@@ -110,7 +110,6 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
           })
         : null}
     </>
-
   );
 }
 function HiddenLayout({

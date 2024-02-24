@@ -1,22 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import type { Options } from "react-use-websocket";
 import type { Twsbinance } from "../_components/WatchList/symbolInWL";
+import { Tlast24hr } from "../_contexts/SymbolLive/SymbolLive";
 
 export const useSocket = (
   url: string,
+  processMessages: (data: Tlast24hr) => void,
   opt: Options,
-): [(payload: Twsbinance) => void, MessageEvent<string> | null] => {
+): [(payload: Twsbinance) => void, string[], MessageEvent<any> | null] => {
   //   const socketRef = useRef<WebSocket>(new WebSocket(url)); // Changed to allow initialization to
   const { sendMessage, lastMessage, readyState } = useWebSocket(url, {
     ...opt,
+    onClose: () => console.log("WebSocket connection closed."),
     onOpen: () => {
       console.log("WebSocket connection opened.");
-      while (messageQ.length > 0) {
-        if (messageQ.length == 0) return;
-        const msg = messageQ.shift();
-        console.log(msg);
-        sendMessage(msg ? msg : "");
+      console.log(messageQ);
+      if (messageQ.length > 0)
+        sendMessage(
+          JSON.stringify({
+            method: "SUBSCRIBE",
+            params: messageQ,
+            id: 1,
+          } as Twsbinance),
+        );
+      updatSubscription();
+    },
+    onMessage: (event) => {
+      const data = JSON.parse(event.data as string) as
+        | Tlast24hr
+        | { result: string[]; id: number };
+      if ("id" in data) {
+        console.log("websocket message or responce ->", data);
+        if (data.id === 3) {
+          setsubscriptions(data.result);
+        }
+      } else {
+        console.log("is workibng!!!!!!!!!!!!!", data);
+        processMessages(data);
       }
     },
   });
@@ -28,21 +49,31 @@ export const useSocket = (
     [ReadyState.UNINSTANTIATED]: "Uninstantiated",
   }[readyState];
 
-  const [messageQ, setMessageQ] = useState<string[]>([]);
+  const [messageQ, setmessageQ] = useState<string[]>([]);
+  const [subscriptions, setsubscriptions] = useState<string[]>([]);
+  useEffect(() => {
+    console.log("subscriptions useeffect ->", subscriptions);
+  }, [subscriptions]);
+  useEffect(() => {
+    console.log("messageQ useeffect ->", messageQ);
+  }, [messageQ]);
 
+  const updatSubscription = () => {
+    sendMessage(JSON.stringify({ method: "LIST_SUBSCRIPTIONS", id: 3 }));
+  };
   const socketSend = (payload: Twsbinance) => {
     if (payload.params.length === 0) return;
-    const Spayload = JSON.stringify(payload);
-    if (messageQ.includes(Spayload)) return;
 
+    console.log("send socket ->", payload);
     if (connectionStatus === "Open") {
-      console.log(Spayload);
-
-      sendMessage(Spayload);
+      sendMessage(JSON.stringify(payload));
+      updatSubscription();
     } else {
-      setMessageQ((prevMessageQ) => [...prevMessageQ, Spayload]);
+      setmessageQ((prev) => {
+        return [...prev, ...payload.params];
+      });
     }
   };
 
-  return [socketSend, lastMessage];
+  return [socketSend, subscriptions, lastMessage];
 };

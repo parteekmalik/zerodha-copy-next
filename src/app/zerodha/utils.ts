@@ -34,3 +34,15 @@ export function searchAndSort(searchTerm: string, array: string[]): string[] {
   });
   return rankinglist.slice(0, 20);
 }
+export function listToRecord<T>(list: T[], key: keyof T): Record<string, T> {
+  return list.reduce(
+    (record, item) => {
+      const keyValue = item[key];
+      if (keyValue !== undefined) {
+        record[String(keyValue)] = item;
+      }
+      return record;
+    },
+    {} as Record<string, T>,
+  );
+}

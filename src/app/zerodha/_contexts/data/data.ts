@@ -43,7 +43,7 @@ export const defaultdataContextState: IdataContextState = {
     image: "not_found",
     id: "not_found",
   },
-  headerPin: ["btcusdt", "ethusdt"],
+  headerPin: ["BTCUSDT", "ETHUSDT"],
   FormData: {
     isvisible: false,
     symbol: "btcusd",
