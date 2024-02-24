@@ -11,6 +11,7 @@ import {
 } from "./SymbolLive";
 import { symbolLiveReducer } from "./SymbolLiveReducer";
 import axios from "axios";
+import { error } from "console";
 
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
 type TtickerChangeType = {
@@ -80,12 +81,14 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
       subscriptions.map((item) => item.split("@")[0]),
     );
 
-    async function getDayChangeDate(url: string) {
-      console.log(url);
-      const data = (await axios.get(url)).data as TtickerChangeType[];
-      console.log("TtickerChangeType -> ", data);
-    }
-    if (subSymbol !== "[]") getDayChangeDate(url + subSymbol);
+    if (subSymbol !== "[]")
+      axios
+        .get(url + subSymbol)
+        .then((data) => {
+          console.log("TtickerChangeType -> ", data.data);
+          return data.data as TtickerChangeType[];
+        })
+        .catch((error) => console.log(error));
   }, [subscriptions]);
   return (
     <SymbolLiveContextProvider
