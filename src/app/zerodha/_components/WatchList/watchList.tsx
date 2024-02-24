@@ -7,21 +7,37 @@ import WatchlistBittom from "./watchlistBittom";
 import { api } from "~/trpc/react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
 import { searchAndSort } from "../../utils";
+import SearchList from "./searchList";
+import _ from "lodash";
 
 export type Tsymbol = string;
 
+export class SearchClass {
+  data = "";
+  private serachList = [""];
+  matchingSymbol = [""];
+  constructor(list: string[]) {
+    console.log(list);
+    this.serachList = list;
+    this.matchingSymbol = searchAndSort(this.data, list);
+  }
+
+  udateSearch(input: string) {
+    console.log(input);
+    this.data = input;
+    this.matchingSymbol = searchAndSort(this.data, this.serachList);
+  }
+}
+
 function WatchList() {
   const [watchListNo, setWatchListNo] = useState(0);
-  const [search, setSearch] = useState<{
-    data: string;
-    focus: boolean;
-    matchingSymbol: string[];
-    selected: number;
-  }>({
-    data: "",
+  const { symbolLiveState } = useContext(SymbolLiveContext);
+
+  const [search, setSearch] = useState({
     focus: false,
-    matchingSymbol: [],
-    selected: 0,
+    matchingSymbol: [""],
+    data: "",
+    Selected: 0,
   });
   const list = useContext(DataContext).dataState.watchList;
   const { dataDispatch } = useContext(DataContext);
@@ -30,61 +46,39 @@ function WatchList() {
     onSuccess: async (data) => {
       dataDispatch({ type: "update_watchList", payload: data });
       setSearch((prev) => {
-        return { ...prev, data: "", focus: false };
+        return { ...prev, focus: false, data: "" };
       });
     },
   });
-
-  const handleEnter = async (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      updateWatchList.mutate({
-        name: search.matchingSymbol[search.selected] ?? "dummy_string",
-        row: watchListNo,
-      });
-      e.currentTarget.blur();
-    }
-  };
-  const { symbolLiveState } = useContext(SymbolLiveContext);
-
   useEffect(() => {
-    console.log(search);
-    const matchingSymbol = searchAndSort(
+    const temp = searchAndSort(
       search.data,
       Object.keys(symbolLiveState.symbolsList),
     );
     if (
-      search.matchingSymbol.join("_") !== matchingSymbol.join("_") &&
-      matchingSymbol.length > 0
+      search.focus &&
+      temp.length > 0 &&
+      temp.join("") !== search.matchingSymbol.join("")
     )
       setSearch((prev) => {
-        return {
-          ...prev,
-          matchingSymbol,
-        };
+        return { ...prev, matchingSymbol: temp };
       });
-    window.addEventListener("keydown", handleClickOutside);
-    return () => {
-      window.removeEventListener("keydown", handleClickOutside);
-    };
   }, [search]);
-  const handleClickOutside = (event: globalThis.KeyboardEvent) => {
-    if (event.key === "ArrowUp")
-      setSearch((prev) => ({
-        ...prev,
-        selected:
-          prev.selected === 0
-            ? prev.matchingSymbol.length - 1
-            : prev.selected - 1,
-      }));
-    else if (event.key === "ArrowDown")
-      setSearch((prev) => ({
-        ...prev,
-        selected:
-          prev.selected === prev.matchingSymbol.length - 1
-            ? 0
-            : prev.selected + 1,
-      }));
+
+  function submitUpdate(index: number) {
+    updateWatchList.mutate({
+      name: search.matchingSymbol[index] ?? "dummy_string",
+      row: watchListNo,
+    });
+  }
+
+  const handleEnter = async (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      submitUpdate(search.Selected);
+      e.currentTarget.blur();
+    }
   };
+
   return (
     <div
       className={
@@ -131,8 +125,10 @@ function WatchList() {
         {search.focus ? (
           <div className="absolute z-10 h-[40vh]  w-full overflow-y-auto text-[.8125rem]    ">
             <SearchList
-              list={search.matchingSymbol}
-              selected={search.selected}
+              watchListNo={watchListNo}
+              search={search}
+              updateWatchList={submitUpdate}
+              setSearch={setSearch}
             />
           </div>
         ) : null}
@@ -147,28 +143,6 @@ function WatchList() {
         />
       </div>
     </div>
-  );
-}
-function SearchList({ list, selected }: { list: string[]; selected: number }) {
-  const { symbolLiveState } = useContext(SymbolLiveContext);
-
-  return (
-    <>
-      {list.map((name, i) => {
-        return (
-          <div
-            className={
-              "flex w-full  p-[6px_15px] " +
-              (i === selected ? " bg-[#f9f9f9]" : " bg-white")
-            }
-            key={"search" + name}
-          >
-            <div className="grow">{name}</div>
-            <div>{symbolLiveState.symbolsList[name]?.name}</div>
-          </div>
-        );
-      })}
-    </>
   );
 }
 const SearchIcon = () => {

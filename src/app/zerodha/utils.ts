@@ -30,7 +30,7 @@ export function searchAndSort(searchTerm: string, array: string[]): string[] {
     }
   });
   Object.keys(ranking).map((key) => {
-    rankinglist = [...rankinglist, ...(ranking[Number(key)]?.split(" ") ?? [])];
+    rankinglist = [...rankinglist, ...(ranking[Number(key)]?.split(" ") ?? []).sort()];
   });
   return rankinglist.slice(0, 20);
 }
