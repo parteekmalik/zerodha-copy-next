@@ -1,36 +1,26 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useContext, useEffect } from "react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
-import { searchAndSort } from "../../utils";
-import { SearchClass } from "./watchList";
 
 function SearchList({
   search,
   setSearch,
   updateWatchList,
-  watchListNo,
 }: {
   search: {
     focus: boolean;
     matchingSymbol: string[];
     data: string;
     Selected: number;
-}
+  };
   setSearch: Dispatch<
     SetStateAction<{
       focus: boolean;
       matchingSymbol: string[];
       data: string;
       Selected: number;
-  }>
+    }>
   >;
   updateWatchList: (index: number) => void;
-  watchListNo: number;
 }) {
   const { symbolLiveState } = useContext(SymbolLiveContext);
 
@@ -70,8 +60,19 @@ function SearchList({
               "flex w-full  p-[6px_15px] " +
               (i === search.Selected ? " bg-[#f9f9f9]" : " bg-white")
             }
-            onClick={(e) => {
+            onMouseDown={(e) => {
+              // console.log("mouse click")
               updateWatchList(i);
+            }}
+            onMouseEnter={(e) => {
+              setSearch((prev) => {
+                return { ...prev, Selected: i };
+              });
+            }}
+            onMouseLeave={(e) => {
+              setSearch((prev) => {
+                return { ...prev, Selected: 0 };
+              });
             }}
             key={"search" + name}
           >

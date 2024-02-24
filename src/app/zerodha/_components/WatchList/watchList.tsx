@@ -1,33 +1,15 @@
-import { useContext, useEffect, useState } from "react";
 import type { KeyboardEvent } from "react";
-import DataContext from "../../_contexts/data/data";
-import { shadowBox } from "../tcss";
-import SymbolInWL from "./symbolInWL";
-import WatchlistBittom from "./watchlistBittom";
+import { useContext, useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
+import DataContext from "../../_contexts/data/data";
 import { searchAndSort } from "../../utils";
+import { shadowBox } from "../tcss";
 import SearchList from "./searchList";
-import _ from "lodash";
+import SymbolInWL from "./symbolInWL";
+import WatchlistBittom from "./watchlistBittom";
 
 export type Tsymbol = string;
-
-export class SearchClass {
-  data = "";
-  private serachList = [""];
-  matchingSymbol = [""];
-  constructor(list: string[]) {
-    console.log(list);
-    this.serachList = list;
-    this.matchingSymbol = searchAndSort(this.data, list);
-  }
-
-  udateSearch(input: string) {
-    console.log(input);
-    this.data = input;
-    this.matchingSymbol = searchAndSort(this.data, this.serachList);
-  }
-}
 
 function WatchList() {
   const [watchListNo, setWatchListNo] = useState(0);
@@ -125,7 +107,6 @@ function WatchList() {
         {search.focus ? (
           <div className="absolute z-10 h-[40vh]  w-full overflow-y-auto text-[.8125rem]    ">
             <SearchList
-              watchListNo={watchListNo}
               search={search}
               updateWatchList={submitUpdate}
               setSearch={setSearch}

@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
+import DataContext from "../../_contexts/data/data";
 import Dashboard from "./Dashboard";
 import Chart from "./chart";
-import DataContext from "../../_contexts/data/data";
 
 function RightSide() {
   const { symbolLiveState } = useContext(SymbolLiveContext);
