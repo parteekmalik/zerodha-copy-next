@@ -5,6 +5,8 @@ import { parsePrice } from "../../utils";
 import type { Tsymbol } from "./watchList";
 import type { IdataContextActions } from "../../_contexts/data/dataReduer";
 import { api } from "~/trpc/react";
+import { number } from "zod";
+import { inflate } from "zlib";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
 export type Twsbinance = {
@@ -58,6 +60,17 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
             };
 
             const price = parsePrice(symbolLiveTemp?.p);
+            const prevPrice =
+              parseFloat(symbolLiveTemp.p) -
+              parseFloat(
+                symbolLiveState.last24hrdata[symbolName]?.prevClosePrice ?? "0",
+              );
+            const priceChange =
+              price -
+              Number(
+                symbolLiveState.last24hrdata[symbolName]?.prevClosePrice ?? "0",
+              );
+            const priceChangePercent = (priceChange / price) * 100;
             const diff = symbolLiveTemp.m ? 1 : -1;
             function BaseSymbolLayout() {
               return (
@@ -66,11 +79,14 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
                   <div className="flex">
                     <div className="flex opacity-[.7]">
                       <div className="pr-[3px] text-black opacity-[.65] ">
-                        {parsePrice(symbolLiveTemp?.p)}
+                        {priceChange.toFixed(2)}
                       </div>
                       <div className="flex   min-w-[45px]  text-right  text-black  ">
                         <div className="">
-                          {parseFloat(symbolLiveTemp.p).toFixed(2)}
+                          {(priceChangePercent === -Infinity
+                            ? 0
+                            : priceChangePercent
+                          ).toFixed(2)}
                         </div>
 
                         <span className="my-auto text-[.652rem]  ">%</span>

@@ -1,5 +1,10 @@
 import { JSONType } from "../../symbolname";
-import type { IsymbolLiveContextState, Tlast24hr, TsymbolTrade } from "./SymbolLive";
+import type {
+  IsymbolLiveContextState,
+  Tlast24hr,
+  TsymbolTrade,
+} from "./SymbolLive";
+import { TtickerChangeType } from "./SymbolLiveContextComponent";
 
 export type IsymbolLiveContextActions =
   | {
@@ -13,6 +18,10 @@ export type IsymbolLiveContextActions =
   | {
       type: "update_subsciptionList";
       payload: string[];
+    }
+  | {
+      type: "update_last24hrdata";
+      payload: TtickerChangeType[];
     }
   | {
       type: "update_last_symbol";
@@ -55,6 +64,13 @@ export const symbolLiveReducer = (
     }
     case "update_subsciptionList": {
       return { ...state, subscriptions: payload };
+    }
+    case "update_last24hrdata": {
+      const last24hrdata = { ...state.last24hrdata };
+      payload.map((x) => {
+        last24hrdata[x.symbol] = x;
+      });
+      return { ...state, last24hrdata };
     }
     default:
       return state;

@@ -14,7 +14,7 @@ import axios from "axios";
 import { error } from "console";
 
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
-type TtickerChangeType = {
+export type TtickerChangeType = {
   symbol: string;
   priceChange: string;
   priceChangePercent: string;
@@ -88,9 +88,13 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     if (subSymbol !== "[]")
       axios
         .get(url + subSymbol)
-        .then((data) => {
+        .then((data: { data: TtickerChangeType[] }) => {
           console.log("TtickerChangeType -> ", data.data);
-          return data.data as TtickerChangeType[];
+          symbolLiveDispatch({
+            type: "update_last24hrdata",
+            payload: data.data,
+          });
+          return data.data;
         })
         .catch((error) => console.log(error));
   }, [subscriptions]);

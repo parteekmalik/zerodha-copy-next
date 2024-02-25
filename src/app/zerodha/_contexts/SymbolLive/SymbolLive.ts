@@ -3,6 +3,7 @@ import type { Twsbinance } from "../../_components/WatchList/symbolInWL";
 import { JSONType, symbolList } from "../../symbolname";
 import type { IsymbolLiveContextActions } from "./SymbolLiveReducer";
 import { listToRecord } from "../../utils";
+import { TtickerChangeType } from "./SymbolLiveContextComponent";
 
 export type TsymbolTrade = {
   e: string;
@@ -46,12 +47,14 @@ export type Tlast24hr = {
 export type IsymbolLiveContextState = {
   Livestream: Record<string, TsymbolTrade>;
   symbolsList: Record<string, JSONType>;
+  last24hrdata: Record<string, TtickerChangeType>;
   subscriptions: string[];
 };
 
 export const defaultsymbolLiveContextState = {
   Livestream: {},
   symbolsList: listToRecord(symbolList, "symbol"),
+  last24hrdata: {},
   subscriptions: [],
 };
 export interface IsymbolLiveContextProps {

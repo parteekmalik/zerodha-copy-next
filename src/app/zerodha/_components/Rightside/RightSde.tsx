@@ -24,6 +24,7 @@ function RightSide() {
       return (
         <div>
           <div>{JSON.stringify(symbolLiveState.subscriptions)}</div>
+          <div>{JSON.stringify(symbolLiveState.last24hrdata)}</div>
           <div>{JSON.stringify(symbolLiveState.Livestream)}</div>
           <div>{JSON.stringify(Object.keys(symbolLiveState.symbolsList))}</div>
         </div>
