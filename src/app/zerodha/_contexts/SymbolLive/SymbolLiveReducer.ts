@@ -58,10 +58,6 @@ export const symbolLiveReducer = (
       const Livestream = { ...state.Livestream };
       payload.map((x) => {
         const data = Livestream[x.symbol];
-        console.log("reducer last24hr ->", {
-          ...data,
-          ...getChange(Number(x.prevPrice), Number(x.curPrice)),
-        });
         Livestream[x.symbol] = {
           ...(data ?? {
             symbol: x.symbol,
@@ -85,7 +81,17 @@ function getChange(prevPrice: number | string, curPrice: number | string) {
   );
   return {
     prevPrice: Number(prevPrice),
-    PriceChange: PriceChange.toFixed(2),
+    PriceChange: PriceChange.toFixed(getPointCount(curPrice)),
     PriceChangePercent: PriceChangePercent.toFixed(2),
   };
+}
+function getPointCount(price: string | number) {
+  const RevStrprice = String(price).split("").reverse().join("");
+  let i = RevStrprice.length - 1;
+  for (; i > -1; i--) {
+    if (RevStrprice[i] === ".") {
+      break;
+    }
+  }
+  return Math.max(i, 2);
 }
