@@ -1,17 +1,15 @@
+import axios from "axios";
 import type { PropsWithChildren } from "react";
 import React, { useContext, useEffect, useReducer } from "react";
 import type { Twsbinance } from "../../_components/WatchList/symbolInWL";
 import { useSocket } from "../../_hooks/useWS";
-import { symbolList } from "../../symbolname";
 import DataContext from "../data/data";
-import type { Tlast24hr, TsymbolTrade } from "./SymbolLive";
+import type { TsymbolTrade } from "./SymbolLive";
 import {
   SymbolLiveContextProvider,
   defaultsymbolLiveContextState,
 } from "./SymbolLive";
 import { symbolLiveReducer } from "./SymbolLiveReducer";
-import axios from "axios";
-import { error } from "console";
 
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
 export type TtickerChangeType = {
@@ -57,7 +55,10 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     if (data.e !== "trade") {
       // console.log(data);
     }
-    symbolLiveDispatch({ type: "update_symbol", payload: data });
+    symbolLiveDispatch({
+      type: "update_symbol",
+      payload: { curPrice: data.p, symbol: data.s },
+    });
   }
 
   const { dataState } = useContext(DataContext);
@@ -90,9 +91,16 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
         .get(url + subSymbol)
         .then((data: { data: TtickerChangeType[] }) => {
           console.log("TtickerChangeType -> ", data.data);
+          const payload = data.data.map((item) => {
+            return {
+              symbol: item.symbol,
+              prevPrice: item.openPrice,
+              curPrice: item.lastPrice,
+            };
+          });
           symbolLiveDispatch({
             type: "update_last24hrdata",
-            payload: data.data,
+            payload,
           });
           return data.data;
         })

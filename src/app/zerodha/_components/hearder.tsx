@@ -58,11 +58,7 @@ function Header() {
               {dataState.headerPin[0].toUpperCase()}
             </div>
             <div>
-              {parseFloat(
-                symbolLiveState.Livestream.BTCUSDT
-                  ? symbolLiveState.Livestream.BTCUSDT.p
-                  : "00.0",
-              ).toFixed(2)}
+              {symbolLiveState.Livestream[dataState.headerPin[0]]?.curPrice}
             </div>
           </div>
           <div className="flex cursor-pointer gap-1">
@@ -81,11 +77,7 @@ function Header() {
               {dataState.headerPin[1].toUpperCase()}
             </div>
             <div>
-              {parseFloat(
-                symbolLiveState.Livestream.ETHUSDT
-                  ? symbolLiveState.Livestream.ETHUSDT.p
-                  : "00.0",
-              ).toFixed(2)}
+              {symbolLiveState.Livestream[dataState.headerPin[1]]?.curPrice}
             </div>
           </div>
         </div>
@@ -125,8 +117,13 @@ function Header() {
                 src="https://img.icons8.com/material-outlined/24/filled-appointment-reminders.png"
                 alt="filled-appointment-reminders"
               />
-              <div className="flex cursor-pointer text-center">
-                <img src={dataState.userDetails?.image ?? ""}></img>
+              <div className="flex cursor-pointer text-center ">
+                <img
+                  src={dataState.userDetails?.image ?? ""}
+                  className="mr-1 cursor-pointer select-none rounded-full"
+                  width="14px"
+                  height="14px"
+                ></img>
                 <div>#{dataState.userDetails?.name}</div>
               </div>
             </div>

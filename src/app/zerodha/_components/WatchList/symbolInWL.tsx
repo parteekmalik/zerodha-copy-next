@@ -1,12 +1,9 @@
 import { useContext, useEffect } from "react";
+import { api } from "~/trpc/react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
 import DataContext from "../../_contexts/data/data";
-import { parsePrice } from "../../utils";
-import type { Tsymbol } from "./watchList";
 import type { IdataContextActions } from "../../_contexts/data/dataReduer";
-import { api } from "~/trpc/react";
-import { number } from "zod";
-import { inflate } from "zlib";
+import type { Tsymbol } from "./watchList";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
 export type Twsbinance = {
@@ -52,26 +49,9 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
       {list
         ? list.map((symbol) => {
             const symbolName = symbol.toUpperCase();
-            const symbolLiveTemp = symbolLiveState.Livestream[symbolName] ?? {
-              m: true,
-              c: "0",
-              p: "0",
-              P: "0",
-            };
+            const symbolLiveTemp = symbolLiveState.Livestream[symbolName];
 
-            const price = parsePrice(symbolLiveTemp?.p);
-            const prevPrice =
-              parseFloat(symbolLiveTemp.p) -
-              parseFloat(
-                symbolLiveState.last24hrdata[symbolName]?.prevClosePrice ?? "0",
-              );
-            const priceChange =
-              price -
-              Number(
-                symbolLiveState.last24hrdata[symbolName]?.prevClosePrice ?? "0",
-              );
-            const priceChangePercent = (priceChange / price) * 100;
-            const diff = symbolLiveTemp.m ? 1 : -1;
+            const diff = symbolLiveTemp?.isup ? 1 : -1;
             function BaseSymbolLayout() {
               return (
                 <>
@@ -79,14 +59,11 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
                   <div className="flex">
                     <div className="flex opacity-[.7]">
                       <div className="pr-[3px] text-black opacity-[.65] ">
-                        {priceChange.toFixed(2)}
+                        {symbolLiveTemp?.PriceChange}
                       </div>
                       <div className="flex   min-w-[45px]  text-right  text-black  ">
                         <div className="">
-                          {(priceChangePercent === -Infinity
-                            ? 0
-                            : priceChangePercent
-                          ).toFixed(2)}
+                          {symbolLiveTemp?.PriceChangePercent}
                         </div>
 
                         <span className="my-auto text-[.652rem]  ">%</span>
@@ -101,7 +78,9 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
                             : "rotate-90 after:content-['>']")
                         }
                       ></a>
-                      <a className="min-w-[60px] text-right">{price}</a>
+                      <a className="min-w-[60px] text-right">
+                        {symbolLiveTemp?.curPrice}
+                      </a>
                     </div>
                   </div>
                 </>

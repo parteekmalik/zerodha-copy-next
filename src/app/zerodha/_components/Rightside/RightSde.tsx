@@ -22,10 +22,19 @@ function RightSide() {
     }
     default:
       return (
-        <div>
-          <div>{JSON.stringify(symbolLiveState.subscriptions)}</div>
+        <div className="text-">
           <div>{JSON.stringify(symbolLiveState.last24hrdata)}</div>
-          <div>{JSON.stringify(symbolLiveState.Livestream)}</div>
+          <div>
+            {Object.keys(symbolLiveState.Livestream).map((key) => {
+              const item = symbolLiveState.Livestream[key];
+              return (
+                <div className="" key={key}>
+                  {JSON.stringify(item)}
+                </div>
+              );
+            })}
+          </div>
+          {/* <div>{symbolLiveState.Livestream}</div> */}
           <div>{JSON.stringify(Object.keys(symbolLiveState.symbolsList))}</div>
         </div>
       );

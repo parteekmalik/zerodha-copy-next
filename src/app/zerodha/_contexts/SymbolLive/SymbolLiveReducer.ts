@@ -1,31 +1,18 @@
-import { JSONType } from "../../symbolname";
-import type {
-  IsymbolLiveContextState,
-  Tlast24hr,
-  TsymbolTrade,
-} from "./SymbolLive";
-import { TtickerChangeType } from "./SymbolLiveContextComponent";
+import type { JSONType } from "../../symbolname";
+import type { IsymbolLiveContextState, TsymbolLive } from "./SymbolLive";
 
 export type IsymbolLiveContextActions =
   | {
       type: "update_symbol";
-      payload: TsymbolTrade;
+      payload: { curPrice: string; symbol: string };
     }
   | {
       type: "update_symbolList";
       payload: JSONType[];
     }
   | {
-      type: "update_subsciptionList";
-      payload: string[];
-    }
-  | {
       type: "update_last24hrdata";
-      payload: TtickerChangeType[];
-    }
-  | {
-      type: "update_last_symbol";
-      payload: Tlast24hr;
+      payload: { symbol: string; prevPrice: string; curPrice: string }[];
     };
 
 const excludeType = ["update_symbol", "update_symbolList"];
@@ -43,15 +30,20 @@ export const symbolLiveReducer = (
   switch (Atype) {
     case "update_symbol": {
       const Livestream = { ...state.Livestream };
-      const isup = (curent: string, prev: string | undefined): boolean => {
+      const isup = (curent: string, prev: number | undefined): boolean => {
         if (!prev) return true;
-        return parseFloat(curent) >= parseFloat(prev);
+        return parseFloat(curent) >= prev;
       };
-
-      Livestream[payload.s] = {
+      let temp: TsymbolLive = {
         ...payload,
-        m: isup(payload.p, Livestream[payload.s]?.p),
+        curPrice: Number(payload.curPrice),
+        isup: isup(payload.curPrice, Livestream[payload.symbol]?.curPrice),
       };
+      const data = Livestream[payload.symbol];
+      if (data?.prevPrice)
+        temp = { ...temp, ...getChange(data.prevPrice, data.curPrice) };
+
+      Livestream[payload.symbol] = temp;
       return { ...state, Livestream };
     }
     case "update_symbolList": {
@@ -62,17 +54,38 @@ export const symbolLiveReducer = (
 
       return { ...state, symbolsList };
     }
-    case "update_subsciptionList": {
-      return { ...state, subscriptions: payload };
-    }
     case "update_last24hrdata": {
-      const last24hrdata = { ...state.last24hrdata };
+      const Livestream = { ...state.Livestream };
       payload.map((x) => {
-        last24hrdata[x.symbol] = x;
+        const data = Livestream[x.symbol];
+        console.log("reducer last24hr ->", {
+          ...data,
+          ...getChange(Number(x.prevPrice), Number(x.curPrice)),
+        });
+        Livestream[x.symbol] = {
+          ...(data ?? {
+            symbol: x.symbol,
+            isup: true,
+            curPrice: Number(x.curPrice),
+          }),
+          ...getChange(Number(x.prevPrice), Number(x.curPrice)),
+        };
       });
-      return { ...state, last24hrdata };
+
+      return { ...state, Livestream };
     }
     default:
       return state;
   }
 };
+function getChange(prevPrice: number | string, curPrice: number | string) {
+  const PriceChange = Number(Number(curPrice) - Number(prevPrice));
+  const PriceChangePercent = Number(
+    (Number(PriceChange) / Number(curPrice)) * 100,
+  );
+  return {
+    prevPrice: Number(prevPrice),
+    PriceChange: PriceChange.toFixed(2),
+    PriceChangePercent: PriceChangePercent.toFixed(2),
+  };
+}

@@ -1,5 +1,5 @@
 export const parsePrice = (price: string | undefined) => {
-  if (price === undefined) return 0.0;
+  if (price === undefined) return 0;
   // const Fprice = parseFloat(price);
   // const pointOnePer = String(Fprice);
   // let count = 1;

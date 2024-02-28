@@ -12,7 +12,7 @@ export const accountInfoRouter = createTRPCRouter({
         },
       })
     )?.Taccounts;
-    console.log(" trading account -> ", Taccounts);
+    console.log("checking trading account -> ", Taccounts);
 
     if (!Taccounts || Taccounts?.length === 0) {
       const res = await ctx.db.tradingAccount.create({
