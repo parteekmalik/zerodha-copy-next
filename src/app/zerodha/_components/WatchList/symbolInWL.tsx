@@ -6,6 +6,7 @@ import SymbolLiveContext, {
 import DataContext from "../../_contexts/data/data";
 import type { IdataContextActions } from "../../_contexts/data/dataReduer";
 import type { Tsymbol } from "./watchList";
+import { string } from "zod";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
 export type Twsbinance = {
@@ -131,7 +132,11 @@ function HiddenLayout({
     bgcolor: string;
     text_color: string;
     text: string;
-    payload: null | IdataContextActions | { type: "delete_watchListItem" };
+    payload:
+      | null
+      | IdataContextActions
+      | { Type: "delete_watchListItem" }
+      | { Type: "Supdate_Pins"; pos: number };
   }[] = [
     {
       bgcolor: "bg-[#4184f3]",
@@ -193,18 +198,30 @@ function HiddenLayout({
       text_color: " text-black",
       bgcolor: " bg-white",
       text: "D",
-      payload: { type: "delete_watchListItem" },
+      payload: { Type: "delete_watchListItem" },
     },
     {
       text_color: " text-black",
       bgcolor: " bg-white",
-      text: "O",
-      payload: null,
+      text: "P1",
+      payload: { Type: "Supdate_Pins", pos: 0 },
+    },
+    {
+      text_color: " text-black",
+      bgcolor: " bg-white",
+      text: "P2",
+      payload: { Type: "Supdate_Pins", pos: 1 },
     },
   ];
   const deleteApi = api.accountInfo.deleteIteminWatchList.useMutation({
     onSuccess: async (data) => {
       dataDispatch({ type: "update_watchList", payload: data });
+    },
+  });
+  const updatePinApi = api.accountInfo.updatePins.useMutation({
+    onSuccess: async (data) => {
+      if (typeof data === "string") console.log(data);
+      else dataDispatch({ type: "update_Pins", payload: data });
     },
   });
   return (
@@ -215,10 +232,20 @@ function HiddenLayout({
             className={`h-full w-[35px] cursor-pointer rounded  p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color}`}
             key={"hiddenitems" + text}
             onMouseUp={() => {
-              if (payload && payload.type !== "delete_watchListItem")
-                dataDispatch(payload);
-              else {
-                deleteApi.mutate({ name: symbolName, row: listNo });
+              if (payload) {
+                console.log("clicked hidden elements payload ->", payload);
+                if ("type" in payload) {
+                  dataDispatch(payload);
+                } else if (payload.Type === "Supdate_Pins") {
+                  console.log("updatePin->");
+                  updatePinApi.mutate({
+                    name: symbolName,
+                    pos: payload.pos,
+                  });
+                } else if (payload.Type === "delete_watchListItem") {
+                  console.log("updatewatchliast->");
+                  deleteApi.mutate({ name: symbolName, row: listNo });
+                }
               }
             }}
           >

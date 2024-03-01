@@ -1,5 +1,5 @@
 import type { TorderForm } from "../../_components/OrderForm/orderForm";
-import type { IdataContextState, TuserDetails } from "./data";
+import type { IdataContextState, TPin, TuserDetails } from "./data";
 import type { TrightSideType } from "./data";
 
 export type IdataContextActions =
@@ -14,6 +14,10 @@ export type IdataContextActions =
   | {
       type: "update_userDetails";
       payload: TuserDetails;
+    }
+  | {
+      type: "update_Pins";
+      payload: TPin;
     }
   | {
       type: "update_FormData";
@@ -44,6 +48,9 @@ export const dataReducer = (
     }
     case "update_userDetails": {
       return { ...state, userDetails: payload };
+    }
+    case "update_Pins": {
+      return { ...state, headerPin: payload };
     }
     default:
       return state;

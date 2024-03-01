@@ -27,7 +27,7 @@ function WatchList() {
     onSuccess: async (data) => {
       dataDispatch({ type: "update_watchList", payload: data });
       setSearch((prev) => {
-        return { ...prev, focus: false, data: "" };
+        return { ...prev, focus: false, data: "", Selected: 0 };
       });
     },
   });
@@ -37,7 +37,7 @@ function WatchList() {
       row: watchListNo,
     });
   }
-  
+
   useEffect(() => {
     const temp = searchAndSort(
       search.data,
@@ -52,8 +52,6 @@ function WatchList() {
         return { ...prev, matchingSymbol: temp };
       });
   }, [search]);
-
-
 
   return (
     <div
@@ -72,7 +70,7 @@ function WatchList() {
           autoCorrect="off"
           spellCheck="false"
           placeholder="Search eg: infy bse, nifty fut, nifty weekly, gold mcx"
-          onKeyDown={(e)=>{
+          onKeyDown={(e) => {
             if (e.key === "Enter") {
               submitUpdate(search.Selected);
               e.currentTarget.blur();

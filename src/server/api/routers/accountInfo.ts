@@ -39,6 +39,47 @@ export const accountInfoRouter = createTRPCRouter({
 
     return convert1D_2D(watchlist ?? []);
   }),
+  getPin: protectedProcedure.query(async ({ ctx, input }) => {
+    const Pins = (
+      await ctx.db.user.findFirst({
+        where: { name: ctx.session.user.name },
+        select: {
+          Taccounts: {
+            select: { Pin0: true, Pin1: true },
+          },
+        },
+      })
+    )?.Taccounts[0];
+
+    return Pins ?? { Pin0: "BTCUSDT", Pin1: "ETHUSDT" };
+  }),
+  updatePins: protectedProcedure
+    .input(z.object({ name: z.string().min(1), pos: z.number().min(0).max(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const details = (
+        await ctx.db.user.findFirst({
+          where: { name: ctx.session.user.name },
+          select: {
+            Taccounts: { select: { Pin0: true, Pin1: true, id: true } },
+          },
+        })
+      )?.Taccounts[0];
+      if (details) {
+        const tradingAccountId = details?.id;
+        const { Pin0, Pin1 } =
+          input.pos === 0
+            ? await ctx.db.tradingAccount.update({
+                where: { id: tradingAccountId },
+                data: { Pin0: input.name.toUpperCase() },
+              })
+            : await ctx.db.tradingAccount.update({
+                where: { id: tradingAccountId },
+                data: { Pin1: input.name.toUpperCase() },
+              });
+
+        return { Pin0, Pin1 };
+      } else return "cant find trading account";
+    }),
   updateWatchList: protectedProcedure
     .input(
       z.object({

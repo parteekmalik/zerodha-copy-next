@@ -27,14 +27,18 @@ function Header() {
     const msg: Twsbinance = {
       method: "SUBSCRIBE",
       params: [
-        dataState.headerPin[0] + "@trade",
-        dataState.headerPin[1] + "@trade",
+        dataState.headerPin.Pin0 + "@trade",
+        dataState.headerPin.Pin1 + "@trade",
       ],
       id: 1,
     };
 
     socketSend(msg);
-  }, []);
+    // return () => {
+    //   msg.method = "UNSUBSCRIBE";
+    //   socketSend(msg);
+    // };
+  }, [dataState.headerPin]);
   // ff5722
   return (
     <header
@@ -49,16 +53,16 @@ function Header() {
                   type: "update_rightHandSide",
                   payload: {
                     type: "chart",
-                    symbol: dataState.headerPin[0].toUpperCase(),
+                    symbol: dataState.headerPin.Pin0.toUpperCase(),
                     TimeFrame: "5",
                   },
                 });
               }}
             >
-              {dataState.headerPin[0].toUpperCase()}
+              {dataState.headerPin.Pin0.toUpperCase()}
             </div>
             <div>
-              {symbolLiveState.Livestream[dataState.headerPin[0]]?.curPrice}
+              {symbolLiveState.Livestream[dataState.headerPin.Pin0]?.curPrice}
             </div>
           </div>
           <div className="flex cursor-pointer gap-1">
@@ -68,16 +72,16 @@ function Header() {
                   type: "update_rightHandSide",
                   payload: {
                     type: "chart",
-                    symbol: dataState.headerPin[1].toUpperCase(),
+                    symbol: dataState.headerPin.Pin1.toUpperCase(),
                     TimeFrame: "5",
                   },
                 });
               }}
             >
-              {dataState.headerPin[1].toUpperCase()}
+              {dataState.headerPin.Pin1.toUpperCase()}
             </div>
             <div>
-              {symbolLiveState.Livestream[dataState.headerPin[1]]?.curPrice}
+              {symbolLiveState.Livestream[dataState.headerPin.Pin1]?.curPrice}
             </div>
           </div>
         </div>

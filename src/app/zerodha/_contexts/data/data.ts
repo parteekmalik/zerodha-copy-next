@@ -30,10 +30,10 @@ export interface IdataContextState {
   rightSideData: TrightSideType;
   watchList: Tsymbol[][];
   userDetails: TuserDetails;
-  headerPin: [string, string];
+  headerPin: TPin;
   FormData: TorderForm;
 }
-
+export type TPin = { Pin0: string; Pin1: string };
 export const defaultdataContextState: IdataContextState = {
   rightSideData: { type: "Dashboard" },
   watchList: [],
@@ -43,7 +43,7 @@ export const defaultdataContextState: IdataContextState = {
     image: "not_found",
     id: "not_found",
   },
-  headerPin: ["BTCUSDT", "ETHUSDT"],
+  headerPin: { Pin0: "BTCUSDT", Pin1: "ETHUSDT" },
   FormData: {
     isvisible: false,
     symbol: "btcusd",

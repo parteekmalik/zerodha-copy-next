@@ -7,11 +7,11 @@ import RightSide from "./Rightside/RightSde";
 import WatchList from "./WatchList/watchList";
 import Header from "./hearder";
 
-
 export default function Home() {
   const { dataDispatch, dataState } = useContext(DataContext);
 
   const watchlist = api.accountInfo.watchList.useQuery().data ?? [];
+  const Pins = api.accountInfo.getPin.useQuery().data;
   const userInfo = api.accountInfo.info.useQuery().data ?? {
     name: "not_found",
     email: "not_found@gmail.com",
@@ -27,12 +27,13 @@ export default function Home() {
       dataDispatch({ type: "update_userDetails", payload: userInfo });
     if (watchlist.length !== 0 && dataState.watchList.length === 0)
       dataDispatch({ type: "update_watchList", payload: watchlist });
-  }, [watchlist, userInfo]);
+    if (Pins) dataDispatch({ type: "update_Pins", payload: Pins });
+  }, [watchlist, userInfo, Pins]);
 
   return (
     <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
       <Header />
-      <div className="text-red flex w-full max-w-[1536px] grow overflow-hidden select-none ">
+      <div className="text-red flex w-full max-w-[1536px] grow select-none overflow-hidden ">
         <WatchList />
         <div className={" flex max-w-[1110px] grow"}>
           <RightSide />

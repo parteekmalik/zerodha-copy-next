@@ -67,8 +67,8 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     if (payload.method === "UNSUBSCRIBE") {
       payload.params = payload.params.filter(
         (item) =>
-          item !== dataState.headerPin[0] + "@trade" &&
-          item !== dataState.headerPin[1] + "@trade",
+          item !== dataState.headerPin.Pin0 + "@trade" &&
+          item !== dataState.headerPin.Pin1 + "@trade",
       );
     } else if (payload.method === "SUBSCRIBE") {
       // console.log(payload);
