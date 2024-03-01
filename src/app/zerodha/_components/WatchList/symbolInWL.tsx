@@ -1,6 +1,8 @@
 import { useContext, useEffect } from "react";
 import { api } from "~/trpc/react";
-import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
+import SymbolLiveContext, {
+  TsymbolLive,
+} from "../../_contexts/SymbolLive/SymbolLive";
 import DataContext from "../../_contexts/data/data";
 import type { IdataContextActions } from "../../_contexts/data/dataReduer";
 import type { Tsymbol } from "./watchList";
@@ -50,60 +52,70 @@ function SymbolInWL({ list, listNo }: ISymbolInWL) {
         ? list.map((symbol) => {
             const symbolName = symbol.toUpperCase();
             const symbolLiveTemp = symbolLiveState.Livestream[symbolName];
-
             const diff = symbolLiveTemp?.isup ? 1 : -1;
-            function BaseSymbolLayout() {
+
+            if (symbolLiveTemp)
               return (
-                <>
-                  <div className="grow">{symbol.toUpperCase()}</div>
-                  <div className="flex">
-                    <div className="flex opacity-[.7]">
-                      <div className="pr-[3px] text-black opacity-[.65] ">
-                        {symbolLiveTemp?.PriceChange}
-                      </div>
-                      <div className="flex   min-w-[45px]  text-right  text-black  ">
-                        <div className="">
-                          {symbolLiveTemp?.PriceChangePercent}
-                        </div>
-
-                        <span className="my-auto text-[.652rem]  ">%</span>
-                      </div>
-                    </div>
-                    <div className="flex ">
-                      <a
-                        className={
-                          ` px-2 font-semibold    ` +
-                          (diff > 0
-                            ? "rotate-90 after:content-['<']"
-                            : "rotate-90 after:content-['>']")
-                        }
-                      ></a>
-                      <a className="min-w-[60px] text-right">
-                        {symbolLiveTemp?.curPrice}
-                      </a>
-                    </div>
+                <div
+                  className={
+                    "group/item relative flex border-b p-[12px_15px]  hover:bg-[#f9f9f9] " +
+                    getColor(diff)
+                  }
+                  style={{ fontSize: ".8125rem" }}
+                  key={"symbol" + symbol}
+                >
+                  <BaseSymbolLayout
+                    key={"watchlistItem_" + symbolName}
+                    symbolName={symbolName}
+                    symbolLiveTemp={symbolLiveTemp}
+                  />
+                  <div className=" invisible absolute right-0 top-0 flex h-full gap-2 p-[8px_15px_8px_2px] text-white group-hover/item:visible">
+                    <HiddenLayout symbolName={symbolName} listNo={listNo} />
                   </div>
-                </>
-              );
-            }
-
-            return (
-              <div
-                className={
-                  "group/item relative flex border-b p-[12px_15px]  hover:bg-[#f9f9f9] " +
-                  getColor(diff)
-                }
-                style={{ fontSize: ".8125rem" }}
-                key={"symbol" + symbol}
-              >
-                <BaseSymbolLayout />
-                <div className=" invisible absolute right-0 top-0 flex h-full gap-2 p-[8px_15px_8px_2px] text-white group-hover/item:visible">
-                  <HiddenLayout symbolName={symbolName} listNo={listNo} />
                 </div>
-              </div>
-            );
+              );
+            else return null;
           })
         : null}
+    </>
+  );
+}
+function BaseSymbolLayout({
+  symbolName,
+  symbolLiveTemp,
+}: {
+  symbolName: string;
+  symbolLiveTemp: TsymbolLive;
+}) {
+  const diff = symbolLiveTemp?.isup ? 1 : -1;
+  return (
+    <>
+      <div className="grow">{symbolName}</div>
+      <div className="flex">
+        <div className="flex opacity-[.7]">
+          <div className="pr-[3px] text-black opacity-[.65] ">
+            {symbolLiveTemp?.PriceChange}
+          </div>
+          <div className="flex  w-[45px] min-w-[45px]  text-black  ">
+            <div className="grow text-right">
+              {symbolLiveTemp?.PriceChangePercent}
+            </div>
+
+            <span className="my-auto text-[.652rem]  ">%</span>
+          </div>
+        </div>
+        <div className="flex ">
+          <a
+            className={
+              ` px-2 font-semibold    ` +
+              (diff > 0
+                ? "rotate-90 after:content-['<']"
+                : "rotate-90 after:content-['>']")
+            }
+          ></a>
+          <a className="min-w-[60px] text-right">{symbolLiveTemp?.curPrice}</a>
+        </div>
+      </div>
     </>
   );
 }
