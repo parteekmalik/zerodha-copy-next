@@ -1,6 +1,6 @@
 import axios from "axios";
 import { z } from "zod";
-import { FormSchema } from "~/app/zerodha/_components/OrderForm/orderForm";
+import { FormSchema } from "~/app/zerodha/_components/OrderForm/FrmSchema";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 

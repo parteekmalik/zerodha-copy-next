@@ -9,17 +9,9 @@ import DataContext from "../../_contexts/data/data";
 import InputDiv from "./InputDiv";
 import { CheckBox, OrderTypeDiv } from "./OrderTypeDiv";
 import { api } from "~/trpc/react";
+import { TFormSchema } from "./FrmSchema";
 
-export const FormSchema = z.object({
-  orderType: z.enum(["BUY", "SELL"]),
-  quantity: z.number().min(0.0001),
-  price: z.number().min(0),
-  sl: z.number().min(0),
-  tp: z.number().min(0),
-  symbolName: z.string(),
-  marketType: z.enum(["SPOT", "MARGIN"]),
-});
-export type TFormSchema = typeof FormSchema;
+
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
 export type TorderForm = {
@@ -40,7 +32,7 @@ function TempOrderForm({
   symbol: string;
   type: "BUY" | "SELL";
 }) {
-  const sendOrder = api.order.createOrder.useMutation({});
+  // const sendOrder = api.order.createOrder.useMutation({});
   const {
     register,
     handleSubmit,
@@ -74,9 +66,9 @@ function TempOrderForm({
 
   const onSubmit = (data: z.output<TFormSchema>) => {
     console.log("send order", data);
-    sendOrder.mutate({
-      ...data,
-    });
+    // sendOrder.mutate({
+    //   ...data,
+    // });
     dataDispatch({
       type: "update_FormData",
       payload: {
@@ -92,7 +84,6 @@ function TempOrderForm({
     bordercolor:
       watch().orderType === "BUY" ? "border-b-[#4184f3]" : "border-b-[#ff5722]",
   };
-  const { onChange, onBlur, name, ref } = register("tp");
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
