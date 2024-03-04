@@ -33,7 +33,7 @@ function WatchList() {
   });
   function submitUpdate(index: number) {
     updateWatchList.mutate({
-      name: search.matchingSymbol[index] ?? "dummy_string",
+      name: [...list[watchListNo]??[],search.matchingSymbol[index]].join(" ") ?? "dummy_string",
       row: watchListNo,
     });
   }

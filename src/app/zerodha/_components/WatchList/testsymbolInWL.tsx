@@ -6,7 +6,7 @@ import SymbolLiveContext, {
 import DataContext from "../../_contexts/data/data";
 import type { IdataContextActions } from "../../_contexts/data/dataReduer";
 import type { Tsymbol } from "./watchList";
-import { string } from "zod";
+import { string, symbol } from "zod";
 import { Reorder } from "framer-motion";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
@@ -83,7 +83,7 @@ function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
                   {symbolLiveTemp ? (
                     <div
                       className={
-                        "group/item relative flex border-b p-[12px_15px]  hover:bg-[#f9f9f9] " +
+                        "group/item relative flex border-b p-[12px_15px]  hover:bg-[#f9f9f9] hover:cursor-move " +
                         getColor(diff)
                       }
                       style={{ fontSize: ".8125rem" }}
@@ -234,11 +234,19 @@ function HiddenLayout({
       payload: { Type: "Supdate_Pins", pos: 1 },
     },
   ];
-  const deleteApi = api.accountInfo.deleteIteminWatchList.useMutation({
+  const deleteApi = api.accountInfo.updateWatchList.useMutation({
     onSuccess: async (data) => {
       dataDispatch({ type: "update_watchList", payload: data });
     },
   });
+  function deleteFunc(symbol: string) {
+    symbol = symbol.toUpperCase();
+    let list = dataState.watchList[listNo];
+    // console.log("delete api ->", list, symbol);
+    list = list?.filter((item) => item !== symbol);
+    // console.log("delete api ->", list);
+    deleteApi.mutate({ name: list?.join(" ") ?? "", row: listNo });
+  }
   const updatePinApi = api.accountInfo.updatePins.useMutation({
     onSuccess: async (data) => {
       if (typeof data === "string") console.log(data);
@@ -265,7 +273,7 @@ function HiddenLayout({
                   });
                 } else if (payload.Type === "delete_watchListItem") {
                   console.log("updatewatchliast->");
-                  deleteApi.mutate({ name: symbolName, row: listNo });
+                  deleteFunc(symbolName);
                 }
               }
             }}

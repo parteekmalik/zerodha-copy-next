@@ -137,41 +137,7 @@ export const accountInfoRouter = createTRPCRouter({
       const watchList =
         details?.Taccounts[0]?.watchList ?? (Array(7).fill("") as string[]);
 
-      watchList[input.row] += " " + input.name.toUpperCase();
-      const res = (
-        await ctx.db.tradingAccount.update({
-          where: { id: tradingAccountId },
-          data: { watchList },
-        })
-      ).watchList;
-
-      return convert1D_2D(res);
-    }),
-  deleteIteminWatchList: protectedProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        row: z.number(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const details = await ctx.db.user.findFirst({
-        where: { name: ctx.session.user.name },
-        select: { Taccounts: { select: { watchList: true, id: true } } },
-      });
-      const tradingAccountId = details?.Taccounts[0]?.id;
-      const watchList =
-        details?.Taccounts[0]?.watchList ?? (Array(7).fill("") as string[]);
-
-      console.log("before->", watchList, input);
-      watchList[input.row] = (watchList[input.row] ?? "")
-        ?.split(" ")
-        .filter((x) => {
-          if (x.toUpperCase() !== input.name.toUpperCase()) return x;
-        })
-        .join(" ");
-      console.log("after->", watchList, input);
-
+      watchList[input.row] = input.name.toUpperCase();
       const res = (
         await ctx.db.tradingAccount.update({
           where: { id: tradingAccountId },
