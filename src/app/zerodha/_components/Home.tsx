@@ -7,7 +7,7 @@ import WatchList from "./WatchList/watchList";
 import Header from "./hearder";
 
 export default function Home() {
-  const { dataState,loading } = useContext(DataContext);
+  const { dataState, loading } = useContext(DataContext);
 
   return (
     <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
@@ -18,8 +18,7 @@ export default function Home() {
           <RightSide />
         </div>
       </div>
-      <div>{JSON.stringify(dataState)}</div>
-      <div>{JSON.stringify(loading)}</div>
+      <div>{JSON.stringify({ ...dataState, loading })}</div>
       {dataState.FormData.isvisible ? (
         <OrderForm
           symbol={dataState.FormData.symbol}

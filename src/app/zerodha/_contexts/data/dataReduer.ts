@@ -31,10 +31,10 @@ export const dataReducer = (
 ) => {
   const { type: Atype, payload } = action;
   if (!excludeType.includes(Atype)) {
-    console.log(
-      "Update State - Action: " + action.type + " - Payload: ",
-      action.payload,
-    );
+    // console.log(
+    //   "Update State - Action: " + action.type + " - Payload: ",
+    //   action.payload,
+    // );
   }
   switch (Atype) {
     case "update_rightHandSide": {

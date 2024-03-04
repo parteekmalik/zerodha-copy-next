@@ -64,20 +64,20 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   const { dataState } = useContext(DataContext);
 
   function socketSend(payload: Twsbinance) {
-    if (payload.method === "UNSUBSCRIBE") {
-      payload.params = payload.params.filter(
-        (item) =>
-          item !== dataState.headerPin.Pin0 + "@trade" &&
-          item !== dataState.headerPin.Pin1 + "@trade",
-      );
-    } else if (payload.method === "SUBSCRIBE") {
-      // console.log(payload);
-    }
     payload.params = payload.params.map((item) => {
       const [first, second] = item.split("@");
       return first?.toLowerCase() + "@" + second;
     });
-    Ssend(payload);
+
+    if (payload.method === "UNSUBSCRIBE") {
+      payload.params = payload.params.filter(
+        (item) =>
+          item === dataState.headerPin.Pin0 + "@trade" &&
+          item === dataState.headerPin.Pin1 + "@trade",
+      );
+      // console.log("remove pins from unsubscribe ->", payload);
+    }
+    if (payload.params.length) Ssend(payload);
   }
 
   useEffect(() => {

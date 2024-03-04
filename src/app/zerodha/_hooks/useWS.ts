@@ -24,6 +24,7 @@ export const useSocket = (
             id: 1,
           } as Twsbinance),
         );
+      setsubscriptions(messageQ);
       sendMessage(
         JSON.stringify({
           method: "SUBSCRIBE",
@@ -31,7 +32,6 @@ export const useSocket = (
           id: 1,
         } as Twsbinance),
       );
-      updatSubscription();
     },
     onMessage: (event) => {
       const data = JSON.parse(event.data as string) as
@@ -41,6 +41,8 @@ export const useSocket = (
         console.log("websocket message or responce ->", data);
         if (data.id === 3) {
           setsubscriptions(data.result);
+        } else {
+          updatSubscription();
         }
       } else {
         // console.log("is workibng!!!!!!!!!!!!!", data);
@@ -68,16 +70,44 @@ export const useSocket = (
   const updatSubscription = () => {
     sendMessage(JSON.stringify({ method: "LIST_SUBSCRIPTIONS", id: 3 }));
   };
+  function deleteDuplicateReq(payload: Twsbinance) {
+    if (payload.method === "UNSUBSCRIBE") {
+      payload.params = payload.params.filter((item) => {
+        if (subscriptions.includes(item)) return true;
+      });
+    } else if (payload.method === "SUBSCRIBE") {
+      // console.log(payload);
+      payload.params = payload.params.filter((item) => {
+        if (!subscriptions.includes(item)) return true;
+      });
+      // console.log(payload);
+    }
+    if (payload.params.length) return payload;
+  }
   const socketSend = (payload: Twsbinance) => {
-    if (payload.params.length === 0) return;
+    const Payload = deleteDuplicateReq(payload);
+    if (!Payload || Payload.params.length === 0) return;
 
-    console.log("send socket ->", payload);
+    // console.log("send socket ->", Payload);
     if (connectionStatus === "Open") {
-      sendMessage(JSON.stringify(payload));
-      updatSubscription();
+      console.log("mesageq send ->", JSON.stringify(Payload));
+      setsubscriptions(payload.params);
+      sendMessage(JSON.stringify(Payload));
     } else {
       setmessageQ((prev) => {
-        return [...prev, ...payload.params];
+        // console.log(
+        //   "check ->",
+        //   Payload.params.filter((item) => {
+        //     if (!messageQ.includes(item)) return true;
+        //   }),
+        //   prev,
+        // );
+        return [
+          ...prev,
+          ...Payload.params.filter((item) => {
+            if (!prev.includes(item)) return true;
+          }),
+        ];
       });
     }
   };
