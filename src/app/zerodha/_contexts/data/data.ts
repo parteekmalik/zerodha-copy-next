@@ -2,6 +2,7 @@ import { createContext } from "react";
 import type { TorderForm } from "../../_components/OrderForm/orderForm";
 import type { Tsymbol } from "../../_components/WatchList/watchList";
 import type { IdataContextActions } from "./dataReduer";
+import { boolean } from "zod";
 
 export type TrightSideType =
   | { type: "Dashboard" }
@@ -33,7 +34,11 @@ export interface IdataContextState {
   headerPin: TPin;
   FormData: TFormtatur;
 }
-export type TFormtatur = { isvisible: boolean; symbol: string; type: "BUY" | "SELL" };
+export type TFormtatur = {
+  isvisible: boolean;
+  symbol: string;
+  type: "BUY" | "SELL";
+};
 export type TPin = { Pin0: string; Pin1: string };
 export const defaultdataContextState: IdataContextState = {
   rightSideData: { type: "Dashboard" },
@@ -55,6 +60,7 @@ export const defaultdataContextState: IdataContextState = {
 export interface IdataContextProps {
   dataState: IdataContextState;
   dataDispatch: React.Dispatch<IdataContextActions>;
+  loading: boolean;
 }
 
 const DataContext = createContext<IdataContextProps>({
@@ -62,6 +68,7 @@ const DataContext = createContext<IdataContextProps>({
   dataDispatch: () => {
     console.log("due to ts error");
   },
+  loading: false,
 });
 
 export const DataContextConsumer = DataContext.Consumer;
