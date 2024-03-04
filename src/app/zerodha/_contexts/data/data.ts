@@ -31,8 +31,9 @@ export interface IdataContextState {
   watchList: Tsymbol[][];
   userDetails: TuserDetails;
   headerPin: TPin;
-  FormData: TorderForm;
+  FormData: TFormtatur;
 }
+export type TFormtatur = { isvisible: boolean; symbol: string; type: "BUY" | "SELL" };
 export type TPin = { Pin0: string; Pin1: string };
 export const defaultdataContextState: IdataContextState = {
   rightSideData: { type: "Dashboard" },
@@ -46,16 +47,8 @@ export const defaultdataContextState: IdataContextState = {
   headerPin: { Pin0: "BTCUSDT", Pin1: "ETHUSDT" },
   FormData: {
     isvisible: false,
-    symbol: "btcusd",
-    market: "SPOT",
-    orderType: "LIMIT",
-    oderdetails: {
-      orderType: "BUY",
-      quantity: 1,
-      price: 1010,
-      sl: 0,
-      tp: 0,
-    },
+    symbol: "BTCUSDT",
+    type: "BUY",
   },
 };
 

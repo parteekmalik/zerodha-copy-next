@@ -6,6 +6,7 @@ import OrderForm from "./OrderForm/orderForm";
 import RightSide from "./Rightside/RightSde";
 import WatchList from "./WatchList/watchList";
 import Header from "./hearder";
+import TempOrderForm from "./OrderForm/orderForm";
 
 export default function Home() {
   const { dataDispatch, dataState } = useContext(DataContext);
@@ -40,7 +41,9 @@ export default function Home() {
         </div>
       </div>
       <div>{JSON.stringify(dataState)}</div>
-      <OrderForm />
+      {dataState.FormData.isvisible ? <OrderForm symbol={dataState.FormData.symbol} type={dataState.FormData.type} />:null}
+      {dataState.FormData.isvisible ? <TempOrderForm symbol={dataState.FormData.symbol} type={dataState.FormData.type} />:null}
+      
     </main>
   );
 }

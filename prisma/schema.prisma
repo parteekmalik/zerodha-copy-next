@@ -85,8 +85,8 @@ model TradingAccount {
     User      User?       @relation(fields: [userId], references: [id])
     userId    String?
     watchList String[]    @default(["", "", "", "", "", "", ""])
-    Pin0       String    @default("ETHUSDT")
-    Pin1       String    @default("BTCUSDT")
+    Pin0      String      @default("ETHUSDT")
+    Pin1      String      @default("BTCUSDT")
 }
 
 // model Transection {
@@ -116,22 +116,30 @@ model FullOrder {
     createsAt        DateTime       @default(now())
     name             String
     type             String
-    status           String
+    status           orderStatus    @default(patial_filled)
     price            Float
     avgPrice         Float
     totalAmount      Float
     filledAmount     Float
-    suborders        Suborder[]
+    sl               Int            @default(0)
+    tp               Int            @default(0)
+    // suborders        Suborder[]
     TradingAccount   TradingAccount @relation(fields: [TradingAccountId], references: [id])
     TradingAccountId String
 }
 
-model Suborder {
-    id          String     @id @default(cuid())
-    createsAt   DateTime   @default(now())
-    name        String
-    Price       Float
-    Amount      Float
-    FullOrder   FullOrder? @relation(fields: [fullOrderId], references: [id])
-    fullOrderId String?
+enum orderStatus {
+    patial_filled
+    completed
+    cancelled
 }
+
+// model Suborder {
+//     id          String     @id @default(cuid())
+//     createsAt   DateTime   @default(now())
+//     name        String
+//     Price       Float
+//     Amount      Float
+//     FullOrder   FullOrder? @relation(fields: [fullOrderId], references: [id])
+//     fullOrderId String?
+// }

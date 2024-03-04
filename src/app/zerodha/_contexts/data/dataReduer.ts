@@ -1,5 +1,5 @@
 import type { TorderForm } from "../../_components/OrderForm/orderForm";
-import type { IdataContextState, TPin, TuserDetails } from "./data";
+import type { IdataContextState, TFormtatur, TPin, TuserDetails } from "./data";
 import type { TrightSideType } from "./data";
 
 export type IdataContextActions =
@@ -21,7 +21,7 @@ export type IdataContextActions =
     }
   | {
       type: "update_FormData";
-      payload: TorderForm;
+      payload: TFormtatur;
     };
 
 const excludeType = ["update_symbol"];

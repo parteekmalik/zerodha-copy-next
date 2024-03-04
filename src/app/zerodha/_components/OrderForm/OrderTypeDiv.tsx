@@ -1,10 +1,19 @@
-import { useContext, useEffect } from "react";
-import DataContext from "../../_contexts/data/data";
-import { OrderTypeList } from "./orderForm";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { TOrderType, OrderTypeList } from "./orderForm";
 
-function OrderTypeDiv() {
-  const Formdata = useContext(DataContext).dataState.FormData;
-  const { dataDispatch } = useContext(DataContext);
+export function OrderTypeDiv({
+  Formdata,
+  setFormdata,
+}: {
+  Formdata: TOrderType;
+  setFormdata: Dispatch<
+    SetStateAction<{
+      sl: boolean;
+      tp: boolean;
+      orderType: TOrderType;
+    }>
+  >;
+}) {
   useEffect(() => {
     console.log(Formdata);
   }, [Formdata]);
@@ -15,11 +24,10 @@ function OrderTypeDiv() {
         return (
           <CheckBox
             key={type + "123"}
-            data={{ isSelected: Formdata.orderType === type, type }}
+            data={{ isSelected: Formdata === type, type }}
             clickHandler={() =>
-              dataDispatch({
-                type: "update_FormData",
-                payload: { ...Formdata, orderType: type },
+              setFormdata((prev) => {
+                return { ...prev, orderType: type };
               })
             }
           />
@@ -51,4 +59,3 @@ export function CheckBox({
     </div>
   );
 }
-export default OrderTypeDiv;

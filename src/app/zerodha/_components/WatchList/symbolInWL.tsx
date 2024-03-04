@@ -147,12 +147,8 @@ function HiddenLayout({
         payload: {
           ...dataState.FormData,
           isvisible: true,
-          oderdetails: {
-            ...dataState.FormData.oderdetails,
-            orderType: "BUY",
-          },
+          type: "BUY",
           symbol: symbolName,
-          orderType: "MARKET",
         },
       },
     },
@@ -166,12 +162,8 @@ function HiddenLayout({
         payload: {
           ...dataState.FormData,
           isvisible: true,
-          oderdetails: {
-            ...dataState.FormData.oderdetails,
-            orderType: "SELL",
-          },
+          type: "SELL",
           symbol: symbolName,
-          orderType: "MARKET",
         },
       },
     },
