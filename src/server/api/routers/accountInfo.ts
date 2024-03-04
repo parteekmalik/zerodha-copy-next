@@ -25,6 +25,47 @@ export const accountInfoRouter = createTRPCRouter({
     // return Taccounts;
     return ctx.session.user;
   }),
+  getInitInfo: protectedProcedure.query(async ({ ctx, input }) => {
+    const Taccounts = (
+      await ctx.db.user.findFirst({
+        where: { name: ctx.session.user.name },
+        select: {
+          Taccounts: true,
+        },
+      })
+    )?.Taccounts;
+    console.log("checking trading account -> ", Taccounts);
+
+    if (!Taccounts || Taccounts?.length === 0) {
+      const res = await ctx.db.tradingAccount.create({
+        data: {
+          User: { connect: { id: ctx.session.user.id } },
+        },
+      });
+      console.log("created new trading account -> ", res);
+    }
+    // return Taccounts;
+
+    const data = (
+      await ctx.db.user.findFirst({
+        where: { name: ctx.session.user.name },
+        select: {
+          Taccounts: {
+            select: { watchList: true, Pin0: true, Pin1: true },
+          },
+        },
+      })
+    )?.Taccounts[0];
+
+    if (data) {
+      const { watchList, Pin0, Pin1 } = data;
+      return {
+        userInfo: ctx.session.user,
+        watchList: convert1D_2D(watchList ?? []),
+        Pins: { Pin0: Pin0 ?? "BTCUSDT", Pin1: Pin1 ?? "ETHUSDT" },
+      };
+    }
+  }),
   watchList: protectedProcedure.query(async ({ ctx, input }) => {
     const watchlist = (
       await ctx.db.user.findFirst({

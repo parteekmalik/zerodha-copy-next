@@ -9,27 +9,7 @@ import Header from "./hearder";
 import TempOrderForm from "./OrderForm/orderForm";
 
 export default function Home() {
-  const { dataDispatch, dataState } = useContext(DataContext);
-
-  const watchlist = api.accountInfo.watchList.useQuery().data ?? [];
-  const Pins = api.accountInfo.getPin.useQuery().data;
-  const userInfo = api.accountInfo.info.useQuery().data ?? {
-    name: "not_found",
-    email: "not_found@gmail.com",
-    image: "not_found",
-    id: "not_found",
-  };
-  useEffect(() => {
-    // console.log("userInfo", userInfo);
-    if (
-      userInfo.id !== "not_found" &&
-      dataState.userDetails?.id === "not_found"
-    )
-      dataDispatch({ type: "update_userDetails", payload: userInfo });
-    if (watchlist.length !== 0 && dataState.watchList.length === 0)
-      dataDispatch({ type: "update_watchList", payload: watchlist });
-    if (Pins) dataDispatch({ type: "update_Pins", payload: Pins });
-  }, [watchlist, userInfo, Pins]);
+  const { dataState } = useContext(DataContext);
 
   return (
     <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
@@ -41,9 +21,18 @@ export default function Home() {
         </div>
       </div>
       <div>{JSON.stringify(dataState)}</div>
-      {dataState.FormData.isvisible ? <OrderForm symbol={dataState.FormData.symbol} type={dataState.FormData.type} />:null}
-      {dataState.FormData.isvisible ? <TempOrderForm symbol={dataState.FormData.symbol} type={dataState.FormData.type} />:null}
-      
+      {dataState.FormData.isvisible ? (
+        <OrderForm
+          symbol={dataState.FormData.symbol}
+          type={dataState.FormData.type}
+        />
+      ) : null}
+      {dataState.FormData.isvisible ? (
+        <TempOrderForm
+          symbol={dataState.FormData.symbol}
+          type={dataState.FormData.type}
+        />
+      ) : null}
     </main>
   );
 }
