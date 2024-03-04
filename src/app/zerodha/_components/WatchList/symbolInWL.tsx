@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import SymbolLiveContext, {
   TsymbolLive,
@@ -6,7 +6,8 @@ import SymbolLiveContext, {
 import DataContext from "../../_contexts/data/data";
 import type { IdataContextActions } from "../../_contexts/data/dataReduer";
 import type { Tsymbol } from "./watchList";
-import { string } from "zod";
+import { string, symbol } from "zod";
+import { Reorder } from "framer-motion";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
 export type Twsbinance = {
@@ -16,68 +17,96 @@ export type Twsbinance = {
 };
 
 interface ISymbolInWL {
-  list: Tsymbol[] | undefined;
+  list: Tsymbol[];
   listNo: number;
 }
-function SymbolInWL({ list, listNo }: ISymbolInWL) {
+function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
   const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
-  // const { dataDispatch, dataState } = useContext(DataContext);
+  const { dataDispatch, dataState } = useContext(DataContext);
+
+  const [list, setList] = useState<Tsymbol[]>([]);
 
   useEffect(() => {
-    if (!list) return;
+    setList(DataList);
+    // console.log("useEffect -> ", DataList);
+  }, [DataList]);
+
+  useEffect(() => {
+    if (!DataList) return;
     const msg: Twsbinance = {
       method: "SUBSCRIBE",
       params: [],
-      id: 1,
+      id: 2,
     };
-    list?.map((symbol) => {
+    DataList?.map((symbol) => {
       msg.params.push(symbol + "@trade");
     });
+    // console.log("message sent->", msg);
     socketSend(msg);
     return () => {
-      if (!list) return;
+      if (!DataList) return;
       const msg: Twsbinance = {
         method: "UNSUBSCRIBE",
         params: [],
-        id: 1,
+        id: 2,
       };
-      list?.map((symbol) => {
+      DataList?.map((symbol) => {
         msg.params.push(symbol + "@trade");
       });
       socketSend(msg);
     };
-  }, [list]);
+  }, [DataList]);
+  if (!list) return null;
   return (
     <>
-      {list
-        ? list.map((symbol) => {
-            const symbolName = symbol.toUpperCase();
-            const symbolLiveTemp = symbolLiveState.Livestream[symbolName];
-            const diff = symbolLiveTemp?.isup ? 1 : -1;
+      <Reorder.Group
+        values={list}
+        onMouseUp={(e) => {
+          console.log("mouseup ->", list);
+        }}
+        onReorder={(e) => {
+          console.log("reorder ->", e);
+          const watchList = dataState.watchList;
+          watchList[listNo] = e;
+          setList(e);
+          // dataDispatch({ type: "update_watchList", payload: watchList });
+        }}
+      >
+        {list
+          ? list.map((symbol) => {
+              const symbolName = symbol.toUpperCase();
+              const symbolLiveTemp = symbolLiveState.Livestream[symbolName];
+              const diff = symbolLiveTemp?.isup ? 1 : -1;
 
-            if (symbolLiveTemp)
               return (
-                <div
-                  className={
-                    "group/item relative flex border-b p-[12px_15px]  hover:bg-[#f9f9f9] " +
-                    getColor(diff)
-                  }
-                  style={{ fontSize: ".8125rem" }}
-                  key={"symbol" + symbol}
-                >
-                  <BaseSymbolLayout
-                    key={"watchlistItem_" + symbolName}
-                    symbolName={symbolName}
-                    symbolLiveTemp={symbolLiveTemp}
-                  />
-                  <div className=" invisible absolute right-0 top-0 flex h-full gap-2 p-[8px_15px_8px_2px] text-white group-hover/item:visible">
-                    <HiddenLayout symbolName={symbolName} listNo={listNo} />
-                  </div>
-                </div>
+                <Reorder.Item key={"list" + symbol} value={symbol}>
+                  {symbolLiveTemp ? (
+                    <div
+                      className={
+                        "group/item relative flex border-b p-[12px_15px]  hover:bg-[#f9f9f9] hover:cursor-move " +
+                        getColor(diff)
+                      }
+                      style={{ fontSize: ".8125rem" }}
+                      key={"symbol" + symbol}
+                    >
+                      <BaseSymbolLayout
+                        key={"watchlistItem_" + symbolName}
+                        symbolName={symbolName}
+                        symbolLiveTemp={symbolLiveTemp}
+                      />
+                      <div className=" invisible absolute right-0 top-0 flex h-full gap-2 p-[8px_15px_8px_2px] text-white group-hover/item:visible">
+                        <HiddenLayout symbolName={symbolName} listNo={listNo} />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="h-10 w-full border p-2">{symbol}</div>
+                  )}
+                </Reorder.Item>
               );
-            else return null;
-          })
-        : null}
+            })
+          : null}
+      </Reorder.Group>
+      <div>{JSON.stringify(list)}</div>
     </>
   );
 }
@@ -205,11 +234,19 @@ function HiddenLayout({
       payload: { Type: "Supdate_Pins", pos: 1 },
     },
   ];
-  const deleteApi = api.accountInfo.deleteIteminWatchList.useMutation({
+  const deleteApi = api.accountInfo.updateWatchList.useMutation({
     onSuccess: async (data) => {
       dataDispatch({ type: "update_watchList", payload: data });
     },
   });
+  function deleteFunc(symbol: string) {
+    symbol = symbol.toUpperCase();
+    let list = dataState.watchList[listNo];
+    // console.log("delete api ->", list, symbol);
+    list = list?.filter((item) => item !== symbol);
+    // console.log("delete api ->", list);
+    deleteApi.mutate({ name: list?.join(" ") ?? "", row: listNo });
+  }
   const updatePinApi = api.accountInfo.updatePins.useMutation({
     onSuccess: async (data) => {
       if (typeof data === "string") console.log(data);
@@ -236,7 +273,7 @@ function HiddenLayout({
                   });
                 } else if (payload.Type === "delete_watchListItem") {
                   console.log("updatewatchliast->");
-                  deleteApi.mutate({ name: symbolName, row: listNo });
+                  deleteFunc(symbolName);
                 }
               }
             }}

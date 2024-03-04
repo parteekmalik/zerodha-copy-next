@@ -5,7 +5,7 @@ import DataContext from "../../_contexts/data/data";
 import { searchAndSort } from "../../utils";
 import { shadowBox } from "../tcss";
 import SearchList from "./searchList";
-import SymbolInWL from "./testsymbolInWL";
+import SymbolInWL from "./symbolInWL";
 import WatchlistBittom from "./watchlistBittom";
 
 export type Tsymbol = string;
