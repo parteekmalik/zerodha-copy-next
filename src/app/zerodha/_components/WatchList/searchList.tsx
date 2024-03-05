@@ -24,7 +24,6 @@ function SearchList({
 }) {
   const { symbolLiveState } = useContext(SymbolLiveContext);
 
-  // const list = searchAndSort(input, Object.keys(symbolLiveState.symbolsList));
   const handleClickOutside = (event: globalThis.KeyboardEvent) => {
     if (event.key === "ArrowUp")
       setSearch((prev) => ({

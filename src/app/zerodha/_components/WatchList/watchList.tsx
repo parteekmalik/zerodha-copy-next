@@ -33,7 +33,10 @@ function WatchList() {
   });
   function submitUpdate(index: number) {
     updateWatchList.mutate({
-      name: [...list[watchListNo]??[],search.matchingSymbol[index]].join(" ") ?? "dummy_string",
+      name:
+        [...(list[watchListNo] ?? []), search.matchingSymbol[index]].join(
+          " ",
+        ) ?? "dummy_string",
       row: watchListNo,
     });
   }
@@ -42,6 +45,7 @@ function WatchList() {
     const temp = searchAndSort(
       search.data,
       Object.keys(symbolLiveState.symbolsList),
+      list[watchListNo] ?? [],
     );
     if (
       search.focus &&
@@ -110,7 +114,7 @@ function WatchList() {
             />
           </div>
         ) : null}
-        <div className="custom-scrollbar scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-200  overflow-x-hidden  flex  grow flex-col overflow-y-auto">
+        <div className="custom-scrollbar scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-200  flex  grow  flex-col overflow-y-auto overflow-x-hidden">
           <SymbolInWL list={list[watchListNo] ?? []} listNo={watchListNo} />
         </div>
       </div>

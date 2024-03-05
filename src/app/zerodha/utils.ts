@@ -16,7 +16,11 @@ export const parsePrice = (price: string | undefined) => {
   // return Number(parseFloat(price).toFixed(Math.max(2, count)));
   return Number(price);
 };
-export function searchAndSort(searchTerm: string, array: string[]): string[] {
+export function searchAndSort(
+  searchTerm: string,
+  array: string[],
+  notInclude: string[],
+): string[] {
   searchTerm = searchTerm.toUpperCase();
   const ranking: Record<number, string> = {};
   let rankinglist: string[] = [];
@@ -30,8 +34,12 @@ export function searchAndSort(searchTerm: string, array: string[]): string[] {
     }
   });
   Object.keys(ranking).map((key) => {
-    rankinglist = [...rankinglist, ...(ranking[Number(key)]?.split(" ") ?? []).sort()];
+    rankinglist = [
+      ...rankinglist,
+      ...(ranking[Number(key)]?.split(" ") ?? []).sort(),
+    ];
   });
+  rankinglist = rankinglist.filter((item) => !notInclude.includes(item));
   return rankinglist.slice(0, 20);
 }
 export function listToRecord<T>(list: T[], key: keyof T): Record<string, T> {
