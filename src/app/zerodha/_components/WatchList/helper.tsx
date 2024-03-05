@@ -154,7 +154,7 @@ export function HiddenLayout({
           <div
             className={`h-full w-[35px] cursor-pointer rounded  p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color}`}
             key={"hiddenitems" + text}
-            onMouseUp={() => {
+            onClick={() => {
               if (payload) {
                 console.log("clicked hidden elements payload ->", payload);
                 if ("type" in payload) {
