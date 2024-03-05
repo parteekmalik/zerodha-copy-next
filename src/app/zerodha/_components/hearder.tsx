@@ -32,12 +32,11 @@ function Header() {
       ],
       id: 1,
     };
-
-    socketSend(msg);
-    // return () => {
-    //   msg.method = "UNSUBSCRIBE";
-    //   socketSend(msg);
-    // };
+    if (dataState.headerPin.Pin0) socketSend(msg);
+    return () => {
+      msg.method = "UNSUBSCRIBE";
+      if (msg.params[0] !== "@trade") socketSend(msg);
+    };
   }, [dataState.headerPin]);
   // ff5722
   return (

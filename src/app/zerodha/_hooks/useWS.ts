@@ -4,6 +4,8 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import { TsymbolTrade } from "../_contexts/SymbolLive/SymbolLive";
 import { Twsbinance } from "../_components/WatchList/symbolInWL";
 
+let subscriptions: string[] = [];
+
 export const useSocket = (
   url: string,
   processMessages: (data: TsymbolTrade) => void,
@@ -15,37 +17,29 @@ export const useSocket = (
     onClose: () => console.log("WebSocket connection closed."),
     onOpen: () => {
       console.log("WebSocket connection opened.");
-      if (messageQ.length > 0)
-        console.log(
-          "mesageq send ->",
-          JSON.stringify({
-            method: "SUBSCRIBE",
-            params: messageQ,
-            id: 1,
-          } as Twsbinance),
-        );
-      setsubscriptions(messageQ);
-      sendMessage(
-        JSON.stringify({
+      if (messageQ.length > 0) {
+        const msg = {
           method: "SUBSCRIBE",
           params: messageQ,
           id: 1,
-        } as Twsbinance),
-      );
+        } as Twsbinance;
+
+        console.log("mesageq send ->", JSON.stringify(msg));
+        subscriptions = messageQ;
+        sendMessage(JSON.stringify(msg));
+      }
     },
     onMessage: (event) => {
       const data = JSON.parse(event.data as string) as
         | TsymbolTrade
         | { result: string[]; id: number };
       if ("id" in data) {
-        console.log("websocket message or responce ->", data);
         if (data.id === 3) {
-          setsubscriptions(data.result);
+          subscriptions = data.result;
         } else {
           updatSubscription();
         }
       } else {
-        // console.log("is workibng!!!!!!!!!!!!!", data);
         processMessages(data);
       }
     },
@@ -59,13 +53,6 @@ export const useSocket = (
   }[readyState];
 
   const [messageQ, setmessageQ] = useState<string[]>([]);
-  const [subscriptions, setsubscriptions] = useState<string[]>([]);
-  useEffect(() => {
-    console.log("subscriptions useeffect ->", subscriptions);
-  }, [subscriptions]);
-  useEffect(() => {
-    console.log("messageQ useeffect ->", messageQ);
-  }, [messageQ]);
 
   const updatSubscription = () => {
     sendMessage(JSON.stringify({ method: "LIST_SUBSCRIPTIONS", id: 3 }));
@@ -76,11 +63,9 @@ export const useSocket = (
         if (subscriptions.includes(item)) return true;
       });
     } else if (payload.method === "SUBSCRIBE") {
-      // console.log(payload);
       payload.params = payload.params.filter((item) => {
         if (!subscriptions.includes(item)) return true;
       });
-      // console.log(payload);
     }
     if (payload.params.length) return payload;
   }
@@ -88,20 +73,12 @@ export const useSocket = (
     const Payload = deleteDuplicateReq(payload);
     if (!Payload || Payload.params.length === 0) return;
 
-    // console.log("send socket ->", Payload);
     if (connectionStatus === "Open") {
-      console.log("mesageq send ->", JSON.stringify(Payload));
-      setsubscriptions(payload.params);
+      console.log("mesage send ->", JSON.stringify(Payload), subscriptions);
+      subscriptions = [...subscriptions, ...payload.params];
       sendMessage(JSON.stringify(Payload));
     } else {
       setmessageQ((prev) => {
-        // console.log(
-        //   "check ->",
-        //   Payload.params.filter((item) => {
-        //     if (!messageQ.includes(item)) return true;
-        //   }),
-        //   prev,
-        // );
         return [
           ...prev,
           ...Payload.params.filter((item) => {
