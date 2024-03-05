@@ -20,7 +20,7 @@ function Item({
       dragListener={false}
       dragControls={dragControls}
       value={symbolName}
-      className="relative"
+      className="relative translate-x-0"
     >
       <div
         className={
