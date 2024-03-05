@@ -110,7 +110,7 @@ function WatchList() {
             />
           </div>
         ) : null}
-        <div className="custom-scrollbar scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-200    flex  grow flex-col overflow-y-auto">
+        <div className="custom-scrollbar scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-200  overflow-x-hidden  flex  grow flex-col overflow-y-auto">
           <SymbolInWL list={list[watchListNo] ?? []} listNo={watchListNo} />
         </div>
       </div>

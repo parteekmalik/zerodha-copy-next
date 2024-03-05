@@ -28,14 +28,11 @@ function Item({
           getColor(diff)
         }
         style={{ fontSize: ".8125rem" }}
-        // onPointerDown={(e) => dragControls.start(e)}
       >
         <div
           className=" absolute h-full w-full text-white hover:cursor-move"
           onPointerDown={(e) => dragControls.start(e)}
-        >
-          {/* ::: */}
-        </div>
+        ></div>
         {symbolLiveTemp ? (
           <>
             <BaseSymbolLayout
