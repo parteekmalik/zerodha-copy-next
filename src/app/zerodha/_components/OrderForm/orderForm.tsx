@@ -67,6 +67,7 @@ function TempOrderForm({
       quantity: Number(data.quantity),
       sl: Number(data.sl),
       tp: Number(data.tp),
+      trigerType: isAvl.orderType,
     });
     dataDispatch({
       type: "update_FormData",

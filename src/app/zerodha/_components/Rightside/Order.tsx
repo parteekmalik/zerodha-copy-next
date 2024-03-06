@@ -68,7 +68,7 @@ function Order() {
                   "SPOT",
                   `${item.filledAmount}/${item.totalAmount}`,
                   "LTP",
-                  item.avgPrice,
+                  item.price,
                   item.status,
                 ];
               }) ?? []

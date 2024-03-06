@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const FormSchema = z.object({
   orderType: z.enum(["BUY", "SELL"]),
+  trigerType: z.enum(["LIMIT", "STOP","MARKET"]),
   quantity: z.number().min(0.0001),
   price: z.number().min(0),
   sl: z.number().min(0),

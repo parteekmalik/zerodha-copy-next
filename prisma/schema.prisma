@@ -116,6 +116,7 @@ model FullOrder {
     createsAt        DateTime       @default(now())
     name             String
     type             String
+    trigerType       EtrigerType
     status           orderStatus    @default(patial_filled)
     price            Float
     avgPrice         Float
@@ -126,6 +127,12 @@ model FullOrder {
     // suborders        Suborder[]
     TradingAccount   TradingAccount @relation(fields: [TradingAccountId], references: [id])
     TradingAccountId String
+}
+
+enum EtrigerType {
+    LIMIT
+    STOP
+    MARKET
 }
 
 enum orderStatus {

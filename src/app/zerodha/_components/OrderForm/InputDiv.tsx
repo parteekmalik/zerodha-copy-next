@@ -9,6 +9,7 @@ function InputDiv({
   data: { label: string; isSelected: boolean };
   register: UseFormRegister<{
     orderType: "BUY" | "SELL";
+    trigerType: "LIMIT" | "STOP" | "MARKET";
     quantity: number;
     price: number;
     sl: number;
