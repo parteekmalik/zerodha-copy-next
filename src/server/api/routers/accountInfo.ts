@@ -94,6 +94,20 @@ export const accountInfoRouter = createTRPCRouter({
 
     return Pins ?? { Pin0: "BTCUSDT", Pin1: "ETHUSDT" };
   }),
+  getOrders: protectedProcedure.query(async ({ ctx, input }) => {
+    const Orders = (
+      await ctx.db.user.findFirst({
+        where: { name: ctx.session.user.name },
+        select: {
+          Taccounts: {
+            select: { statement: true },
+          },
+        },
+      })
+    )?.Taccounts[0];
+    if (!Orders) return "error getting orders";
+    else return Orders.statement;
+  }),
   updatePins: protectedProcedure
     .input(z.object({ name: z.string().min(1), pos: z.number().min(0).max(1) }))
     .mutation(async ({ ctx, input }) => {
@@ -122,12 +136,7 @@ export const accountInfoRouter = createTRPCRouter({
       } else return "cant find trading account";
     }),
   updateWatchList: protectedProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        row: z.number(),
-      }),
-    )
+    .input(z.object({ name: z.string(), row: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const details = await ctx.db.user.findFirst({
         where: { name: ctx.session.user.name },
@@ -148,6 +157,7 @@ export const accountInfoRouter = createTRPCRouter({
       return convert1D_2D(res);
     }),
 });
+
 function convert1D_2D(input: string[]): string[][] {
   const watchlistFinal: string[][] = [];
   input?.map((symbol) => {

@@ -4,6 +4,7 @@ function InputDiv({
   data: { label, isSelected },
   register,
   fileldName,
+  Type,
 }: {
   data: { label: string; isSelected: boolean };
   register: UseFormRegister<{
@@ -15,6 +16,7 @@ function InputDiv({
     symbolName: string;
     marketType: "SPOT" | "MARGIN";
   }>;
+  Type: string;
   fileldName:
     | "orderType"
     | "quantity"
@@ -27,7 +29,7 @@ function InputDiv({
   return (
     <div className="relative">
       <input
-        type="number"
+        type={Type}
         className="m-2 rounded-[3px] border p-[10px_15px] focus:border-black focus:outline-none "
         disabled={!isSelected}
         style={

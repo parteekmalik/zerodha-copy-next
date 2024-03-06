@@ -1,8 +1,4 @@
-import {
-  useContext,
-  useEffect,
-  useState
-} from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import DataContext from "../../_contexts/data/data";
@@ -10,7 +6,6 @@ import InputDiv from "./InputDiv";
 import { CheckBox, OrderTypeDiv } from "./OrderTypeDiv";
 import { api } from "~/trpc/react";
 import { TFormSchema } from "./FrmSchema";
-
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -32,7 +27,7 @@ function TempOrderForm({
   symbol: string;
   type: "BUY" | "SELL";
 }) {
-  // const sendOrder = api.order.createOrder.useMutation({});
+  const sendOrder = api.order.createOrder.useMutation({});
   const {
     register,
     handleSubmit,
@@ -66,9 +61,13 @@ function TempOrderForm({
 
   const onSubmit = (data: z.output<TFormSchema>) => {
     console.log("send order", data);
-    // sendOrder.mutate({
-    //   ...data,
-    // });
+    sendOrder.mutate({
+      ...data,
+      price: Number(data.price),
+      quantity: Number(data.quantity),
+      sl: Number(data.sl),
+      tp: Number(data.tp),
+    });
     dataDispatch({
       type: "update_FormData",
       payload: {
@@ -130,6 +129,7 @@ function TempOrderForm({
         <div>
           <div className="flex ">
             <InputDiv
+              Type="float"
               data={{
                 label: "Qty.",
                 isSelected: true,
@@ -138,6 +138,7 @@ function TempOrderForm({
               fileldName="quantity"
             />
             <InputDiv
+              Type="float"
               data={{
                 label: "Price",
                 isSelected: isAvl.orderType !== "MARKET",
@@ -153,6 +154,7 @@ function TempOrderForm({
         <div className="flex ">
           <div className="flex flex-col items-end ">
             <InputDiv
+              Type="float"
               data={{
                 label: "SL",
                 isSelected: isAvl.sl,
@@ -179,6 +181,7 @@ function TempOrderForm({
           </div>
           <div className="flex flex-col items-end ">
             <InputDiv
+              Type="float"
               data={{
                 label: "TP",
                 isSelected: isAvl.tp,
@@ -244,7 +247,5 @@ function TempOrderForm({
     </form>
   );
 }
-
-
 
 export default TempOrderForm;
