@@ -62,7 +62,7 @@ function Order() {
             dataList={
               openOrders.map((item) => {
                 return [
-                  `${item.createsAt.getHours()}:${item.createsAt.getSeconds()}:${item.createsAt.getSeconds()}`,
+                  item.createsAt.toTimeString().split(" ")[0] ?? "",
                   item.type,
                   item.name,
                   "SPOT",
@@ -99,7 +99,7 @@ function Order() {
             dataList={
               executedOrders.map((item) => {
                 return [
-                  `${item.createsAt.getHours()}:${item.createsAt.getSeconds()}:${item.createsAt.getSeconds()}`,
+                  item.createsAt.toTimeString().split(" ")[0] ?? "",
                   item.type,
                   item.name,
                   "SPOT",
