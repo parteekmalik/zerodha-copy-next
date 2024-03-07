@@ -75,7 +75,7 @@ export const orderRouter = createTRPCRouter({
     }),
 });
 async function getLTP(symbol: string) {
-  const url = "https://api.binance.com/api/v3/ticker/price?symbol=" + symbol;
+  const url = "https://api.binance.us/api/v3/ticker/price?symbol=" + symbol;
   console.log("url", url);
   axios
     .get(url)
