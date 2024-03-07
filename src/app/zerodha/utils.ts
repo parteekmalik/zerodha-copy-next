@@ -1,3 +1,5 @@
+import { TOrder } from "./_components/Rightside/Order";
+
 export const parsePrice = (price: string | undefined) => {
   if (price === undefined) return 0;
   // const Fprice = parseFloat(price);
@@ -53,4 +55,75 @@ export function listToRecord<T>(list: T[], key: keyof T): Record<string, T> {
     },
     {} as Record<string, T>,
   );
+}
+export type TcalculateTradesSummaryFIFO = {
+  type: "BUY" | "SELL";
+  quantity: number;
+  price: number;
+};
+export function calculateTradesSummaryFIFO(
+  trades: TcalculateTradesSummaryFIFO[],
+  currentPrice: number,
+) {
+  const buyTrades = trades.filter((item) => item.type === "BUY");
+  const sellTrades = trades.filter((item) => item.type === "SELL");
+  let netQuantity = 0;
+  trades.map((item) => {
+    if (item.type === "BUY") netQuantity += item.quantity;
+    else netQuantity -= item.quantity;
+  });
+  const { profitOrLoss, avgPrice } = helper(
+    netQuantity > 0
+      ? { List1: buyTrades, List2: sellTrades }
+      : { List2: buyTrades, List1: sellTrades },
+  );
+
+  return {
+    avgPrice,
+    netQuantity,
+    profitOrLoss,
+  };
+}
+function helper({
+  List1,
+  List2,
+}: {
+  List1: TcalculateTradesSummaryFIFO[];
+  List2: TcalculateTradesSummaryFIFO[];
+}) {
+  const totalCost = 0;
+  let profitOrLoss = 0;
+  while (List2.length) {
+    // console.log("list1,list2 ->", List1, List2);
+    const first = List1[0];
+    const second = List2[0];
+    if (first && second) {
+      const commonQ = Math.min(first.quantity, second.quantity);
+      profitOrLoss += commonQ * (second.price - first.price);
+      if (first.quantity === commonQ) List1.shift();
+      else {
+        first.quantity -= commonQ;
+      }
+      if (second.quantity === commonQ) List2.shift();
+      else {
+        second.quantity -= commonQ;
+      }
+    }
+    // console.log("list1,list2 ->", List1, List2);
+  }
+  return { profitOrLoss, avgPrice: AvgPrice(List1), totalCost };
+}
+function AvgPrice(list: TcalculateTradesSummaryFIFO[]) {
+  // console.log("list avgprice ->", list);
+  let totalQuantity = 0;
+  let totalPrice = 0;
+
+  for (const item of list) {
+    totalQuantity += item.quantity;
+    totalPrice += item.quantity * item.price;
+  }
+  // console.log(totalPrice, totalQuantity);
+  const avgPrice = totalPrice / totalQuantity;
+
+  return totalQuantity === 0 ? 0 : avgPrice.toFixed(2);
 }

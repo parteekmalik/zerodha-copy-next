@@ -4,6 +4,7 @@ import DataContext from "../../_contexts/data/data";
 import Dashboard from "./Dashboard";
 import Chart from "./chart";
 import Order from "./Order";
+import Positions from "./Positions";
 
 function RightSide() {
   const { symbolLiveState } = useContext(SymbolLiveContext);
@@ -23,6 +24,9 @@ function RightSide() {
     }
     case "Orders": {
       return <Order />;
+    }
+    case "Positions": {
+      return <Positions />;
     }
     default:
       return (

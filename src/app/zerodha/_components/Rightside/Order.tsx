@@ -17,7 +17,7 @@ export type TOrder = {
   tp: number;
   TradingAccountId: string;
 };
-const stylesList = {
+export const stylesList = {
   padding: " p-[10px_12px] ",
   table: "m-2",
   head: "border-b-2 text-[.75rem]  text-[#9b9b9b]",
@@ -119,7 +119,7 @@ function Order() {
     </div>
   );
 }
-function Table({
+export function Table({
   headings,
   stylesList,
   dataList,
@@ -142,7 +142,7 @@ function Table({
           {headings.map((item, i) => {
             return (
               <th
-                key={JSON.stringify(item)}
+                key={JSON.stringify(item) + i}
                 className={stylesList.padding + stylesList.row[i]}
               >
                 {item}
@@ -152,13 +152,14 @@ function Table({
         </tr>
       </thead>
       <tbody className={stylesList.body}>
-        {dataList?.map((items) => {
+        {dataList?.map((items, i) => {
           return (
-            <tr key={JSON.stringify(items)}>
+            <tr key={JSON.stringify(items) + i}>
               {items.map((item, i) => {
                 return (
                   <td
-                    key={JSON.stringify(item)}
+                    // using random for key
+                    key={JSON.stringify(item) + i}
                     className={stylesList.padding + stylesList.row[i]}
                   >
                     {item}
