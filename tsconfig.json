@@ -37,7 +37,9 @@
     "**/*.cjs",
     "**/*.js",
     ".next/types/**/*.ts",
-    "test.cjs"
+    "testing/test.mjs",
+    "testing/testbinancelist.mjs",
+    "testing/testcoinmarketcap.mjs"
   ],
   "exclude": ["node_modules"]
 }
