@@ -20,6 +20,8 @@ export const orderRouter = createTRPCRouter({
       )?.Taccounts[0];
       console.log(Taccounts);
       if (Taccounts) {
+        console.log("inside taccout if");
+        console.log(input.trigerType, "MARKET", input.trigerType === "MARKET");
         if (input.trigerType === "MARKET") {
           const curPrice = await getLTP(input.symbolName);
           console.log("curPrice->", curPrice);
