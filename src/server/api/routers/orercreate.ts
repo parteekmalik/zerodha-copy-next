@@ -6,9 +6,7 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const orderRouter = createTRPCRouter({
   createOrder: protectedProcedure
-    .input(
-      FormSchema
-    )
+    .input(FormSchema)
     .mutation(async ({ ctx, input }) => {
       console.log("order recieved", input);
 
@@ -21,8 +19,21 @@ export const orderRouter = createTRPCRouter({
         })
       )?.Taccounts[0];
       if (Taccounts) {
-        if (input.price === 0) {
+        if (input.trigerType === "MARKET") {
           const curPrice = await getLTP(input.symbolName);
+          console.log("curPrice->", curPrice);
+          console.log("data->", {
+            status: "completed",
+            name: input.symbolName,
+            type: input.orderType,
+            price: curPrice,
+            avgPrice: curPrice,
+            trigerType: input.trigerType,
+            totalAmount: input.quantity,
+            filledAmount: input.quantity,
+            // TransectionId: transection.id,
+            TradingAccountId: Taccounts.id,
+          },)
           await ctx.db.fullOrder.create({
             data: {
               status: "completed",
@@ -30,11 +41,11 @@ export const orderRouter = createTRPCRouter({
               type: input.orderType,
               price: curPrice,
               avgPrice: curPrice,
-              trigerType: input.trigerType, 
+              trigerType: input.trigerType,
               totalAmount: input.quantity,
               filledAmount: input.quantity,
               // TransectionId: transection.id,
-              TradingAccountId: Taccounts?.id ?? "dummy_id",
+              TradingAccountId: Taccounts.id,
             },
           });
         } else
@@ -46,10 +57,10 @@ export const orderRouter = createTRPCRouter({
               price: input.price,
               avgPrice: 0,
               totalAmount: input.quantity,
-              trigerType: input.trigerType, 
+              trigerType: input.trigerType,
               filledAmount: 0,
               // TransectionId: transection.id,
-              TradingAccountId: Taccounts?.id ?? "dummy_id",
+              TradingAccountId: Taccounts.id,
             },
           });
         console.log("order transection comleted");
