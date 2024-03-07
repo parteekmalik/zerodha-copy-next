@@ -18,6 +18,7 @@ export const orderRouter = createTRPCRouter({
           },
         })
       )?.Taccounts[0];
+      console.log(Taccounts);
       if (Taccounts) {
         if (input.trigerType === "MARKET") {
           const curPrice = await getLTP(input.symbolName);
@@ -33,7 +34,7 @@ export const orderRouter = createTRPCRouter({
             filledAmount: input.quantity,
             // TransectionId: transection.id,
             TradingAccountId: Taccounts.id,
-          },)
+          });
           await ctx.db.fullOrder.create({
             data: {
               status: "completed",
