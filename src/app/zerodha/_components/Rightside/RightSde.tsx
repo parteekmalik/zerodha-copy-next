@@ -5,6 +5,7 @@ import Dashboard from "./Dashboard";
 import Chart from "./chart";
 import Order from "./Order";
 import Positions from "./Positions";
+import Funds from "./Funds";
 
 function RightSide() {
   const { symbolLiveState } = useContext(SymbolLiveContext);
@@ -27,6 +28,9 @@ function RightSide() {
     }
     case "Positions": {
       return <Positions />;
+    }
+    case "Funds":{
+      return <Funds />
     }
     default:
       return (
