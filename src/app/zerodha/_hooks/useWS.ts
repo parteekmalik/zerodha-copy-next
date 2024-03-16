@@ -8,8 +8,8 @@ let subscriptions: string[] = [];
 
 export const useSocket = (
   url: string,
-  processMessages: (data: TsymbolTrade) => void,
   opt: Options,
+  processMessages?: (data: TsymbolTrade) => void,
 ): [(payload: Twsbinance) => void, string[], MessageEvent<string> | null] => {
   //   const socketRef = useRef<WebSocket>(new WebSocket(url)); // Changed to allow initialization to
   const { sendMessage, lastMessage, readyState } = useWebSocket(url, {
@@ -39,7 +39,7 @@ export const useSocket = (
         } else {
           updatSubscription();
         }
-      } else {
+      } else if (processMessages) {
         processMessages(data);
       }
     },

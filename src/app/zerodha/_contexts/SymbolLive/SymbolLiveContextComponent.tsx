@@ -47,8 +47,8 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
 
   const [Ssend, subscriptions] = useSocket(
     "wss://stream.binance.com:9443/ws",
-    processMessages,
     {},
+    processMessages,
   );
 
   function processMessages(data: TsymbolTrade) {
