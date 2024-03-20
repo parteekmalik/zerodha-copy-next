@@ -12,7 +12,7 @@ export default function Home() {
   // const cookie = getCookies();
 
   const { socket, isConnected } = useSocket(
-    "ws://localhost:3002",
+    "ws://zerodhacloneapi.ddns.net:3002",
     dataState.userDetails?.TradingAccountId ?? "",
     {
       reconnectionDelay: 60000,
