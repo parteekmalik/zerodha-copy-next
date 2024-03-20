@@ -8,22 +8,22 @@ export const accountInfoRouter = createTRPCRouter({
       await ctx.db.user.findFirst({
         where: { name: ctx.session.user.name },
         select: {
-          Taccounts: true,
+          Taccounts: { select: { id: true } },
         },
       })
-    )?.Taccounts;
+    )?.Taccounts[0];
     console.log("checking trading account -> ", Taccounts);
-
-    if (!Taccounts || Taccounts?.length === 0) {
+    const data = { ...ctx.session.user, TradingAccountId: Taccounts?.id ?? "" };
+    if (!Taccounts) {
       const res = await ctx.db.tradingAccount.create({
         data: {
           User: { connect: { id: ctx.session.user.id } },
         },
       });
+      data.TradingAccountId = res.id;
       console.log("created new trading account -> ", res);
     }
-    // return Taccounts;
-    return ctx.session.user;
+    return data;
   }),
   getInitInfo: protectedProcedure.query(async ({ ctx, input }) => {
     const Taccounts = (
@@ -51,16 +51,16 @@ export const accountInfoRouter = createTRPCRouter({
         where: { name: ctx.session.user.name },
         select: {
           Taccounts: {
-            select: { watchList: true, Pin0: true, Pin1: true },
+            select: { watchList: true, Pin0: true, Pin1: true,id:true },
           },
         },
       })
     )?.Taccounts[0];
 
     if (data) {
-      const { watchList, Pin0, Pin1 } = data;
+      const { watchList, Pin0, Pin1,id } = data;
       return {
-        userInfo: ctx.session.user,
+        userInfo: {...ctx.session.user,TradingAccountId:id},
         watchList: convert1D_2D(watchList ?? []),
         Pins: { Pin0: Pin0 ?? "BTCUSDT", Pin1: Pin1 ?? "ETHUSDT" },
       };

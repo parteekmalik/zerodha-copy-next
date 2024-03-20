@@ -1,8 +1,6 @@
 import { createContext } from "react";
-import type { TorderForm } from "../../_components/OrderForm/orderForm";
 import type { Tsymbol } from "../../_components/WatchList/watchList";
 import type { IdataContextActions } from "./dataReduer";
-import { boolean } from "zod";
 
 export type TrightSideType =
   | { type: "Dashboard" }
@@ -20,6 +18,7 @@ export type TrightSideType =
 export type TuserDetails =
   | ({
       id: string;
+      TradingAccountId: string;
     } & {
       name?: string | null | undefined;
       email?: string | null | undefined;
@@ -48,6 +47,7 @@ export const defaultdataContextState: IdataContextState = {
     email: "not_found@gmail.com",
     image: "not_found",
     id: "not_found",
+    TradingAccountId: "",
   },
   headerPin: { Pin0: "", Pin1: "" },
   FormData: {

@@ -1,6 +1,5 @@
 import { postRouter } from "~/server/api/routers/post";
 import { createTRPCRouter } from "~/server/api/trpc";
-import { orderRouter } from "./routers/orercreate";
 import { accountInfoRouter } from "./routers/accountInfo";
 
 /**
@@ -10,7 +9,6 @@ import { accountInfoRouter } from "./routers/accountInfo";
  */
 export const appRouter = createTRPCRouter({
   post: postRouter,
-  order: orderRouter,
   accountInfo: accountInfoRouter,
 });
 

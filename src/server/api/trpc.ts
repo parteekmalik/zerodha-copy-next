@@ -29,26 +29,9 @@ import { db } from "~/server/db";
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await getServerAuthSession();
-  type Torder = {
-    createsAt: Date;
-    name: string;
-    type: string;
-    trigerType: $Enums.EtrigerType;
-    status: $Enums.orderStatus;
-    price: number;
-    avgPrice: number;
-    totalAmount: number;
-    filledAmount: number;
-    sl?: number;
-    tp?: number;
-    TradingAccountId: string;
-  };
-  const orders: Torder[] = [];
   return {
     db,
     session,
-    orders,
-    isOrderServerRunning: false,
     ...opts,
   };
 };

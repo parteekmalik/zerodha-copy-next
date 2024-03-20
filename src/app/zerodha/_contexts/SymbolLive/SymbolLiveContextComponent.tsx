@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { PropsWithChildren } from "react";
 import React, { useContext, useEffect, useReducer } from "react";
-import { useSocket } from "../../_hooks/useWS";
+import  useLiveWS  from "../../_hooks/useLiveWS";
 import DataContext from "../data/data";
 import type { TsymbolTrade } from "./SymbolLive";
 import {
@@ -45,7 +45,7 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     defaultsymbolLiveContextState,
   );
 
-  const [Ssend, subscriptions] = useSocket(
+  const [Ssend, subscriptions] = useLiveWS(
     "wss://stream.binance.com:9443/ws",
     {},
     processMessages,

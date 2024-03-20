@@ -5,8 +5,9 @@ import ContextLayer from "./contetLayer";
 async function Page() {
   const session = await getServerAuthSession();
   if (!session) redirect("/");
+  console.log(session);
 
-  return <ContextLayer isLogedin={session ? true : false} />;
+  return <ContextLayer />;
 }
 
 export default Page;

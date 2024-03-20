@@ -92,8 +92,8 @@ function calculations(orderMap:  Record<string, TOrder[]>, key: string) {
       orders.map((item) => {
         return {
           type: item.type,
-          quantity: item.filledAmount,
-          price: item.avgPrice,
+          quantity: item.quantity,
+          price: item.price,
         };
       }) as TcalculateTradesSummaryFIFO[],
       0,

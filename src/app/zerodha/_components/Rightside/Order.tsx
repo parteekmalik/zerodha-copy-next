@@ -1,18 +1,14 @@
 import { $Enums } from "@prisma/client";
-import { useScroll } from "framer-motion";
-import moment from "moment";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 export type TOrder = {
   id: string;
   createsAt: Date;
   name: string;
-  type: string;
+  type: $Enums.OrderType;
   status: $Enums.orderStatus;
   price: number;
-  avgPrice: number;
-  totalAmount: number;
-  filledAmount: number;
+  quantity: number;
   sl: number;
   tp: number;
   TradingAccountId: string;
@@ -66,7 +62,7 @@ function Order() {
                   item.type,
                   item.name,
                   "SPOT",
-                  `${item.filledAmount}/${item.totalAmount}`,
+                  `${0}/${item.quantity}`,
                   "LTP",
                   item.price,
                   item.status,
@@ -103,9 +99,9 @@ function Order() {
                   item.type,
                   item.name,
                   "SPOT",
-                  `${item.filledAmount}/${item.totalAmount}`,
+                  `${item.quantity}/${item.quantity}`,
                   "LTP",
-                  item.avgPrice,
+                  item.price,
                   item.status,
                 ];
               }) ?? []

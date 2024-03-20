@@ -4,6 +4,7 @@ import {
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import DiscordProvider from "next-auth/providers/discord";
 
 import { env } from "~/env";
@@ -19,6 +20,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      token: JWT;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -37,13 +39,22 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
+    session: async ({ session, user }) => ({
       ...session,
       user: {
         ...session.user,
         id: user.id,
       },
     }),
+    jwt: async ({ token, user, account }) => {
+      if (user) {
+        token.id = user.id;
+      }
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      return token;
+    },
   },
   adapter: PrismaAdapter(db),
   providers: [

@@ -2,10 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import DataContext from "../../_contexts/data/data";
+import { TFormSchema } from "./FrmSchema";
 import InputDiv from "./InputDiv";
 import { CheckBox, OrderTypeDiv } from "./OrderTypeDiv";
-import { api } from "~/trpc/react";
-import { TFormSchema } from "./FrmSchema";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -22,12 +21,13 @@ type TmarketType = "SPOT" | "MARGIN";
 
 function TempOrderForm({
   symbol,
+  sendMessage,
   type,
 }: {
   symbol: string;
+  sendMessage: (payload: string) => void;
   type: "BUY" | "SELL";
 }) {
-  const sendOrder = api.order.createOrder.useMutation({});
   const {
     register,
     handleSubmit,
@@ -61,14 +61,17 @@ function TempOrderForm({
 
   const onSubmit = (data: z.output<TFormSchema>) => {
     console.log("send order", data);
-    sendOrder.mutate({
-      ...data,
-      price: Number(data.price),
-      quantity: Number(data.quantity),
-      sl: Number(data.sl),
-      tp: Number(data.tp),
-      trigerType: isAvl.orderType,
-    });
+    sendMessage(
+      JSON.stringify({
+        ...data,
+        price: Number(data.price),
+        quantity: Number(data.quantity),
+        sl: Number(data.sl),
+        tp: Number(data.tp),
+        trigerType: isAvl.orderType, 
+        // TradingAccountId: dataState.userDetails?.TradingAccountId,
+      }),
+    );
     dataDispatch({
       type: "update_FormData",
       payload: {
@@ -87,7 +90,7 @@ function TempOrderForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className={` absolute w-[600px] bg-white text-[.75rem] `}
+      className={` absolute w-[600px] bg-white text-[.75rem] z-50 `}
       style={{ top: 0, right: 0 }}
     >
       <header
