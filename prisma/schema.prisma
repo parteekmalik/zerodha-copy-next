@@ -118,7 +118,7 @@ model FullOrder {
     type             OrderType
     status           orderStatus    @default(patial_filled)
     price            Float
-    quantity         Int
+    quantity         Float
     sl               Int            @default(0)
     tp               Int            @default(0)
     // suborders        Suborder[]
