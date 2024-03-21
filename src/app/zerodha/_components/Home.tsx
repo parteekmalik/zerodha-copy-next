@@ -6,13 +6,14 @@ import OrderForm from "./OrderForm/orderForm";
 import RightSide from "./Rightside/RightSde";
 import WatchList from "./WatchList/watchList";
 import Header from "./hearder";
+import { env } from "~/env";
 // import { getCookie, getCookies } from "cookies-next";
 export default function Home() {
   const { dataState, loading } = useContext(DataContext);
   // const cookie = getCookies();
 
   const { socket, isConnected } = useSocket(
-    "ws://zerodhacloneapi.ddns.net:3002",
+    env.NEXT_PUBLIC_BACKEND_WS,
     dataState.userDetails?.TradingAccountId ?? "",
     {
       reconnectionDelay: 60000,
