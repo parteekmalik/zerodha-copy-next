@@ -51,16 +51,16 @@ export const accountInfoRouter = createTRPCRouter({
         where: { name: ctx.session.user.name },
         select: {
           Taccounts: {
-            select: { watchList: true, Pin0: true, Pin1: true,id:true },
+            select: { watchList: true, Pin0: true, Pin1: true, id: true },
           },
         },
       })
     )?.Taccounts[0];
 
     if (data) {
-      const { watchList, Pin0, Pin1,id } = data;
+      const { watchList, Pin0, Pin1, id } = data;
       return {
-        userInfo: {...ctx.session.user,TradingAccountId:id},
+        userInfo: { ...ctx.session.user, TradingAccountId: id },
         watchList: convert1D_2D(watchList ?? []),
         Pins: { Pin0: Pin0 ?? "BTCUSDT", Pin1: Pin1 ?? "ETHUSDT" },
       };
@@ -100,13 +100,13 @@ export const accountInfoRouter = createTRPCRouter({
         where: { name: ctx.session.user.name },
         select: {
           Taccounts: {
-            select: { statement: true },
+            select: { statemnet: true },
           },
         },
       })
     )?.Taccounts[0];
     if (!Orders) return "error getting orders";
-    else return Orders.statement;
+    else return Orders.statemnet;
   }),
   updatePins: protectedProcedure
     .input(z.object({ name: z.string().min(1), pos: z.number().min(0).max(1) }))

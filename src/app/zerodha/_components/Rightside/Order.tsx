@@ -6,9 +6,10 @@ export type TOrder = {
   createsAt: Date;
   name: string;
   type: $Enums.OrderType;
-  status: $Enums.orderStatus;
   price: number;
   quantity: number;
+  status: $Enums.OrderStatus;
+  trigerType: $Enums.EtrigerType;
   sl: number;
   tp: number;
   TradingAccountId: string;
