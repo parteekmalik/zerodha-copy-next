@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 export type TOrder = {
   id: string;
-  createsAt: Date;
+  createdAt: Date;
   name: string;
   type: $Enums.OrderType;
   price: number;
   quantity: number;
   status: $Enums.OrderStatus;
-  trigerType: $Enums.EtrigerType;
+  triggerType: $Enums.EtriggerType;
   sl: number;
   tp: number;
   TradingAccountId: string;
@@ -59,7 +59,7 @@ function Order() {
             dataList={
               openOrders.map((item) => {
                 return [
-                  item.createsAt.toTimeString().split(" ")[0] ?? "",
+                  item.createdAt.toTimeString().split(" ")[0] ?? "",
                   item.type,
                   item.name,
                   "SPOT",
@@ -96,7 +96,7 @@ function Order() {
             dataList={
               executedOrders.map((item) => {
                 return [
-                  item.createsAt.toTimeString().split(" ")[0] ?? "",
+                  item.createdAt.toTimeString().split(" ")[0] ?? "",
                   item.type,
                   item.name,
                   "SPOT",
