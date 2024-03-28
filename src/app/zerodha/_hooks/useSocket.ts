@@ -26,7 +26,7 @@ const useSocket = (
     socketInstance.on("disconnect", () => {
       setIsConnected(false);
     });
-    socketInstance.on("notification", (msg) => {
+    socketInstance.on("notification", (msg:string) => {
       setLastmessage(msg);
     });
     socketInstance.once("connect", () => {
