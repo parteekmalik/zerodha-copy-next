@@ -5,6 +5,8 @@ import DataContext from "../../_contexts/data/data";
 import { TFormSchema } from "./FrmSchema";
 import InputDiv from "./InputDiv";
 import { CheckBox, OrderTypeDiv } from "./OrderTypeDiv";
+import { api } from "~/trpc/react";
+import { useToast } from "../../_contexts/Toast/toast-context";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -18,16 +20,12 @@ export type TorderForm = {
   tp: { isselected: boolean; price: number };
 };
 type TmarketType = "SPOT" | "MARGIN";
-
-function TempOrderForm({
-  symbol,
-  sendMessage,
-  type,
-}: {
+interface ITempOrderForm {
   symbol: string;
   sendMessage: (payload: string) => void;
   type: "BUY" | "SELL";
-}) {
+}
+function TempOrderForm({ symbol, sendMessage, type }: ITempOrderForm) {
   const {
     register,
     handleSubmit,
@@ -58,20 +56,26 @@ function TempOrderForm({
     tp: boolean;
     orderType: TOrderType;
   }>({ sl: false, tp: false, orderType: "MARKET" });
+  const toast = useToast();
 
+  const orderapi = api.orders.create.useMutation({
+    onSuccess: (msg) => {
+      console.log("mutation nsucess -> ", msg);
+      toast?.open(JSON.stringify(msg));
+      sendMessage(JSON.stringify(msg));
+    },
+  });
   const onSubmit = (data: z.output<TFormSchema>) => {
     console.log("send order", data);
-    sendMessage(
-      JSON.stringify({
-        ...data,
-        price: Number(data.price),
-        quantity: Number(data.quantity),
-        sl: Number(data.sl),
-        tp: Number(data.tp),
-        trigerType: isAvl.orderType, 
-        // TradingAccountId: dataState.userDetails?.TradingAccountId,
-      }),
-    );
+    orderapi.mutate({
+      ...data,
+      price: Number(data.price),
+      quantity: Number(data.quantity),
+      sl: Number(data.sl),
+      tp: Number(data.tp),
+      trigerType: isAvl.orderType,
+    });
+
     dataDispatch({
       type: "update_FormData",
       payload: {
@@ -90,7 +94,7 @@ function TempOrderForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className={` absolute w-[600px] bg-white text-[.75rem] z-50 `}
+      className={` absolute z-50 w-[600px] bg-white text-[.75rem] `}
       style={{ top: 0, right: 0 }}
     >
       <header

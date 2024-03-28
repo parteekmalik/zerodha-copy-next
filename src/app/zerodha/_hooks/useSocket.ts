@@ -11,9 +11,10 @@ const useSocket = (
   serverUrl: string,
   TradingAccountId: string,
   opts?: Partial<ManagerOptions & SocketOptions> | undefined,
-): SocketHook => {
+) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [lastMessage, setLastmessage] = useState<string>("");
 
   useEffect(() => {
     const socketInstance = io(serverUrl, { ...opts });
@@ -25,10 +26,16 @@ const useSocket = (
     socketInstance.on("disconnect", () => {
       setIsConnected(false);
     });
+    socketInstance.on("notification", (msg) => {
+      setLastmessage(msg);
+    });
     socketInstance.once("connect", () => {
-      SocketEmiter("authenticate", JSON.stringify({
-        TradingAccountId,
-      }));
+      SocketEmiter(
+        "authenticate",
+        JSON.stringify({
+          TradingAccountId,
+        }),
+      );
     });
     function SocketEmiter(type: string, payload: string) {
       console.info("Emitted - Action: " + type + " - Payload: ", payload);
@@ -42,7 +49,7 @@ const useSocket = (
     };
   }, [serverUrl, TradingAccountId]);
 
-  return { socket, isConnected };
+  return { socket, isConnected, lastMessage };
 };
 
 export default useSocket;

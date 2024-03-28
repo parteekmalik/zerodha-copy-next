@@ -1,5 +1,5 @@
 "use client";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import DataContext from "../_contexts/data/data";
 import useSocket from "../_hooks/useSocket";
 import OrderForm from "./OrderForm/orderForm";
@@ -7,12 +7,13 @@ import RightSide from "./Rightside/RightSde";
 import WatchList from "./WatchList/watchList";
 import Header from "./hearder";
 import { env } from "~/env";
+import { useToast } from "../_contexts/Toast/toast-context";
 // import { getCookie, getCookies } from "cookies-next";
 export default function Home() {
   const { dataState, loading } = useContext(DataContext);
   // const cookie = getCookies();
-
-  const { socket, isConnected } = useSocket(
+  const toast = useToast();
+  const { socket, isConnected, lastMessage } = useSocket(
     env.NEXT_PUBLIC_BACKEND_WS,
     dataState.userDetails?.TradingAccountId ?? "",
     {
@@ -21,6 +22,11 @@ export default function Home() {
       reconnection: false,
     },
   );
+  useEffect(() => {
+    if (toast && lastMessage && lastMessage !== "") {
+      toast.open(JSON.stringify(lastMessage));
+    }
+  }, [lastMessage]);
   return (
     <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center  bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
       <Header />
@@ -30,7 +36,7 @@ export default function Home() {
           <RightSide />
         </div>
       </div>
-      <div className="w-full ">
+      <div className="w-full " style={{ wordWrap: "break-word" }}>
         {JSON.stringify({ ...dataState, loading })}
         {/* {JSON.stringify(status)} */}
       </div>
