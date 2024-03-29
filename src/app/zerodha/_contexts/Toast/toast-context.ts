@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 
 type ToastContextValue = {
   open: (message: string) => void;
-  close: (id: number) => void;
+  close: (id: string) => void;
 };
 
 export const ToastContext = createContext<ToastContextValue | null>(null);

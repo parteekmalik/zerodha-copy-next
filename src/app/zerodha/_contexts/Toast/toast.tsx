@@ -1,15 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ToastContext } from "./toast-context";
 import { useScroll } from "framer-motion";
+import moment from "moment";
 
-function useTimeout(callbackFunction: () => void) {
+function useTimeout(callbackFunction: () => void, duration: number) {
   const SavedCallback = useRef(callbackFunction);
 
   useEffect(() => {
     SavedCallback.current = callbackFunction;
   }, [callbackFunction]);
   useEffect(() => {
-    const functionId = setTimeout(() => SavedCallback.current(), 10000);
+    const functionId = setTimeout(() => SavedCallback.current(), duration);
     return () => clearTimeout(functionId);
   }, []);
 }
@@ -24,19 +25,19 @@ type ToastProviderProps = {
 };
 type ToastType = {
   message: string;
-  id: number;
+  id: string;
 };
 export function ToastProvider({ children }: ToastProviderProps) {
   const [toasts, settoasts] = useState<ToastType[]>([]);
 
   function openToast(message: string) {
     const newToast = {
-      id: toasts.length,
+      id: moment().toDate().toString(),
       message,
     };
     settoasts((prev) => [...prev, newToast]);
   }
-  function closeToast(id: number) {
+  function closeToast(id: string) {
     settoasts((prev) => prev.filter((toast) => toast.id !== id));
   }
   const contextValue = useMemo(
@@ -69,10 +70,10 @@ export function ToastProvider({ children }: ToastProviderProps) {
 }
 
 function Toast({ message, close }: ToastProperties) {
-  useTimeout(() => close());
+  useTimeout(() => close(), 10000);
   return (
     <div
-      className="animate-slidein relative mx-2 max-w-[500px] rounded bg-black  text-white"
+      className="relative mx-2 max-w-[500px] animate-slidein rounded bg-black  text-white"
       style={{ wordWrap: "break-word" }}
     >
       {message}
