@@ -74,7 +74,7 @@ function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
       <Reorder.Group
         values={list}
         onReorder={(e) => {
-          console.log(e);
+          // console.log(e);
           setList(e);
         }}
         axis="y"

@@ -27,7 +27,6 @@ export default function RootLayout({
         <TRPCReactProvider cookies={cookies().toString()}>
           {children}
         </TRPCReactProvider>
-        {/* <footer></footer> */}
       </body>
     </html>
   );

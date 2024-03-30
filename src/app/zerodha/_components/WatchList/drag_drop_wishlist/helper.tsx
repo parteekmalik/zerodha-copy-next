@@ -137,7 +137,7 @@ export function HiddenLayout({
   });
   function deleteFunc(symbol: string) {
     symbol = symbol.toUpperCase();
-    let list = dataState.watchList[listNo];
+    const list = dataState.watchList[listNo];
     if (list) {
       const newList = list.filter(
         (item) => item.toUpperCase() !== symbol.toUpperCase(),
