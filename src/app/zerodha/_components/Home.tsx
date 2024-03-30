@@ -15,16 +15,24 @@ export default function Home() {
   const toast = useToast();
   const { socket, isConnected, lastMessage } = useSocket(
     env.NEXT_PUBLIC_BACKEND_WS,
-    dataState.userDetails?.TradingAccountId ?? "",
-    {
-      reconnectionDelay: 60000,
-      reconnectionAttempts: 1,
-      reconnection: false,
-    },
+    dataState.userDetails.TradingAccountId,
+    {},
   );
   useEffect(() => {
-    if (toast && lastMessage && lastMessage !== "") {
-      toast.open(JSON.stringify(lastMessage));
+    if (toast && lastMessage && lastMessage) {
+      console.log("lastMessage -> ", typeof lastMessage, lastMessage);
+      toast.open({
+        name: lastMessage.name,
+        state:
+          lastMessage.status === "open"
+            ? "placed"
+            : lastMessage.status === "completed"
+              ? "sucess"
+              : "error",
+        quantity: lastMessage.quantity,
+        orderId: lastMessage.id,
+        type: lastMessage.type,
+      });
     }
   }, [lastMessage]);
   return (

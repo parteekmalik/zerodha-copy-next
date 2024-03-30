@@ -60,9 +60,22 @@ function TempOrderForm({ symbol, sendMessage, type }: ITempOrderForm) {
 
   const orderapi = api.orders.create.useMutation({
     onSuccess: (msg) => {
-      console.log("mutation nsucess -> ", msg);
-      toast?.open(JSON.stringify(msg));
-      sendMessage(JSON.stringify(msg));
+      if (msg && toast) {
+        console.log("mutation nsucess -> ", msg);
+        toast.open({
+          name: msg.name,
+          state:
+            msg.status === "open"
+              ? "placed"
+              : msg.status === "completed"
+                ? "sucess"
+                : "error",
+          quantity: msg.quantity,
+          orderId: msg.id,
+          type: msg.type,
+        });
+        if (msg.status === "open") sendMessage(JSON.stringify(msg));
+      }
     },
   });
   const onSubmit = (data: z.output<TFormSchema>) => {

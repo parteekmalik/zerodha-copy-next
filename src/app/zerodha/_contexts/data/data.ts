@@ -15,16 +15,14 @@ export type TrightSideType =
       TimeFrame: string;
     };
 
-export type TuserDetails =
-  | ({
-      id: string;
-      TradingAccountId: string;
-    } & {
-      name?: string | null | undefined;
-      email?: string | null | undefined;
-      image?: string | null | undefined;
-    })
-  | undefined;
+export type TuserDetails = {
+  id: string;
+  TradingAccountId: string;
+} & {
+  name?: string | null | undefined;
+  email?: string | null | undefined;
+  image?: string | null | undefined;
+};
 
 export interface IdataContextState {
   rightSideData: TrightSideType;
