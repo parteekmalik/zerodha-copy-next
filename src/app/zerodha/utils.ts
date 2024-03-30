@@ -1,4 +1,3 @@
-import { TOrder } from "./_components/Rightside/Order";
 
 export const parsePrice = (price: string | undefined) => {
   if (price === undefined) return 0;

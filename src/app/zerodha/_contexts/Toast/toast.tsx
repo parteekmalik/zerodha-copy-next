@@ -1,9 +1,7 @@
+import { $Enums } from "@prisma/client";
+import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ToastContext } from "./toast-context";
-import { useScroll } from "framer-motion";
-import moment from "moment";
-import { error } from "console";
-import { $Enums } from "@prisma/client";
 
 function useTimeout(callbackFunction: () => void, duration: number) {
   const SavedCallback = useRef(callbackFunction);

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { TOrderType, OrderTypeList } from "./orderForm";
+import { OrderTypeList, TOrderType } from "./orderForm";
 
 export function OrderTypeDiv({
   Formdata,

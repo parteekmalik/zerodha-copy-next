@@ -32,11 +32,11 @@ function WatchList() {
     },
   });
   function submitUpdate(index: number) {
+    console.log("UPDATING WATCHLIST -> ", search, index);
     updateWatchList.mutate({
-      name:
-        [...(list[watchListNo] ?? []), search.matchingSymbol[index]].join(
-          " ",
-        ) ?? "dummy_string",
+      name: [...(list[watchListNo] ?? []), search.matchingSymbol[index]].join(
+        " ",
+      ),
       row: watchListNo,
     });
   }
@@ -60,7 +60,8 @@ function WatchList() {
   return (
     <div
       className={
-        "flex h-full w-[430px] min-w-[430px] flex-col bg-white z-10 " + shadowBox
+        "z-10 flex h-full w-[430px] min-w-[430px] flex-col bg-white " +
+        shadowBox
       }
     >
       <div className=" flex min-h-[50px] min-w-[0px] items-center justify-center border-b p-3">
@@ -75,6 +76,9 @@ function WatchList() {
           spellCheck="false"
           placeholder="Search eg: infy bse, nifty fut, nifty weekly, gold mcx"
           onKeyDown={(e) => {
+            if (e.which === 38 || e.which === 40) {
+              e.preventDefault();
+            }
             if (e.key === "Enter") {
               submitUpdate(search.Selected);
               e.currentTarget.blur();

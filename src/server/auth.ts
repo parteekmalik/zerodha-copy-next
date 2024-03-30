@@ -4,7 +4,7 @@ import {
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-import { JWT } from "next-auth/jwt";
+import type { JWT } from "next-auth/jwt";
 import DiscordProvider from "next-auth/providers/discord";
 
 import { env } from "~/env";

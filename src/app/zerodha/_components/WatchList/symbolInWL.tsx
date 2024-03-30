@@ -1,10 +1,10 @@
 import { Reorder } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
+import { api } from "~/trpc/react";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
 import DataContext from "../../_contexts/data/data";
 import Item from "./Item";
 import type { Tsymbol } from "./watchList";
-import { api } from "~/trpc/react";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
 export type Twsbinance = {
@@ -72,7 +72,7 @@ function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
     <>
       <Reorder.Group
         values={list}
-        onMouseUp={(e) => {
+        onClick={(e) => {
           console.log("mouseup ->", list);
           submitUpdate(list);
         }}

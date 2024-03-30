@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { TsymbolLive } from "../../_contexts/SymbolLive/SymbolLive";
+import type { TsymbolLive } from "../../_contexts/SymbolLive/SymbolLive";
 import DataContext from "../../_contexts/data/data";
-import { IdataContextActions } from "../../_contexts/data/dataReduer";
+import type { IdataContextActions } from "../../_contexts/data/dataReduer";
 import { api } from "~/trpc/react";
 
 export function BaseSymbolLayout({

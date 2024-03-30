@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const accountInfoRouter = createTRPCRouter({
-  info: protectedProcedure.query(async ({ ctx, input }) => {
+  info: protectedProcedure.query(async ({ ctx }) => {
     const Taccounts = (
       await ctx.db.user.findFirst({
         where: { name: ctx.session.user.name },
@@ -25,7 +25,7 @@ export const accountInfoRouter = createTRPCRouter({
     }
     return data;
   }),
-  getInitInfo: protectedProcedure.query(async ({ ctx, input }) => {
+  getInitInfo: protectedProcedure.query(async ({ ctx }) => {
     const Taccounts = (
       await ctx.db.user.findFirst({
         where: { name: ctx.session.user.name },
@@ -66,7 +66,7 @@ export const accountInfoRouter = createTRPCRouter({
       };
     }
   }),
-  watchList: protectedProcedure.query(async ({ ctx, input }) => {
+  watchList: protectedProcedure.query(async ({ ctx }) => {
     const watchlist = (
       await ctx.db.user.findFirst({
         where: { name: ctx.session.user.name },
@@ -80,7 +80,7 @@ export const accountInfoRouter = createTRPCRouter({
 
     return convert1D_2D(watchlist ?? []);
   }),
-  getPin: protectedProcedure.query(async ({ ctx, input }) => {
+  getPin: protectedProcedure.query(async ({ ctx }) => {
     const Pins = (
       await ctx.db.user.findFirst({
         where: { name: ctx.session.user.name },
@@ -94,7 +94,7 @@ export const accountInfoRouter = createTRPCRouter({
 
     return Pins ?? { Pin0: "BTCUSDT", Pin1: "ETHUSDT" };
   }),
-  getOrders: protectedProcedure.query(async ({ ctx, input }) => {
+  getOrders: protectedProcedure.query(async ({ ctx }) => {
     const Orders = (
       await ctx.db.user.findFirst({
         where: { name: ctx.session.user.name },

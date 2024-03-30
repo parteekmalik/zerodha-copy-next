@@ -1,13 +1,10 @@
 // math.test.ts
 
-import moment from "moment";
 import {
-  parsePrice,
-  calculateTradesSummaryFIFO,
   TcalculateTradesSummaryFIFO,
+  calculateTradesSummaryFIFO,
+  parsePrice,
 } from "../app/zerodha/utils";
-import { $Enums } from "@prisma/client";
-import { TOrder } from "../app/zerodha/_components/Rightside/Order";
 const sample: TcalculateTradesSummaryFIFO[] = [
   {
     type: "BUY",

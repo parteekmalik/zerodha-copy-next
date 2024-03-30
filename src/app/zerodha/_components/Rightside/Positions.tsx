@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
-import { TOrder, Table, stylesList } from "./Order";
 import {
   TcalculateTradesSummaryFIFO,
   calculateTradesSummaryFIFO,
 } from "../../utils";
+import { TOrder, Table, stylesList } from "./Order";
 const headings = [
   "Product",
   "Instrument",
