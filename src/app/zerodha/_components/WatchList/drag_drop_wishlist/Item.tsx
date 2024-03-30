@@ -1,5 +1,5 @@
 import { Reorder, useDragControls } from "framer-motion";
-import { TsymbolLive } from "../../_contexts/SymbolLive/SymbolLive";
+import { TsymbolLive } from "../../../_contexts/SymbolLive/SymbolLive";
 import { BaseSymbolLayout, HiddenLayout } from "./helper";
 
 function Item({
@@ -7,11 +7,13 @@ function Item({
   symbolLiveTemp,
   symbolName,
   listNo,
+  submitUpdate,
 }: {
   diff: number;
   symbolLiveTemp: TsymbolLive | undefined;
   symbolName: string;
   listNo: number;
+  submitUpdate: () => void;
 }) {
   const dragControls = useDragControls();
   return (
@@ -20,6 +22,7 @@ function Item({
       dragListener={false}
       dragControls={dragControls}
       value={symbolName}
+      onDragEnd={() => submitUpdate()}
       className="relative translate-x-0"
     >
       <div

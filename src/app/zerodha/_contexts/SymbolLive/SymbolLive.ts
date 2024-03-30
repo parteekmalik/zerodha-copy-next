@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { Twsbinance } from "../../_components/WatchList/symbolInWL";
+import type { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
 import { JSONType, symbolList } from "../../symbolname";
 import { listToRecord } from "../../utils";
 import { TtickerChangeType } from "./SymbolLiveContextComponent";

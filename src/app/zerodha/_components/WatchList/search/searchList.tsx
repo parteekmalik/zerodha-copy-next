@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useContext, useEffect } from "react";
-import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
+import SymbolLiveContext from "../../../_contexts/SymbolLive/SymbolLive";
 
 function SearchList({
   search,

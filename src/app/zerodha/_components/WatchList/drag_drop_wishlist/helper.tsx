@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import type { TsymbolLive } from "../../_contexts/SymbolLive/SymbolLive";
-import DataContext from "../../_contexts/data/data";
-import type { IdataContextActions } from "../../_contexts/data/dataReduer";
+import type { TsymbolLive } from "../../../_contexts/SymbolLive/SymbolLive";
+import DataContext from "../../../_contexts/data/data";
+import type { IdataContextActions } from "../../../_contexts/data/dataReduer";
 import { api } from "~/trpc/react";
 
 export function BaseSymbolLayout({
@@ -130,16 +130,21 @@ export function HiddenLayout({
   ];
   const deleteApi = api.accountInfo.updateWatchList.useMutation({
     onSuccess: async (data) => {
-      dataDispatch({ type: "update_watchList", payload: data });
+      if (data) {
+        dataDispatch({ type: "update_watchList", payload: data });
+      }
     },
   });
   function deleteFunc(symbol: string) {
     symbol = symbol.toUpperCase();
     let list = dataState.watchList[listNo];
-    // console.log("delete api ->", list, symbol);
-    list = list?.filter((item) => item !== symbol);
-    // console.log("delete api ->", list);
-    deleteApi.mutate({ name: list?.join(" ") ?? "", row: listNo });
+    if (list) {
+      const newList = list.filter(
+        (item) => item.toUpperCase() !== symbol.toUpperCase(),
+      );
+      console.log("delete api ->", symbol, list, newList);
+      deleteApi.mutate({ name: newList.join(" "), row: listNo });
+    }
   }
   const updatePinApi = api.accountInfo.updatePins.useMutation({
     onSuccess: async (data) => {
@@ -155,8 +160,8 @@ export function HiddenLayout({
             className={`h-full w-[35px] cursor-pointer rounded  p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color}`}
             key={"hiddenitems" + text}
             onClick={() => {
+              console.log("clicked hidden elements payload ->", payload);
               if (payload) {
-                console.log("clicked hidden elements payload ->", payload);
                 if ("type" in payload) {
                   dataDispatch(payload);
                 } else if (payload.Type === "Supdate_Pins") {

@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { PropsWithChildren } from "react";
 import React, { useContext, useEffect, useReducer } from "react";
-import  useLiveWS  from "../../_hooks/useLiveWS";
+import useLiveWS from "../../_hooks/useLiveWS";
 import DataContext from "../data/data";
 import type { TsymbolTrade } from "./SymbolLive";
 import {
@@ -9,7 +9,7 @@ import {
   defaultsymbolLiveContextState,
 } from "./SymbolLive";
 import { symbolLiveReducer } from "./SymbolLiveReducer";
-import { Twsbinance } from "../../_components/WatchList/symbolInWL";
+import { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
 
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
 export type TtickerChangeType = {

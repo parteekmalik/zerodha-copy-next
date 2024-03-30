@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import SymbolLiveContext from "../_contexts/SymbolLive/SymbolLive";
 import DataContext from "../_contexts/data/data";
-import { Twsbinance } from "./WatchList/symbolInWL";
+import { Twsbinance } from "./WatchList/drag_drop_wishlist/symbolInWL";
 import { shadowBox } from "./tcss";
 
 type RightSideType =

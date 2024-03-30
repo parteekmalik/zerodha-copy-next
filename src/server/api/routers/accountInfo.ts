@@ -138,23 +138,27 @@ export const accountInfoRouter = createTRPCRouter({
   updateWatchList: protectedProcedure
     .input(z.object({ name: z.string(), row: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      const details = await ctx.db.user.findFirst({
-        where: { name: ctx.session.user.name },
-        select: { Taccounts: { select: { watchList: true, id: true } } },
-      });
-      const tradingAccountId = details?.Taccounts[0]?.id;
-      const watchList =
-        details?.Taccounts[0]?.watchList ?? (Array(7).fill("") as string[]);
-
-      watchList[input.row] = input.name.toUpperCase();
-      const res = (
-        await ctx.db.tradingAccount.update({
-          where: { id: tradingAccountId },
-          data: { watchList },
+      console.log("updateWatchList -> ", input);
+      const details = (
+        await ctx.db.user.findFirst({
+          where: { name: ctx.session.user.name },
+          select: { Taccounts: { select: { watchList: true, id: true } } },
         })
-      ).watchList;
+      )?.Taccounts[0];
+      if (details) {
+        const tradingAccountId = details.id;
+        const watchList = details.watchList;
 
-      return convert1D_2D(res);
+        watchList[input.row] = input.name.toUpperCase();
+        const res = (
+          await ctx.db.tradingAccount.update({
+            where: { id: tradingAccountId },
+            data: { watchList },
+          })
+        ).watchList;
+
+        return convert1D_2D(res);
+      } else console.log("trading account not found", details);
     }),
 });
 

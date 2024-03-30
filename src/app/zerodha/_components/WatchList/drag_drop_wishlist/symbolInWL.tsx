@@ -1,10 +1,10 @@
 import { Reorder } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
 import { api } from "~/trpc/react";
-import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
-import DataContext from "../../_contexts/data/data";
+import SymbolLiveContext from "../../../_contexts/SymbolLive/SymbolLive";
+import DataContext from "../../../_contexts/data/data";
+import type { Tsymbol } from "../watchList";
 import Item from "./Item";
-import type { Tsymbol } from "./watchList";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
 export type Twsbinance = {
@@ -19,7 +19,6 @@ interface ISymbolInWL {
 }
 function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
   const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
-  const { dataDispatch, dataState } = useContext(DataContext);
 
   const [list, setList] = useState<Tsymbol[]>([]);
   // const [selected, setSelected] = useState(null);
@@ -55,28 +54,29 @@ function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
     };
   }, [DataList]);
 
+  const { dataDispatch, dataState } = useContext(DataContext);
+
   const updateWatchList = api.accountInfo.updateWatchList.useMutation({
     onSuccess: async (data) => {
-      dataDispatch({ type: "update_watchList", payload: data });
+      if (data) dataDispatch({ type: "update_watchList", payload: data });
     },
   });
-  function submitUpdate(list: string[]) {
+  function submitUpdate() {
+    console.log("symbolinwl");
     updateWatchList.mutate({
-      name: list.join(" ") ?? "dummy_string",
+      name: list.join(" "),
       row: listNo,
     });
   }
-
   if (!list) return null;
   return (
     <>
       <Reorder.Group
         values={list}
-        onClick={(e) => {
-          console.log("mouseup ->", list);
-          submitUpdate(list);
+        onReorder={(e) => {
+          console.log(e);
+          setList(e);
         }}
-        onReorder={(e) => setList(e)}
         axis="y"
       >
         {list.map((symbol) => {
@@ -87,12 +87,12 @@ function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
               symbolLiveTemp={symbolLiveState.Livestream[symbolName]}
               symbolName={symbolName}
               listNo={listNo}
+              submitUpdate={submitUpdate}
               key={symbolName}
             />
           );
         })}
       </Reorder.Group>
-      {/* <div>{JSON.stringify(list)}</div> */}
     </>
   );
 }
