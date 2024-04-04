@@ -1,3 +1,4 @@
+import moment from "moment";
 import { z } from "zod";
 import { FormSchema } from "~/app/zerodha/_components/OrderForm/FrmSchema";
 import getLTP from "~/app/zerodha/_components/OrderForm/getLTP";
@@ -44,6 +45,30 @@ export const orderRouter = createTRPCRouter({
     )?.Taccounts[0];
     if (!Orders) return "error getting orders";
     else return Orders.statemnet.reverse();
+  }),
+  getOrders24hr: protectedProcedure.query(async ({ ctx }) => {
+    const Orders = (
+      await ctx.db.user.findFirst({
+        where: {
+          name: ctx.session.user.name,
+        },
+        select: {
+          Taccounts: {
+            select: {
+              statemnet: {
+                where: {
+                  createdAt: {
+                    gte: moment().startOf("day").toDate(),
+                  },
+                },
+              },
+            },
+          },
+        },
+      })
+    )?.Taccounts[0];
+    if (!Orders) return "error getting orders";
+    else return Orders.statemnet;
   }),
   cancelOrders: protectedProcedure
     .input(z.array(z.string()))

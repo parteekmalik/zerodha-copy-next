@@ -15,7 +15,7 @@ const headings = [
   "change",
 ];
 function Positions() {
-  const orders = api.orders.getOrders.useQuery().data;
+  const orders = api.orders.getOrders24hr.useQuery().data;
   // const [orderMap, setOrderMap] = useState<{ [key: string]: TOrder[] }>({});
   const [dataList, setdataList] = useState<
     {
@@ -25,7 +25,7 @@ function Positions() {
   >([]);
   useEffect(() => {
     console.log(orders);
-    if (typeof orders !== "string" && orders !== undefined) {
+    if (typeof orders === "object") {
       const temporderMap: Record<string, TOrder[]> = {};
       orders
         .filter((item) => item.status === "completed")
