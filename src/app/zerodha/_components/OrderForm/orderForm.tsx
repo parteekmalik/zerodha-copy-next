@@ -7,6 +7,7 @@ import InputDiv from "./InputDiv";
 import { CheckBox, OrderTypeDiv } from "./OrderTypeDiv";
 import { api } from "~/trpc/react";
 import { useToast } from "../../_contexts/Toast/toast-context";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -57,9 +58,11 @@ function TempOrderForm({ symbol, sendMessage, type }: ITempOrderForm) {
     orderType: TOrderType;
   }>({ sl: false, tp: false, orderType: "MARKET" });
   const toast = useToast();
+  const queryClient = useQueryClient(); // Initialize queryClient
 
   const orderapi = api.orders.create.useMutation({
     onSuccess: (msg) => {
+      queryClient.refetchQueries().catch(err=>console.log(err));
       if (msg && toast) {
         console.log("mutation nsucess -> ", msg);
         toast.open({

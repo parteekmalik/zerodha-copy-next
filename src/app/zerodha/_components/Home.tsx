@@ -41,7 +41,9 @@ export default function Home() {
       <div className="text-red flex w-full max-w-[1536px] grow select-none overflow-hidden ">
         <WatchList />
         <div className={" flex max-w-[1110px] grow "}>
-          <RightSide />
+          <div className="w-full overflow-y-auto overflow-x-hidden">
+            <RightSide />
+          </div>
         </div>
       </div>
       <div className="w-full " style={{ wordWrap: "break-word" }}>

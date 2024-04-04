@@ -1,6 +1,7 @@
 import { createContext } from "react";
 import type { Tsymbol } from "../../_components/WatchList/watchList";
 import type { IdataContextActions } from "./dataReduer";
+import { Orders } from "@prisma/client";
 
 export type TrightSideType =
   | { type: "Dashboard" }
@@ -30,6 +31,7 @@ export interface IdataContextState {
   userDetails: TuserDetails;
   headerPin: TPin;
   FormData: TFormtatur;
+  orders: Orders[];
 }
 export type TFormtatur = {
   isvisible: boolean;
@@ -53,6 +55,7 @@ export const defaultdataContextState: IdataContextState = {
     symbol: "BTCUSDT",
     type: "BUY",
   },
+  orders: [],
 };
 
 export interface IdataContextProps {

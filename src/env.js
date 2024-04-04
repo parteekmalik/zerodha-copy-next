@@ -41,6 +41,7 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: z.string(),
     API_KEY: z.string(),
     BINANCE_API: z.string(),
+    BINANCE_LTP_URL: z.string(),
   },
 
   /**
@@ -72,6 +73,7 @@ export const env = createEnv({
     NEXT_PUBLIC_BINANCE_API: process.env.NEXT_PUBLIC_BINANCE_API,
     BINANCE_API: process.env.BINANCE_API,
     NEXT_PUBLIC_BACKEND_WS: process.env.NEXT_PUBLIC_BACKEND_WS,
+    BINANCE_LTP_URL: process.env.BINANCE_LTP_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

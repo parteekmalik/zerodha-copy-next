@@ -1,4 +1,12 @@
-import type { IdataContextState, TFormtatur, TPin, TrightSideType, TuserDetails } from "./data";
+import { Orders } from "@prisma/client";
+import type {
+  IdataContextState,
+  TFormtatur,
+  TPin,
+  TrightSideType,
+  TuserDetails,
+} from "./data";
+import { api } from "~/trpc/react";
 
 export type IdataContextActions =
   | {
@@ -16,6 +24,10 @@ export type IdataContextActions =
   | {
       type: "update_Pins";
       payload: TPin;
+    }
+  | {
+      type: "update_Orders";
+      payload: Orders[];
     }
   | {
       type: "update_FormData";
@@ -49,6 +61,9 @@ export const dataReducer = (
     }
     case "update_Pins": {
       return { ...state, headerPin: payload };
+    }
+    case "update_Orders": {
+      return { ...state, orders: payload };
     }
     default:
       return state;

@@ -27,7 +27,7 @@ const DataContextComponent: React.FunctionComponent<PropsWithChildren> = (
   }, [initData]);
 
   return (
-    <DataContextProvider value={{ dataState, dataDispatch ,loading }}>
+    <DataContextProvider value={{ dataState, dataDispatch, loading }}>
       {children}
     </DataContextProvider>
   );

@@ -1,6 +1,6 @@
 import { Reorder, useDragControls } from "framer-motion";
 import { TsymbolLive } from "../../../_contexts/SymbolLive/SymbolLive";
-import { BaseSymbolLayout, HiddenLayout } from "./helper";
+import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
 
 function Item({
   diff,

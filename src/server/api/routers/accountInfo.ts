@@ -3,28 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const accountInfoRouter = createTRPCRouter({
-  // info: protectedProcedure.query(async ({ ctx }) => {
-  //   const Taccounts = (
-  //     await ctx.db.user.findFirst({
-  //       where: { name: ctx.session.user.name },
-  //       select: {
-  //         Taccounts: { select: { id: true } },
-  //       },
-  //     })
-  //   )?.Taccounts[0];
-  //   console.log("checking trading account -> ", Taccounts);
-  //   const data = { ...ctx.session.user, TradingAccountId: Taccounts?.id ?? "" };
-  //   if (!Taccounts) {
-  //     const res = await ctx.db.tradingAccount.create({
-  //       data: {
-  //         User: { connect: { id: ctx.session.user.id } },
-  //       },
-  //     });
-  //     data.TradingAccountId = res.id;
-  //     console.log("created new trading account -> ", res);
-  //   }
-  //   return data;
-  // }),
+
   getInitInfo: protectedProcedure.query(async ({ ctx }) => {
     const Taccounts = (
       await ctx.db.user.findFirst({
@@ -66,48 +45,8 @@ export const accountInfoRouter = createTRPCRouter({
       };
     }
   }),
-  // watchList: protectedProcedure.query(async ({ ctx }) => {
-  //   const watchlist = (
-  //     await ctx.db.user.findFirst({
-  //       where: { name: ctx.session.user.name },
-  //       select: {
-  //         Taccounts: {
-  //           select: { watchList: true },
-  //         },
-  //       },
-  //     })
-  //   )?.Taccounts[0]?.watchList;
 
-  //   return convert1D_2D(watchlist ?? []);
-  // }),
-  // getPin: protectedProcedure.query(async ({ ctx }) => {
-  //   const Pins = (
-  //     await ctx.db.user.findFirst({
-  //       where: { name: ctx.session.user.name },
-  //       select: {
-  //         Taccounts: {
-  //           select: { Pin0: true, Pin1: true },
-  //         },
-  //       },
-  //     })
-  //   )?.Taccounts[0];
-
-  //   return Pins ?? { Pin0: "BTCUSDT", Pin1: "ETHUSDT" };
-  // }),
-  getOrders: protectedProcedure.query(async ({ ctx }) => {
-    const Orders = (
-      await ctx.db.user.findFirst({
-        where: { name: ctx.session.user.name },
-        select: {
-          Taccounts: {
-            select: { statemnet: true },
-          },
-        },
-      })
-    )?.Taccounts[0];
-    if (!Orders) return "error getting orders";
-    else return Orders.statemnet;
-  }),
+  
   updatePins: protectedProcedure
     .input(z.object({ name: z.string().min(1), pos: z.number().min(0).max(1) }))
     .mutation(async ({ ctx, input }) => {

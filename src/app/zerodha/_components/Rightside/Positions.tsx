@@ -15,9 +15,14 @@ const headings = [
   "change",
 ];
 function Positions() {
-  const orders = api.accountInfo.getOrders.useQuery().data;
+  const orders = api.orders.getOrders.useQuery().data;
   // const [orderMap, setOrderMap] = useState<{ [key: string]: TOrder[] }>({});
-  const [dataList, setdataList] = useState<(string | number)[][]>([]);
+  const [dataList, setdataList] = useState<
+    {
+      id: string;
+      data: (string | number)[];
+    }[]
+  >([]);
   useEffect(() => {
     console.log(orders);
     if (typeof orders !== "string" && orders !== undefined) {
@@ -33,14 +38,17 @@ function Positions() {
       setdataList(
         Object.keys(temporderMap).map((key) => {
           const answer = calculations(temporderMap, key);
-          return [
-            answer.Product,
-            answer.Instrument,
-            answer.Quantity,
-            answer.AVG,
-            answer.LTP,
-            answer.change,
-          ];
+          return {
+            id: "",
+            data: [
+              answer.Product,
+              answer.Instrument,
+              answer.Quantity,
+              answer.AVG,
+              answer.LTP,
+              answer.change,
+            ],
+          };
         }),
       );
       // setOrderMap(temporderMap);
@@ -58,7 +66,7 @@ function Positions() {
       <div className="flex w-full items-center justify-center">
         <Table
           stylesList={stylesList}
-          options={{ isSelect: true }}
+          options={{}}
           headings={headings}
           dataList={dataList}
         />
@@ -75,7 +83,7 @@ type Tanswer = {
   "P&L": number;
   change: number;
 };
-function calculations(orderMap:  Record<string, TOrder[]>, key: string) {
+function calculations(orderMap: Record<string, TOrder[]>, key: string) {
   const orders = orderMap[key];
 
   const answer: Tanswer = {
