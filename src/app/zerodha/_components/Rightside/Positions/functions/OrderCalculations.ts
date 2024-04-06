@@ -59,6 +59,8 @@ export function divdeIntoClosedOpen(buyTrades: TOrder[], sellTrades: TOrder[]) {
 
 export default function open_close_Trades(orders: TOrder[]) {
   // console.log("filling orderDetailsMap");
+  
+  orders = orders.filter((i) => i.status === "completed");
 
   const orderMap = fillOrderMap(orders);
   const orderDetailsMap = {

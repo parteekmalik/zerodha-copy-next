@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 
+import TsMap from "ts-map";
 import SymbolLiveContext from "~/app/zerodha/_contexts/SymbolLive/SymbolLive";
-import { TOrder } from "../Order";
-import { calculations } from "./utils";
+import open_close_Trades, {
+  TOrderCalculations,
+} from "../Positions/functions/OrderCalculations";
 import Table from "../Table/table";
 const headings = [
   "Product",
@@ -23,70 +25,29 @@ const position_stylesList = {
 };
 function Holdings() {
   const ordersQuery = api.orders.getOrders24hr.useQuery();
-  const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
-  // const [orderMap, setOrderMap] = useState<{ [key: string]: TOrder[] }>({});
-  const [dataList, setdataList] = useState<
-    {
-      id: string;
-      data: (string | number)[];
-    }[]
-  >([]);
-  const [temporderMap, settemporderMap] = useState<Record<string, TOrder[]>>(
-    {},
+  const { closed_open_OrdersData } = useContext(SymbolLiveContext);
+  const [orderMap, setorderMap] = useState<TsMap<string, TOrderCalculations>>(
+    open_close_Trades([]).open,
   );
 
   useEffect(() => {
     if (typeof ordersQuery.data === "object") {
-      const prev: Record<string, TOrder[]> = {};
-      ordersQuery.data
-        .filter((item) => item.status === "completed")
-        .forEach((item) => {
-          prev[item.name] = prev[item.name]
-            ? [...(prev[item.name] ?? []), item]
-            : [item];
-        });
-      settemporderMap(prev);
+      setorderMap(open_close_Trades(ordersQuery.data).open);
     }
-    console.log("temporderMap", temporderMap);
   }, [ordersQuery.data]);
-
-  useEffect(() => {
-    function getStats(key: string) {
-      const answer = calculations(
-        [...(temporderMap[key] ?? [])],
-        symbolLiveState.Livestream[key]?.curPrice ?? 0,
-      );
-      return {
-        id: "",
-        data: [
-          answer.Product,
-          answer.Instrument,
-          answer.Quantity,
-          answer.AVG,
-          answer.LTP,
-          answer["P&L"],
-          answer.change,
-        ],
-      };
-    }
-    const temp = Object.keys(temporderMap).map((key) => {
-      return getStats(key);
-    });
-    if (JSON.stringify(temp) !== JSON.stringify(dataList)) setdataList(temp);
-  }, [symbolLiveState.Livestream]);
 
   if (typeof ordersQuery.data === "string") return <>{ordersQuery}</>;
   return (
-    <div className="w-full bg-white p-[20px_20px_20px_30px] min-h-full">
+    <div className="min-h-full w-full bg-white p-[20px_20px_20px_30px]">
       <div className="flex w-full p-2">
         <span className="grow text-[1.125rem] text-[#444444]">
-          Holdings ({dataList?.length})
+          Holdings ({orderMap.size})
         </span>
       </div>
       <div className="flex w-full ">
         <div className="flex grow flex-col items-center justify-center">
           <span className={position_stylesList.head}>Total investment</span>
-          <span>({dataList?.length})</span>
+          <span>({orderMap.size})</span>
         </div>
         <div className="flex grow flex-col items-center justify-center">
           <span>Current value</span>
@@ -106,7 +67,7 @@ function Holdings() {
           stylesList={position_stylesList}
           options={{ colorIndex: { quantity: 2, list: [2, 5, 6] } }}
           headings={headings}
-          dataList={dataList}
+          dataList={closed_open_OrdersData(orderMap)}
         />
       </div>
       {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}

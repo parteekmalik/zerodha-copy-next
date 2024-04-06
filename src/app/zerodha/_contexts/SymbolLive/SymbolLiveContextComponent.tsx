@@ -121,35 +121,28 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
       let data: (string | number)[] = [];
       if (value) {
         const QUANTITY = value.BuyQuantity - value.SellQuantity;
-        const AVG = value.BuyPriceTotal / value.BuyQuantity;
-        const CURPRICE = symbolLiveState.Livestream[key]?.curPrice ?? "0.00";
-        const PROFIT = value.SellPriceTotal - value.BuyPriceTotal;
+        const AVG =
+          QUANTITY === 0 ? 0 : value.BuyPriceTotal / value.BuyQuantity;
+        const CURPRICE = symbolLiveState.Livestream[key]?.curPrice ?? 0;
+        const PROFIT =
+          (QUANTITY !== 0 ? QUANTITY * CURPRICE : 0) +
+          value.SellPriceTotal -
+          value.BuyPriceTotal;
+
         const CHANGE =
-          ((Number(PROFIT) / value.BuyPriceTotal) * 100 - 100).toFixed(2) + "%";
-        if (QUANTITY === 0) {
-          data = [
-            "SPOT",
-            key,
-            QUANTITY,
-            "0.00",
-            CURPRICE,
-            PROFIT.toFixed(2),
-            "0.00%",
-          ];
-        } else
-          data = [
-            "SPOT",
-            key,
-            QUANTITY,
-            AVG,
-            CURPRICE,
-            (
-              value.BuyQuantity *
-                (symbolLiveState.Livestream[key]?.curPrice ?? 1) -
-              PROFIT
-            ).toFixed(2),
-            CHANGE,
-          ];
+          QUANTITY === 0
+            ? "0.00%"
+            : ((PROFIT * 100) / value.BuyPriceTotal).toFixed(2) + "%";
+
+        data = [
+          "SPOT",
+          key,
+          QUANTITY,
+          AVG,
+          CURPRICE,
+          PROFIT.toFixed(2),
+          CHANGE,
+        ];
       }
       return {
         id: "" + i,
@@ -159,7 +152,12 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   };
   return (
     <SymbolLiveContextProvider
-      value={{ symbolLiveState, symbolLiveDispatch, socketSend, closed_open_OrdersData }}
+      value={{
+        symbolLiveState,
+        symbolLiveDispatch,
+        socketSend,
+        closed_open_OrdersData,
+      }}
     >
       {children}
     </SymbolLiveContextProvider>
@@ -167,3 +165,7 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
 };
 
 export default SymbolLiveContextComponent;
+// (
+//   QUANTITY * (symbolLiveState.Livestream[key]?.curPrice ?? 1) -
+//   PROFIT
+// ).toFixed(2)
