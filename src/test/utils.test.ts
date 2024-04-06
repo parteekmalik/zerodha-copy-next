@@ -2,78 +2,77 @@
 
 import moment from "moment";
 import { TOrder } from "../app/zerodha/_components/Rightside/Order";
-import { TcalculateTradesSummaryFIFO } from "../app/zerodha/_components/Rightside/Positions/utils";
 import { parsePrice } from "../app/zerodha/utils";
-const sample: TcalculateTradesSummaryFIFO[] = [
-  {
-    type: "BUY",
-    price: 100,
-    quantity: 5,
-  },
-  {
-    type: "BUY",
-    price: 200,
-    quantity: 10,
-  },
-];
-const sample1: TcalculateTradesSummaryFIFO[] = [
-  {
-    type: "BUY",
-    price: 100,
-    quantity: 5,
-  },
-  {
-    type: "BUY",
-    price: 200,
-    quantity: 10,
-  },
-  {
-    type: "SELL",
-    price: 200,
-    quantity: 12,
-  },
-];
-const sample2: TOrder[] = [
-  {
-    id: "sdasda",
-    createdAt: moment().toDate(),
-    name: "BTCUSDT",
-    type: "BUY",
-    price: 100,
-    quantity: 5,
-    status: "completed",
-    triggerType: "MARKET",
-    sl: 0,
-    tp: 0,
-    TradingAccountId: "sds",
-  },
-  {
-    id: "sdasda",
-    createdAt: moment().toDate(),
-    name: "BTCUSDT",
-    type: "BUY",
-    price: 200,
-    quantity: 10,
-    status: "completed",
-    triggerType: "MARKET",
-    sl: 0,
-    tp: 0,
-    TradingAccountId: "sds",
-  },
-  {
-    id: "sdasda",
-    createdAt: moment().toDate(),
-    name: "BTCUSDT",
-    type: "SELL",
-    price: 200,
-    quantity: 12,
-    status: "completed",
-    triggerType: "MARKET",
-    sl: 0,
-    tp: 0,
-    TradingAccountId: "sds",
-  },
-];
+// const sample: TcalculateTradesSummaryFIFO[] = [
+//   {
+//     type: "BUY",
+//     price: 100,
+//     quantity: 5,
+//   },
+//   {
+//     type: "BUY",
+//     price: 200,
+//     quantity: 10,
+//   },
+// ];
+// const sample1: TcalculateTradesSummaryFIFO[] = [
+//   {
+//     type: "BUY",
+//     price: 100,
+//     quantity: 5,
+//   },
+//   {
+//     type: "BUY",
+//     price: 200,
+//     quantity: 10,
+//   },
+//   {
+//     type: "SELL",
+//     price: 200,
+//     quantity: 12,
+//   },
+// ];
+// const sample2: TOrder[] = [
+//   {
+//     id: "sdasda",
+//     createdAt: moment().toDate(),
+//     name: "BTCUSDT",
+//     type: "BUY",
+//     price: 100,
+//     quantity: 5,
+//     status: "completed",
+//     triggerType: "MARKET",
+//     sl: 0,
+//     tp: 0,
+//     TradingAccountId: "sds",
+//   },
+//   {
+//     id: "sdasda",
+//     createdAt: moment().toDate(),
+//     name: "BTCUSDT",
+//     type: "BUY",
+//     price: 200,
+//     quantity: 10,
+//     status: "completed",
+//     triggerType: "MARKET",
+//     sl: 0,
+//     tp: 0,
+//     TradingAccountId: "sds",
+//   },
+//   {
+//     id: "sdasda",
+//     createdAt: moment().toDate(),
+//     name: "BTCUSDT",
+//     type: "SELL",
+//     price: 200,
+//     quantity: 12,
+//     status: "completed",
+//     triggerType: "MARKET",
+//     sl: 0,
+//     tp: 0,
+//     TradingAccountId: "sds",
+//   },
+// ];
 
 describe("Math functions", () => {
   test("parsePrice passed", () => {

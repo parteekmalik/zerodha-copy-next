@@ -11,6 +11,8 @@ import {
 import { symbolLiveReducer } from "./SymbolLiveReducer";
 import { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
 import { api } from "~/trpc/react";
+import { TOrderCalculations } from "../../_components/Rightside/Positions/functions/OrderCalculations";
+import TsMap from "ts-map";
 
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
 export type TtickerChangeType = {
@@ -113,9 +115,51 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
         })
         .catch((error) => console.log(error));
   }, [subscriptions]);
+  const closed_open_OrdersData = (list: TsMap<string, TOrderCalculations>) => {
+    return list.keys().map((key, i) => {
+      const value = list.get(key);
+      let data: (string | number)[] = [];
+      if (value) {
+        const QUANTITY = value.BuyQuantity - value.SellQuantity;
+        const AVG = value.BuyPriceTotal / value.BuyQuantity;
+        const CURPRICE = symbolLiveState.Livestream[key]?.curPrice ?? "0.00";
+        const PROFIT = value.SellPriceTotal - value.BuyPriceTotal;
+        const CHANGE =
+          ((Number(PROFIT) / value.BuyPriceTotal) * 100 - 100).toFixed(2) + "%";
+        if (QUANTITY === 0) {
+          data = [
+            "SPOT",
+            key,
+            QUANTITY,
+            "0.00",
+            CURPRICE,
+            PROFIT.toFixed(2),
+            "0.00%",
+          ];
+        } else
+          data = [
+            "SPOT",
+            key,
+            QUANTITY,
+            AVG,
+            CURPRICE,
+            (
+              value.BuyQuantity *
+                (symbolLiveState.Livestream[key]?.curPrice ?? 1) -
+              PROFIT
+            ).toFixed(2),
+            CHANGE,
+          ];
+      }
+      return {
+        id: "" + i,
+        data,
+      };
+    });
+  };
   return (
     <SymbolLiveContextProvider
-      value={{ symbolLiveState, symbolLiveDispatch, socketSend }}
+      value={{ symbolLiveState, symbolLiveDispatch, socketSend, closed_open_OrdersData }}
     >
       {children}
     </SymbolLiveContextProvider>

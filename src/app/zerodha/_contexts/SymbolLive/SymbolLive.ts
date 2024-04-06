@@ -3,6 +3,8 @@ import type { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/
 import { JSONType } from "../../../../../public/symbolname";
 import { TtickerChangeType } from "./SymbolLiveContextComponent";
 import type { IsymbolLiveContextActions } from "./SymbolLiveReducer";
+import { TOrderCalculations } from "../../_components/Rightside/Positions/functions/OrderCalculations";
+import TsMap from "ts-map";
 
 export type TsymbolTrade = {
   e: string;
@@ -41,6 +43,10 @@ export interface IsymbolLiveContextProps {
   symbolLiveState: IsymbolLiveContextState;
   symbolLiveDispatch: React.Dispatch<IsymbolLiveContextActions>;
   socketSend: (payload: Twsbinance) => void;
+  closed_open_OrdersData: (list: TsMap<string, TOrderCalculations>) => {
+    id: string;
+    data: (string | number)[];
+  }[];
 }
 
 const SymbolLiveContext = createContext<IsymbolLiveContextProps>({
@@ -50,6 +56,14 @@ const SymbolLiveContext = createContext<IsymbolLiveContextProps>({
   },
   socketSend: () => {
     console.log("due to ts error");
+  },
+  closed_open_OrdersData: (list: TsMap<string, TOrderCalculations>) => {
+    return [
+      {
+        id: "sda",
+        data: [1, "1"],
+      },
+    ];
   },
 });
 

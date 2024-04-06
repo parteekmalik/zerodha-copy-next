@@ -26,7 +26,7 @@ const position_stylesList = {
 
 function Positions() {
   const ordersQuery = api.orders.getOrders24hr.useQuery();
-  const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
+  const { closed_open_OrdersData } = useContext(SymbolLiveContext);
 
   const [orderMap, setorderMap] = useState<{
     open: TsMap<string, TOrderCalculations>;
@@ -43,48 +43,7 @@ function Positions() {
   useEffect(() => {
     console.log(orderMap);
   }, [orderMap]);
-  const closedOrdersData = (list: TsMap<string, TOrderCalculations>) => {
-    return list.keys().map((key, i) => {
-      const value = list.get(key);
-      let data: (string | number)[] = [];
-      if (value) {
-        const QUANTITY = value.BuyQuantity - value.SellQuantity;
-        const AVG = value.BuyPriceTotal / value.BuyQuantity;
-        const CURPRICE = symbolLiveState.Livestream[key]?.curPrice ?? "0.00";
-        const PROFIT = value.SellPriceTotal - value.BuyPriceTotal;
-        const CHANGE =
-          ((Number(PROFIT) / value.BuyPriceTotal) * 100 - 100).toFixed(2) + "%";
-        if (QUANTITY === 0) {
-          data = [
-            "SPOT",
-            key,
-            QUANTITY,
-            "0.00",
-            CURPRICE,
-            PROFIT.toFixed(2),
-            "0.00%",
-          ];
-        } else
-          data = [
-            "SPOT",
-            key,
-            QUANTITY,
-            AVG,
-            CURPRICE,
-            (
-              value.BuyQuantity *
-                (symbolLiveState.Livestream[key]?.curPrice ?? 1) -
-              PROFIT
-            ).toFixed(2),
-            CHANGE,
-          ];
-      }
-      return {
-        id: "" + i,
-        data,
-      };
-    });
-  };
+
   if (typeof ordersQuery.data === "string") return <>{ordersQuery}</>;
   return (
     <>
@@ -99,7 +58,7 @@ function Positions() {
             stylesList={position_stylesList}
             options={{ colorIndex: { quantity: 2, list: [2, 5, 6] } }}
             headings={headings}
-            dataList={closedOrdersData(orderMap.open)}
+            dataList={closed_open_OrdersData(orderMap.open)}
           />
         </div>
         {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
@@ -115,7 +74,7 @@ function Positions() {
             stylesList={position_stylesList}
             options={{ colorIndex: { quantity: 2, list: [2, 5, 6] } }}
             headings={headings}
-            dataList={closedOrdersData(orderMap.close)}
+            dataList={closed_open_OrdersData(orderMap.close)}
           />
         </div>
         {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
