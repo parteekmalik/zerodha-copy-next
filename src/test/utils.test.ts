@@ -2,7 +2,6 @@
 
 import moment from "moment";
 import { TOrder } from "../app/zerodha/_components/Rightside/Order";
-import OrdersManage from "../app/zerodha/_components/Rightside/Positions/classes/OrderCalculations";
 import { TcalculateTradesSummaryFIFO } from "../app/zerodha/_components/Rightside/Positions/utils";
 import { parsePrice } from "../app/zerodha/utils";
 const sample: TcalculateTradesSummaryFIFO[] = [
@@ -102,11 +101,11 @@ describe("Math functions", () => {
 //     expect(result).toEqual(expected);
 //   });
 // });
-describe("cal p&l", () => {
-  test("p&l passed", () => {
-    const result = new OrdersManage(sample2).dummy;
+// describe("cal p&l", () => {
+//   test("p&l passed", () => {
+//     const result = new OrdersManage(sample2).dummy;
 
-    const expected = "dummy";
-    expect(result).toEqual(expected);
-  });
-});
+//     const expected = "dummy";
+//     expect(result).toEqual(expected);
+//   });
+// });

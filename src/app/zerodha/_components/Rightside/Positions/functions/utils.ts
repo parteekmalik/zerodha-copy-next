@@ -1,5 +1,4 @@
 import { $Enums } from "@prisma/client";
-import { sumByKey } from "../divideOrders";
 
 export type TorderDetails = {
   type: "BUY" | "SELL";
@@ -19,24 +18,9 @@ export type TOrder = {
   tp: number;
   TradingAccountId: string;
 };
-export function divideIntoBUYSELL(Trades: TorderDetails[]) {
-  const buyList = Trades.filter((i) => i.type === "BUY");
-  const sellList = Trades.filter((i) => i.type === "SELL");
-  return { buyList, sellList };
-}
-export function divdeIntoClosedOpen(
-  buyTrades: TorderDetails[],
-  sellTrades: TorderDetails[],
-) {
-  return remaingOrders(
-    [...buyTrades],
-    [...sellTrades],
-    sumByKey(sellTrades, "quantity"),
-  );
-}
 export function remaingOrders(
-  buyList: TorderDetails[],
-  sellList: TorderDetails[],
+  buyList: TOrder[],
+  sellList: TOrder[],
   commonQty: number,
 ) {
   let buyquantity = 0;
@@ -58,14 +42,12 @@ export function remaingOrders(
     const order = buyList.shift();
     if (order) {
       buyCommonList.push({
-        type: order.type,
-        price: order.price,
+        ...order,
         quantity: leftQty,
       });
 
       buyList.push({
-        type: order.type,
-        price: order.price,
+        ...order,
         quantity: order.quantity - leftQty,
       });
     } else console.log("an error encountered");
@@ -77,11 +59,4 @@ export function remaingOrders(
     ClosedTrades: { buyTrades: buyCommonList, sellTrades: sellList },
     openTrades: buyList,
   };
-}
-export function calTotalPrice(list: TorderDetails[]) {
-  let Cost = 0;
-  list.map((i) => {
-    Cost += i.price * i.quantity;
-  });
-  return Cost;
 }

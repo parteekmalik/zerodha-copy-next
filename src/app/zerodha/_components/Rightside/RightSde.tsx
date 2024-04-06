@@ -4,9 +4,9 @@ import DataContext from "../../_contexts/data/data";
 import Dashboard from "./Dashboard";
 import Chart from "./chart";
 import Order from "./Order";
-import Positions from "./Positions/Positions";
 import Funds from "./Funds";
 import Holdings from "./Holdings/Holdings";
+import Positions from "./Positions/Positions";
 
 function RightSide() {
   const { symbolLiveState } = useContext(SymbolLiveContext);
