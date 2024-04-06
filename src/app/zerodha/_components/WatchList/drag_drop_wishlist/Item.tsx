@@ -1,6 +1,7 @@
 import { Reorder, useDragControls } from "framer-motion";
 import { TsymbolLive } from "../../../_contexts/SymbolLive/SymbolLive";
 import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
+import { getColor } from "../utils";
 
 function Item({
   diff,
@@ -55,13 +56,5 @@ function Item({
   );
 }
 
-const getColor = (diff: number) => {
-  if (diff > 0) {
-    return "text-[#4caf50]";
-  } else if (diff < 0) {
-    return "text-[#df514c]";
-  } else {
-    return "";
-  }
-};
+
 export default Item;

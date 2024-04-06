@@ -12,7 +12,7 @@ export default function Home() {
   // const cookie = getCookies();
 
   return (
-    <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center  bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
+    <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center  justify-center overflow-hidden  bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
       <Header />
       <div className="text-red flex w-full max-w-[1536px] grow select-none overflow-hidden ">
         <WatchList />

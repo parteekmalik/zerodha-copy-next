@@ -4,7 +4,8 @@ import {
   TcalculateTradesSummaryFIFO,
   calculateTradesSummaryFIFO,
 } from "../../utils";
-import { TOrder, Table, stylesList } from "./Order";
+import { TOrder, stylesList } from "./Order";
+import Table from "./Table/table";
 const headings = [
   "Product",
   "Instrument",
@@ -14,6 +15,14 @@ const headings = [
   "P&L",
   "change",
 ];
+const position_stylesList = {
+  padding: " p-[10px_12px] ",
+  table: " m-2 w-full ",
+  head: " border-b-2 text-[.75rem]  text-[#9b9b9b] ",
+  body: " text-center text-[14px] text-[#444444] ",
+  row: ["  ", "  ", "", "  ", "  ", "", " border-r ", ""],
+};
+
 function Positions() {
   const orders = api.orders.getOrders24hr.useQuery().data;
   // const [orderMap, setOrderMap] = useState<{ [key: string]: TOrder[] }>({});
@@ -46,6 +55,7 @@ function Positions() {
               answer.Quantity,
               answer.AVG,
               answer.LTP,
+              answer["P&L"],
               answer.change,
             ],
           };
@@ -65,12 +75,13 @@ function Positions() {
       </div>
       <div className="flex w-full items-center justify-center">
         <Table
-          stylesList={stylesList}
-          options={{}}
+          stylesList={position_stylesList}
+          options={{ colorIndex: [2,5,6] }}
           headings={headings}
           dataList={dataList}
         />
       </div>
+      {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
     </div>
   );
 }
@@ -92,8 +103,8 @@ function calculations(orderMap: Record<string, TOrder[]>, key: string) {
     Quantity: 0,
     AVG: 0,
     LTP: "LTP",
-    "P&L": 0,
-    change: 0,
+    "P&L": 1,
+    change: -1,
   };
   if (orders) {
     const { avgPrice, profitOrLoss, netQuantity } = calculateTradesSummaryFIFO(
@@ -107,7 +118,7 @@ function calculations(orderMap: Record<string, TOrder[]>, key: string) {
       0,
     );
     answer.AVG = Number(avgPrice);
-    answer["P&L"] = profitOrLoss;
+    answer["P&L"] = 1;
     answer.Quantity = netQuantity;
   }
   return answer;
