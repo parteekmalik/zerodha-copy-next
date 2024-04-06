@@ -4,6 +4,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "~/trpc/react";
 import DataContextComponent from "../../_contexts/data/dataContextComponent";
 import DataContext from "../../_contexts/data/data";
+import BackndWSContext from "../../_contexts/backendWS/backendWS";
 export type TOrder = {
   id: string;
   createdAt: Date;
@@ -29,6 +30,8 @@ function Order() {
   const { data: orders, isLoading } = api.orders.getOrders.useQuery();
   const [openOrders, setopenOrders] = useState<TOrder[]>([]);
   const [executedOrders, setexecutedOrders] = useState<TOrder[]>([]);
+  const { WSsendOrder } = useContext(BackndWSContext);
+
   useEffect(() => {
     console.log("orders updated ->", orders);
     if (typeof orders !== "string" && orders !== undefined) {
@@ -40,7 +43,8 @@ function Order() {
   const cancelOrderApi = api.orders.cancelOrders.useMutation({
     onSuccess(data, variables, context) {
       console.log(data, variables, context);
-      queryClient.refetchQueries().catch(err=>console.log(err));
+      queryClient.refetchQueries().catch((err) => console.log(err));
+      WSsendOrder("deleteOrder", variables);
     },
   });
   function selectedAction(orderids: string[]) {

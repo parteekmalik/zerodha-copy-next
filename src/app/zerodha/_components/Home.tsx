@@ -1,9 +1,7 @@
 "use client";
-import { useContext, useEffect } from "react";
-import { env } from "~/env";
-import { useToast } from "../_contexts/Toast/toast-context";
+import { useContext } from "react";
+import BackndWSContext from "../_contexts/backendWS/backendWS";
 import DataContext from "../_contexts/data/data";
-import useSocket from "../_hooks/useSocket";
 import OrderForm from "./OrderForm/orderForm";
 import RightSide from "./Rightside/RightSde";
 import WatchList from "./WatchList/watchList";
@@ -12,29 +10,7 @@ import Header from "./hearder";
 export default function Home() {
   const { dataState, loading } = useContext(DataContext);
   // const cookie = getCookies();
-  const toast = useToast();
-  const { socket, isConnected, lastMessage } = useSocket(
-    env.NEXT_PUBLIC_BACKEND_WS,
-    dataState.userDetails.TradingAccountId,
-    {},
-  );
-  useEffect(() => {
-    if (toast && lastMessage && lastMessage) {
-      console.log("lastMessage -> ", typeof lastMessage, lastMessage);
-      toast.open({
-        name: lastMessage.name,
-        state:
-          lastMessage.status === "open"
-            ? "placed"
-            : lastMessage.status === "completed"
-              ? "sucess"
-              : "error",
-        quantity: lastMessage.quantity,
-        orderId: lastMessage.id,
-        type: lastMessage.type,
-      });
-    }
-  }, [lastMessage]);
+
   return (
     <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col  items-center justify-center  bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
       <Header />
@@ -54,7 +30,6 @@ export default function Home() {
         <OrderForm
           symbol={dataState.FormData.symbol}
           type={dataState.FormData.type}
-          sendMessage={(payload: string) => socket?.emit("order", payload)}
         />
       ) : null}
     </main>

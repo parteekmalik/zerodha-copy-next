@@ -25,7 +25,10 @@ export const orderRouter = createTRPCRouter({
             status: input.trigerType === "MARKET" ? "completed" : "open",
             triggerType: input.trigerType,
             TradingAccountId: Taccounts.id,
-            price: await getLTP(input.symbolName),
+            price:
+              input.trigerType === "MARKET"
+                ? await getLTP(input.symbolName)
+                : input.price,
             quantity: input.quantity,
           },
         });

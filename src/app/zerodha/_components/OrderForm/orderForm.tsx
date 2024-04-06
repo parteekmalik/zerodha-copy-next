@@ -8,6 +8,7 @@ import { CheckBox, OrderTypeDiv } from "./OrderTypeDiv";
 import { api } from "~/trpc/react";
 import { useToast } from "../../_contexts/Toast/toast-context";
 import { useQueryClient } from "@tanstack/react-query";
+import BackndWSContext from "../../_contexts/backendWS/backendWS";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -23,10 +24,9 @@ export type TorderForm = {
 type TmarketType = "SPOT" | "MARGIN";
 interface ITempOrderForm {
   symbol: string;
-  sendMessage: (payload: string) => void;
   type: "BUY" | "SELL";
 }
-function TempOrderForm({ symbol, sendMessage, type }: ITempOrderForm) {
+function TempOrderForm({ symbol, type }: ITempOrderForm) {
   const {
     register,
     handleSubmit,
@@ -59,10 +59,11 @@ function TempOrderForm({ symbol, sendMessage, type }: ITempOrderForm) {
   }>({ sl: false, tp: false, orderType: "MARKET" });
   const toast = useToast();
   const queryClient = useQueryClient(); // Initialize queryClient
+  const { WSsendOrder,  } = useContext(BackndWSContext);
 
   const orderapi = api.orders.create.useMutation({
     onSuccess: (msg) => {
-      queryClient.refetchQueries().catch(err=>console.log(err));
+      queryClient.refetchQueries().catch((err) => console.log(err));
       if (msg && toast) {
         console.log("mutation nsucess -> ", msg);
         toast.open({
@@ -77,10 +78,13 @@ function TempOrderForm({ symbol, sendMessage, type }: ITempOrderForm) {
           orderId: msg.id,
           type: msg.type,
         });
-        if (msg.status === "open") sendMessage(JSON.stringify(msg));
+        if (msg.status === "open") {
+          WSsendOrder("order", msg);
+        }
       }
     },
   });
+
   const onSubmit = (data: z.output<TFormSchema>) => {
     console.log("send order", data);
     orderapi.mutate({
