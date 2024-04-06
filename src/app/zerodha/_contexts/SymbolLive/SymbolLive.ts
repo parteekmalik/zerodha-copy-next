@@ -1,7 +1,6 @@
 import { createContext } from "react";
 import type { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
-import { JSONType, symbolList } from "../../symbolname";
-import { listToRecord } from "../../utils";
+import { JSONType } from "../../../../../public/symbolname";
 import { TtickerChangeType } from "./SymbolLiveContextComponent";
 import type { IsymbolLiveContextActions } from "./SymbolLiveReducer";
 
@@ -35,7 +34,7 @@ export type IsymbolLiveContextState = {
 
 export const defaultsymbolLiveContextState = {
   Livestream: {},
-  symbolsList: listToRecord(symbolList, "symbol"),
+  symbolsList: {},
   last24hrdata: {},
 };
 export interface IsymbolLiveContextProps {

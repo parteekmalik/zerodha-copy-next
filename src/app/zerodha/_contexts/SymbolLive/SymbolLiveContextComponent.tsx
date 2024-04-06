@@ -10,6 +10,7 @@ import {
 } from "./SymbolLive";
 import { symbolLiveReducer } from "./SymbolLiveReducer";
 import { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
+import { api } from "~/trpc/react";
 
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
 export type TtickerChangeType = {
@@ -40,6 +41,12 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   props,
 ) => {
   const { children } = props;
+  const symbolList = api.symbolList.getSymbolList.useQuery().data;
+  useEffect(() => {
+    if (symbolList && symbolLiveState.symbolsList[0] === undefined) {
+      symbolLiveDispatch({ type: "update_symbolList", payload: symbolList });
+    }
+  }, [symbolList]);
   const [symbolLiveState, symbolLiveDispatch] = useReducer(
     symbolLiveReducer,
     defaultsymbolLiveContextState,

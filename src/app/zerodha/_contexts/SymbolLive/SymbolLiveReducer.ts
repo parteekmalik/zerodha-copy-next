@@ -1,4 +1,5 @@
-import type { JSONType } from "../../symbolname";
+import { symbolList, type JSONType } from "../../../../../public/symbolname";
+import { listToRecord } from "../../utils";
 import type { IsymbolLiveContextState, TsymbolLive } from "./SymbolLive";
 
 export type IsymbolLiveContextActions =
@@ -47,10 +48,7 @@ export const symbolLiveReducer = (
       return { ...state, Livestream };
     }
     case "update_symbolList": {
-      const symbolsList = { ...state.symbolsList };
-      payload.map((x) => {
-        symbolsList[x.symbol] = x;
-      });
+      const symbolsList = listToRecord(symbolList, "symbol");
 
       return { ...state, symbolsList };
     }
