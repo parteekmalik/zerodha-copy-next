@@ -35,7 +35,7 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
       });
     }
   }, [lastMessage]);
-  function WSsendOrder(messageType: string, payload: any) {
+  function WSsendOrder(messageType: string, payload: unknown) {
     console.log("message sent ws ->", messageType, payload);
     socket?.emit(messageType, JSON.stringify(payload));
   }
