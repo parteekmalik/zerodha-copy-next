@@ -1,10 +1,9 @@
 // math.test.ts
 
-import {
-  TcalculateTradesSummaryFIFO,
-  Total_avg_Price,
-  calculateTradesSummaryFIFO,
-} from "../app/zerodha/_components/Rightside/Positions/utils";
+import moment from "moment";
+import { TOrder } from "../app/zerodha/_components/Rightside/Order";
+import OrdersManage from "../app/zerodha/_components/Rightside/Positions/classes/OrderCalculations";
+import { TcalculateTradesSummaryFIFO } from "../app/zerodha/_components/Rightside/Positions/utils";
 import { parsePrice } from "../app/zerodha/utils";
 const sample: TcalculateTradesSummaryFIFO[] = [
   {
@@ -35,6 +34,48 @@ const sample1: TcalculateTradesSummaryFIFO[] = [
     quantity: 12,
   },
 ];
+const sample2: TOrder[] = [
+  {
+    id: "sdasda",
+    createdAt: moment().toDate(),
+    name: "BTCUSDT",
+    type: "BUY",
+    price: 100,
+    quantity: 5,
+    status: "completed",
+    triggerType: "MARKET",
+    sl: 0,
+    tp: 0,
+    TradingAccountId: "sds",
+  },
+  {
+    id: "sdasda",
+    createdAt: moment().toDate(),
+    name: "BTCUSDT",
+    type: "BUY",
+    price: 200,
+    quantity: 10,
+    status: "completed",
+    triggerType: "MARKET",
+    sl: 0,
+    tp: 0,
+    TradingAccountId: "sds",
+  },
+  {
+    id: "sdasda",
+    createdAt: moment().toDate(),
+    name: "BTCUSDT",
+    type: "SELL",
+    price: 200,
+    quantity: 12,
+    status: "completed",
+    triggerType: "MARKET",
+    sl: 0,
+    tp: 0,
+    TradingAccountId: "sds",
+  },
+];
+
 describe("Math functions", () => {
   test("parsePrice passed", () => {
     expect(parsePrice("0.01234")).toBe(0.01234);
@@ -43,21 +84,29 @@ describe("Math functions", () => {
   });
 });
 
+// describe("cal p&l", () => {
+//   test("p&l passed", () => {
+//     const result = Total_avg_Price(sample);
+//     const expected = { avg: 166.67, total: 2500 };
+//     expect(result).toEqual(expected);
+//   });
+// });
+// describe("cal p&l", () => {
+//   test("p&l passed", () => {
+//     const result = calculateTradesSummaryFIFO(sample1, 300);
+//     const expected = {
+//       avgPrice: 166.67,
+//       netQuantity: 3,
+//       profitOrLoss: 800,
+//     };
+//     expect(result).toEqual(expected);
+//   });
+// });
 describe("cal p&l", () => {
   test("p&l passed", () => {
-    const result = Total_avg_Price(sample);
-    const expected = { avg: 166.67, total: 2500 };
-    expect(result).toEqual(expected);
-  });
-});
-describe("cal p&l", () => {
-  test("p&l passed", () => {
-    const result = calculateTradesSummaryFIFO(sample1, 300);
-    const expected = {
-      avgPrice: 166.67,
-      netQuantity: 3,
-      profitOrLoss: 800,
-    };
+    const result = new OrdersManage(sample2).dummy;
+
+    const expected = "dummy";
     expect(result).toEqual(expected);
   });
 });

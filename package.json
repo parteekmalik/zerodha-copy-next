@@ -38,6 +38,7 @@
     "server-only": "^0.0.1",
     "socket.io-client": "^4.7.5",
     "superjson": "^2.2.1",
+    "ts-map": "^1.0.3",
     "ts-node": "^10.9.2",
     "ws": "^8.16.0",
     "zod": "^3.22.4"

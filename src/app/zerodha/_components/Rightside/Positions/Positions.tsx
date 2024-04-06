@@ -9,6 +9,8 @@ import {
   calculations,
 } from "./utils";
 import SymbolLiveContext from "~/app/zerodha/_contexts/SymbolLive/SymbolLive";
+import { divideIntoBUYSELL } from "./divideOrders";
+import OrdersManage from "./classes/OrderCalculations";
 const headings = [
   "Product",
   "Instrument",
@@ -29,75 +31,65 @@ const position_stylesList = {
 function Positions() {
   const ordersQuery = api.orders.getOrders24hr.useQuery();
   const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
-  // const [orderMap, setOrderMap] = useState<{ [key: string]: TOrder[] }>({});
-  const [dataList, setdataList] = useState<
-    {
+  const [dataList, setdataList] = useState<{
+    open: {
       id: string;
       data: (string | number)[];
-    }[]
-  >([]);
-  const [temporderMap, settemporderMap] = useState<Record<string, TOrder[]>>(
-    {},
-  );
+    }[];
+    closed: {
+      id: string;
+      data: (string | number)[];
+    }[];
+  }>({ open: [], closed: [] });
+
+  const [orderMap, setorderMap] = useState(new OrdersManage([]));
 
   useEffect(() => {
     if (typeof ordersQuery.data === "object") {
-      const prev: Record<string, TOrder[]> = {};
-      ordersQuery.data
-        .filter((item) => item.status === "completed")
-        .forEach((item) => {
-          prev[item.name] = prev[item.name]
-            ? [...(prev[item.name] ?? []), item]
-            : [item];
-        });
-      settemporderMap(prev);
+      console.log("new class");
+      // setorderMap(new OrdersManage(ordersQuery.data));
     }
-    console.log("temporderMap", temporderMap);
   }, [ordersQuery.data]);
-
   useEffect(() => {
-    function getStats(key: string) {
-      const answer = calculations(
-        [...(temporderMap[key] ?? [])],
-        symbolLiveState.Livestream[key]?.curPrice ?? 0,
-      );
-      return {
-        id: "",
-        data: [
-          answer.Product,
-          answer.Instrument,
-          answer.Quantity,
-          answer.AVG,
-          answer.LTP,
-          answer["P&L"],
-          answer.change,
-        ],
-      };
-    }
-    const temp = Object.keys(temporderMap).map((key) => {
-      return getStats(key);
-    });
-    if (JSON.stringify(temp) !== JSON.stringify(dataList)) setdataList(temp);
-  }, [symbolLiveState.Livestream]);
+    console.log("temporderMap", orderMap);
+  }, [orderMap]);
 
   if (typeof ordersQuery.data === "string") return <>{ordersQuery}</>;
   return (
-    <div className="w-full bg-white">
-      <div className="flex w-full p-2">
-        <span className="grow text-[1.125rem] text-[#444444]">
-          Open orders ({dataList?.length})
-        </span>
+    <>
+      <div className="w-full bg-white">
+        <div className="flex w-full p-2">
+          <span className="grow text-[1.125rem] text-[#444444]">
+            Open orders ({dataList?.open.length})
+          </span>
+        </div>
+        <div className="flex w-full items-center justify-center">
+          <Table
+            stylesList={position_stylesList}
+            options={{ colorIndex: { quantity: 2, list: [2, 5, 6] } }}
+            headings={headings}
+            dataList={dataList.open}
+          />
+        </div>
+        {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
       </div>
-      <div className="flex w-full items-center justify-center">
-        <Table
-          stylesList={position_stylesList}
-          options={{ colorIndex: { quantity: 2, list: [2, 5, 6] } }}
-          headings={headings}
-          dataList={dataList}
-        />
+      <div className="w-full bg-white">
+        <div className="flex w-full p-2">
+          <span className="grow text-[1.125rem] text-[#444444]">
+            Closed orders ({dataList?.closed.length})
+          </span>
+        </div>
+        <div className="flex w-full items-center justify-center">
+          <Table
+            stylesList={position_stylesList}
+            options={{ colorIndex: { quantity: 2, list: [2, 5, 6] } }}
+            headings={headings}
+            dataList={dataList.closed}
+          />
+        </div>
+        {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
       </div>
-      {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
-    </div>
+    </>
   );
 }
 
