@@ -93,7 +93,7 @@ function Holdings() {
           <span>21651</span>
         </div>
         <div className="flex grow flex-col items-center justify-center">
-          <span>Day's P&L</span>
+          <span>{`Day's P&L`}</span>
           <span>54546</span>
         </div>
         <div className="flex grow flex-col items-center justify-center">
