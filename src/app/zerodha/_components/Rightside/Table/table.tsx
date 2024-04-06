@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getColor } from "../../WatchList/utils";
+import { getColor } from "../../WatchList/drag_drop_wishlist/Item";
 
 export default function Table({
   headings,
@@ -18,7 +18,7 @@ export default function Table({
   dataList: { id: string; data: (string | number)[] }[];
   options: {
     selectedAction?: (orderids: string[]) => void;
-    colorIndex?: number[];
+    colorIndex?: { quantity: number; list: number[] };
   };
 }) {
   const [selected, setSelected] = useState<boolean[]>([]);
@@ -84,7 +84,9 @@ export default function Table({
                     className={
                       stylesList.padding +
                       stylesList.row[i] +
-                      (options.colorIndex && options.colorIndex?.includes(i)
+                      (options.colorIndex &&
+                      items.data[options.colorIndex.quantity] !== 0 &&
+                      options.colorIndex?.list.includes(i)
                         ? getColor(item)
                         : " ")
                     }

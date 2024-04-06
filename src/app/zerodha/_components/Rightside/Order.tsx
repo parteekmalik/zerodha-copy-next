@@ -1,11 +1,8 @@
 import { $Enums } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { api } from "~/trpc/react";
-import DataContextComponent from "../../_contexts/data/dataContextComponent";
-import DataContext from "../../_contexts/data/data";
 import BackndWSContext from "../../_contexts/backendWS/backendWS";
-import { getColor } from "../WatchList/utils";
 import Table from "./Table/table";
 export type TOrder = {
   id: string;

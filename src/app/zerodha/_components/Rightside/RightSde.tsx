@@ -4,7 +4,7 @@ import DataContext from "../../_contexts/data/data";
 import Dashboard from "./Dashboard";
 import Chart from "./chart";
 import Order from "./Order";
-import Positions from "./Positions";
+import Positions from "./Positions/Positions";
 import Funds from "./Funds";
 
 function RightSide() {
@@ -29,8 +29,8 @@ function RightSide() {
     case "Positions": {
       return <Positions />;
     }
-    case "Funds":{
-      return <Funds />
+    case "Funds": {
+      return <Funds />;
     }
     default:
       return (
