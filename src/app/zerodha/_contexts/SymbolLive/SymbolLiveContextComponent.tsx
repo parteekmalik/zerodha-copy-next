@@ -118,7 +118,23 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   const closed_open_OrdersData = (list: TsMap<string, TOrderCalculations>) => {
     return list.keys().map((key, i) => {
       const value = list.get(key);
-      let data: (string | number)[] = [];
+      let data: {
+        Product: string;
+        Instrument: string;
+        Quantity: number;
+        AVG: number;
+        LTP: number;
+        "P&L": string;
+        change: string;
+      } = {
+        Product: "SPOT",
+        Instrument: key,
+        Quantity: 0,
+        AVG: 0,
+        LTP: 0,
+        "P&L": "0",
+        change: "0",
+      };
       if (value) {
         const QUANTITY = value.BuyQuantity - value.SellQuantity;
         const AVG =
@@ -134,15 +150,14 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
             ? "0.00%"
             : ((PROFIT * 100) / value.BuyPriceTotal).toFixed(2) + "%";
 
-        data = [
-          "SPOT",
-          key,
-          QUANTITY,
-          AVG,
-          CURPRICE,
-          PROFIT.toFixed(2),
-          CHANGE,
-        ];
+        data = {
+          ...data,
+          Quantity: QUANTITY,
+          AVG: AVG,
+          LTP: CURPRICE,
+          "P&L": PROFIT.toFixed(2),
+          change: CHANGE,
+        };
       }
       return {
         id: "" + i,

@@ -26,13 +26,15 @@ const position_stylesList = {
 function Holdings() {
   const ordersQuery = api.orders.getOrders24hr.useQuery();
   const { closed_open_OrdersData } = useContext(SymbolLiveContext);
-  const [orderMap, setorderMap] = useState<TsMap<string, TOrderCalculations>>(
-    open_close_Trades([]).open,
+  const [dataList, setdataList] = useState(
+    closed_open_OrdersData(open_close_Trades([]).open),
   );
-
+useEffect(()=>console.log("dataList",dataList),[dataList])
   useEffect(() => {
     if (typeof ordersQuery.data === "object") {
-      setorderMap(open_close_Trades(ordersQuery.data).open);
+      setdataList(
+        closed_open_OrdersData(open_close_Trades(ordersQuery.data).open),
+      );
     }
   }, [ordersQuery.data]);
 
@@ -41,17 +43,17 @@ function Holdings() {
     <div className="min-h-full w-full bg-white p-[20px_20px_20px_30px]">
       <div className="flex w-full p-2">
         <span className="grow text-[1.125rem] text-[#444444]">
-          Holdings ({orderMap.size})
+          Holdings ({dataList.length})
         </span>
       </div>
       <div className="flex w-full ">
         <div className="flex grow flex-col items-center justify-center">
           <span className={position_stylesList.head}>Total investment</span>
-          <span>({orderMap.size})</span>
+          <span>{current_invested_cal(dataList).investedTotal}</span>
         </div>
         <div className="flex grow flex-col items-center justify-center">
           <span>Current value</span>
-          <span>21651</span>
+          <span>{current_invested_cal(dataList).investedTotal}</span>
         </div>
         <div className="flex grow flex-col items-center justify-center">
           <span>{`Day's P&L`}</span>
@@ -67,7 +69,7 @@ function Holdings() {
           stylesList={position_stylesList}
           options={{ colorIndex: { quantity: 2, list: [2, 5, 6] } }}
           headings={headings}
-          dataList={closed_open_OrdersData(orderMap)}
+          dataList={dataList}
         />
       </div>
       {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
@@ -76,3 +78,26 @@ function Holdings() {
 }
 
 export default Holdings;
+//  TODO:finish it
+function current_invested_cal(
+  List: {
+    id: string;
+    data: {
+      Product: string;
+      Instrument: string;
+      Quantity: number;
+      AVG: number;
+      LTP: number;
+      "P&L": string;
+      change: string;
+    };
+  }[],
+) {
+  let investedTotal = 0;
+  let CurrentTotal = 0;
+  List.forEach((value) => {
+    // invested += ;
+    // CurrentTotal += value.data[]
+  });
+  return { investedTotal, CurrentTotal };
+}

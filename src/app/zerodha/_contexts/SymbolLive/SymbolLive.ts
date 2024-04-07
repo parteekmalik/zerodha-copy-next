@@ -5,6 +5,7 @@ import { TtickerChangeType } from "./SymbolLiveContextComponent";
 import type { IsymbolLiveContextActions } from "./SymbolLiveReducer";
 import { TOrderCalculations } from "../../_components/Rightside/Positions/functions/OrderCalculations";
 import TsMap from "ts-map";
+import { any } from "zod";
 
 export type TsymbolTrade = {
   e: string;
@@ -45,10 +46,19 @@ export interface IsymbolLiveContextProps {
   socketSend: (payload: Twsbinance) => void;
   closed_open_OrdersData: (list: TsMap<string, TOrderCalculations>) => {
     id: string;
-    data: (string | number)[];
+    data: {
+      Product: string;
+      Instrument: string;
+      Quantity: number;
+      AVG: number;
+      LTP: number;
+      "P&L": string;
+      change: string;
+    };
   }[];
 }
-
+[];
+// TODO :fix and auto asses types solution
 const SymbolLiveContext = createContext<IsymbolLiveContextProps>({
   symbolLiveState: defaultsymbolLiveContextState,
   symbolLiveDispatch: () => {
@@ -57,14 +67,7 @@ const SymbolLiveContext = createContext<IsymbolLiveContextProps>({
   socketSend: () => {
     console.log("due to ts error");
   },
-  closed_open_OrdersData: (list: TsMap<string, TOrderCalculations>) => {
-    return [
-      {
-        id: "sda",
-        data: [1, "1"],
-      },
-    ];
-  },
+  closed_open_OrdersData: () => {};
 });
 
 export const PageContextConsumer = SymbolLiveContext.Consumer;

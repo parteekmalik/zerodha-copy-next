@@ -15,7 +15,10 @@ export default function Table({
     body: string;
     padding: string;
   };
-  dataList: { id: string; data: (string | number)[] }[];
+  dataList: {
+    id: string;
+    data: { [key in (typeof headings)[number]]: string | number };
+  }[];
   options: {
     selectedAction?: (orderids: string[]) => void;
     colorIndex?: { quantity: number; list: number[] };
@@ -35,6 +38,9 @@ export default function Table({
   useEffect(() => {
     console.log("selectedCount", selectedCount);
   }, [selectedCount]);
+  useEffect(() => {
+    // console.log("dataList",dataList);
+  }, [dataList]);
   return (
     <table className={stylesList.table}>
       <thead className={stylesList.head}>
@@ -76,24 +82,26 @@ export default function Table({
                   />
                 </td>
               )}
-              {items.data.map((item, i) => {
-                return (
-                  <td
-                    // using random for key
-                    key={JSON.stringify(item) + i}
-                    className={
-                      stylesList.padding +
-                      stylesList.row[i] +
-                      (options.colorIndex &&
-                      items.data[options.colorIndex.quantity] !== 0 &&
-                      options.colorIndex?.list.includes(i)
-                        ? getColor(item)
-                        : " ")
-                    }
-                  >
-                    {item}
-                  </td>
-                );
+              {Object.keys(items.data).map((key, i) => {
+                const item = items.data[key];
+                if (item)
+                  return (
+                    <td
+                      // using random for key
+                      key={JSON.stringify(item) + i}
+                      className={
+                        stylesList.padding +
+                        stylesList.row[i] +
+                        (options.colorIndex &&
+                        items.data[options.colorIndex.quantity] !== 0 &&
+                        options.colorIndex?.list.includes(i)
+                          ? getColor(item)
+                          : " ")
+                      }
+                    >
+                      {item}
+                    </td>
+                  );
               })}
             </tr>
           );
