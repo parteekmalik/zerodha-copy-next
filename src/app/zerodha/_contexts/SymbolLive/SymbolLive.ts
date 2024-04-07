@@ -19,7 +19,7 @@ export type TsymbolTrade = {
   T: number;
   m: boolean;
   M: boolean;
-};
+}; 
 export type TsymbolLive = {
   symbol: string;
   curPrice: number;
