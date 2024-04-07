@@ -2,24 +2,25 @@
 import Home from "./_components/Home";
 import SymbolLiveContextComponent from "./_contexts/SymbolLive/SymbolLiveContextComponent";
 import { ToastProvider } from "./_contexts/Toast/toast";
-import BackndWSContext, {
-  BackndWSContextConsumer,
-} from "./_contexts/backendWS/backendWS";
 import BackendWSContextComponent from "./_contexts/backendWS/backendWSContextComponent";
-import DataContextComponent from "./_contexts/data/dataContextComponent";
+
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+import StoreComponent from "./redux/storeComponent";
 
 export default function ContextLayer() {
   return (
     <ToastProvider>
-      <SymbolLiveContextComponent>
-        <DataContextComponent>
+      <Provider store={store}>
+        <SymbolLiveContextComponent>
           <BackendWSContextComponent>
             {/* <SessionProvider session={session}> */}
+            <StoreComponent />
             <Home />
             {/* </SessionProvider> */}
           </BackendWSContextComponent>
-        </DataContextComponent>
-      </SymbolLiveContextComponent>
+        </SymbolLiveContextComponent>
+      </Provider>
     </ToastProvider>
   );
 }

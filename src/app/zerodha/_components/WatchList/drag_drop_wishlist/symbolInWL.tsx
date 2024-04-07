@@ -1,8 +1,10 @@
 import { Reorder } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "~/app/zerodha/redux/store";
+import { updateWatchList } from "~/app/zerodha/redux/watchList/watchList";
 import { api } from "~/trpc/react";
 import SymbolLiveContext from "../../../_contexts/SymbolLive/SymbolLive";
-import DataContext from "../../../_contexts/data/data";
 import type { Tsymbol } from "../watchList";
 import Item from "./Item";
 
@@ -54,16 +56,16 @@ function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
     };
   }, [DataList]);
 
-  const { dataDispatch, dataState } = useContext(DataContext);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const updateWatchList = api.accountInfo.updateWatchList.useMutation({
+  const updateWatchListAPI = api.accountInfo.updateWatchList.useMutation({
     onSuccess: async (data) => {
-      if (data) dataDispatch({ type: "update_watchList", payload: data });
+      if (data) dispatch(updateWatchList(data));
     },
   });
   function submitUpdate() {
     console.log("symbolinwl");
-    updateWatchList.mutate({
+    updateWatchListAPI.mutate({
       name: list.join(" "),
       row: listNo,
     });

@@ -1,8 +1,10 @@
 import { useContext, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import SymbolLiveContext from "../_contexts/SymbolLive/SymbolLive";
-import DataContext from "../_contexts/data/data";
 import { Twsbinance } from "./WatchList/drag_drop_wishlist/symbolInWL";
 import { shadowBox } from "./tcss";
+import { AppDispatch, RootState } from "../redux/store";
+import { updateRightSide } from "../redux/rightSideData/rightSideData";
 
 type RightSideType =
   | "Dashboard"
@@ -21,23 +23,23 @@ function Header() {
   ];
 
   const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
-  const { dataDispatch, dataState } = useContext(DataContext);
+  const headerPin = useSelector((state: RootState) => state.headerPin); 
+  const UserInfo = useSelector((state: RootState) => state.UserInfo);
+  const rightSide = useSelector((state: RootState) => state.rightSide);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     const msg: Twsbinance = {
       method: "SUBSCRIBE",
-      params: [
-        dataState.headerPin.Pin0 + "@trade",
-        dataState.headerPin.Pin1 + "@trade",
-      ],
+      params: [headerPin.Pin0 + "@trade", headerPin.Pin1 + "@trade"],
       id: 1,
     };
-    if (dataState.headerPin.Pin0) socketSend(msg);
+    if (headerPin.Pin0) socketSend(msg);
     return () => {
       msg.method = "UNSUBSCRIBE";
       if (msg.params[0] !== "@trade") socketSend(msg);
     };
-  }, [dataState.headerPin]);
+  }, [headerPin]);
   // ff5722
   return (
     <header
@@ -48,40 +50,34 @@ function Header() {
           <div className="flex cursor-pointer gap-1 ">
             <div
               onClick={() => {
-                dataDispatch({
-                  type: "update_rightHandSide",
-                  payload: {
+                dispatch(
+                  updateRightSide({
                     type: "chart",
-                    symbol: dataState.headerPin.Pin0.toUpperCase(),
+                    symbol: headerPin.Pin0.toUpperCase(),
                     TimeFrame: "5",
-                  },
-                });
+                  }),
+                );
               }}
             >
-              {dataState.headerPin.Pin0.toUpperCase()}
+              {headerPin.Pin0.toUpperCase()}
             </div>
-            <div>
-              {symbolLiveState.Livestream[dataState.headerPin.Pin0]?.curPrice}
-            </div>
+            <div>{symbolLiveState.Livestream[headerPin.Pin0]?.curPrice}</div>
           </div>
           <div className="flex cursor-pointer gap-1">
             <div
               onClick={() => {
-                dataDispatch({
-                  type: "update_rightHandSide",
-                  payload: {
+                dispatch(
+                  updateRightSide({
                     type: "chart",
-                    symbol: dataState.headerPin.Pin1.toUpperCase(),
+                    symbol: headerPin.Pin1.toUpperCase(),
                     TimeFrame: "5",
-                  },
-                });
+                  }),
+                );
               }}
             >
-              {dataState.headerPin.Pin1.toUpperCase()}
+              {headerPin.Pin1.toUpperCase()}
             </div>
-            <div>
-              {symbolLiveState.Livestream[dataState.headerPin.Pin1]?.curPrice}
-            </div>
+            <div>{symbolLiveState.Livestream[headerPin.Pin1]?.curPrice}</div>
           </div>
         </div>
         <div className="flex h-full grow items-center ">
@@ -96,13 +92,10 @@ function Header() {
                 <div
                   className={
                     "cursor-pointer select-none px-[15px] text-center hover:text-[#ff5722] " +
-                    (dataState.rightSideData.type === x ? "text-[#ff5722]" : "")
+                    (rightSide.type === x ? "text-[#ff5722]" : "")
                   }
                   onClick={() => {
-                    dataDispatch({
-                      type: "update_rightHandSide",
-                      payload: { type: x },
-                    });
+                    dispatch(updateRightSide({ type: x }));
                   }}
                   key={x}
                 >
@@ -122,12 +115,12 @@ function Header() {
               />
               <div className="flex cursor-pointer text-center ">
                 <img
-                  src={dataState.userDetails?.image ?? ""}
+                  src={UserInfo?.image ?? ""}
                   className="mr-1 cursor-pointer select-none rounded-full"
                   width="14px"
                   height="14px"
                 ></img>
-                <div>#{dataState.userDetails?.name}</div>
+                <div>#{UserInfo?.name}</div>
               </div>
             </div>
           </div>

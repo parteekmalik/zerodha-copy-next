@@ -1,18 +1,19 @@
 import axios from "axios";
 import type { PropsWithChildren } from "react";
-import React, { useContext, useEffect, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
+import { useSelector } from "react-redux";
+import TsMap from "ts-map";
+import { api } from "~/trpc/react";
+import { TOrderCalculations } from "../../_components/Rightside/Positions/functions/OrderCalculations";
+import { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
 import useLiveWS from "../../_hooks/useLiveWS";
-import DataContext from "../data/data";
+import { RootState } from "../../redux/store";
 import type { TsymbolTrade } from "./SymbolLive";
 import {
   SymbolLiveContextProvider,
   defaultsymbolLiveContextState,
 } from "./SymbolLive";
 import { symbolLiveReducer } from "./SymbolLiveReducer";
-import { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
-import { api } from "~/trpc/react";
-import { TOrderCalculations } from "../../_components/Rightside/Positions/functions/OrderCalculations";
-import TsMap from "ts-map";
 
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
 export type TtickerChangeType = {
@@ -43,12 +44,6 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   props,
 ) => {
   const { children } = props;
-  const symbolList = api.symbolList.getSymbolList.useQuery().data;
-  useEffect(() => {
-    if (symbolList && symbolLiveState.symbolsList[0] === undefined) {
-      symbolLiveDispatch({ type: "update_symbolList", payload: symbolList });
-    }
-  }, [symbolList]);
   const [symbolLiveState, symbolLiveDispatch] = useReducer(
     symbolLiveReducer,
     defaultsymbolLiveContextState,
@@ -70,7 +65,7 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     });
   }
 
-  const { dataState } = useContext(DataContext);
+  const headerPin = useSelector((state: RootState) => state.headerPin);
 
   function socketSend(payload: Twsbinance) {
     payload.params = payload.params.map((item) => {
@@ -81,8 +76,8 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
     if (payload.method === "UNSUBSCRIBE") {
       payload.params = payload.params.filter(
         (item) =>
-          item === dataState.headerPin.Pin0 + "@trade" &&
-          item === dataState.headerPin.Pin1 + "@trade",
+          item === headerPin.Pin0 + "@trade" &&
+          item === headerPin.Pin1 + "@trade",
       );
       // console.log("remove pins from unsubscribe ->", payload);
     }
@@ -171,7 +166,6 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
         symbolLiveState,
         symbolLiveDispatch,
         socketSend,
-        closed_open_OrdersData,
       }}
     >
       {children}

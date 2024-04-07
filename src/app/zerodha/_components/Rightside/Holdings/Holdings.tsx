@@ -24,24 +24,24 @@ const position_stylesList = {
   row: ["  ", "  ", "", "  ", "  ", "", " border-r ", ""],
 };
 function Holdings() {
-  const ordersQuery = api.orders.getOrders24hr.useQuery();
-  const { closed_open_OrdersData } = useContext(SymbolLiveContext);
-  const [dataList, setdataList] = useState(
-    closed_open_OrdersData(open_close_Trades([]).open),
-  );
-useEffect(()=>console.log("dataList",dataList),[dataList])
-  useEffect(() => {
-    if (typeof ordersQuery.data === "object") {
-      setdataList(
-        closed_open_OrdersData(open_close_Trades(ordersQuery.data).open),
-      );
-    }
-  }, [ordersQuery.data]);
+//   const ordersQuery = api.orders.getOrders24hr.useQuery();
+//   const { closed_open_OrdersData } = useContext(SymbolLiveContext);
+//   const [dataList, setdataList] = useState(
+//     closed_open_OrdersData(open_close_Trades([]).open),
+//   );
+// useEffect(()=>console.log("dataList",dataList),[dataList])
+//   useEffect(() => {
+//     if (typeof ordersQuery.data === "object") {
+//       setdataList(
+//         closed_open_OrdersData(open_close_Trades(ordersQuery.data).open),
+//       );
+//     }
+//   }, [ordersQuery.data]);
 
-  if (typeof ordersQuery.data === "string") return <>{ordersQuery}</>;
+//   if (typeof ordersQuery.data === "string") return <>{ordersQuery}</>;
   return (
     <div className="min-h-full w-full bg-white p-[20px_20px_20px_30px]">
-      <div className="flex w-full p-2">
+      {/* <div className="flex w-full p-2">
         <span className="grow text-[1.125rem] text-[#444444]">
           Holdings ({dataList.length})
         </span>
@@ -72,7 +72,7 @@ useEffect(()=>console.log("dataList",dataList),[dataList])
           dataList={dataList}
         />
       </div>
-      {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
+      <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
     </div>
   );
 }
@@ -93,8 +93,8 @@ function current_invested_cal(
     };
   }[],
 ) {
-  let investedTotal = 0;
-  let CurrentTotal = 0;
+  const investedTotal = 0;
+  const CurrentTotal = 0;
   List.forEach((value) => {
     // invested += ;
     // CurrentTotal += value.data[]

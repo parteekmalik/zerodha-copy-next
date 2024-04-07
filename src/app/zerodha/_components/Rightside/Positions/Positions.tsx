@@ -25,30 +25,30 @@ const position_stylesList = {
 };
 
 function Positions() {
-  const ordersQuery = api.orders.getOrders24hr.useQuery();
-  const { closed_open_OrdersData } = useContext(SymbolLiveContext);
+  // const ordersQuery = api.orders.getOrders24hr.useQuery();
+  // const { closed_open_OrdersData } = useContext(SymbolLiveContext);
 
-  const [orderMap, setorderMap] = useState<{
-    open: TsMap<string, TOrderCalculations>;
-    close: TsMap<string, TOrderCalculations>;
-  }>(open_close_Trades([]));
+  // const [orderMap, setorderMap] = useState<{
+  //   open: TsMap<string, TOrderCalculations>;
+  //   close: TsMap<string, TOrderCalculations>;
+  // }>(open_close_Trades([]));
 
-  useEffect(() => {
-    if (typeof ordersQuery.data === "object") {
-      console.log("new class");
-      setorderMap(open_close_Trades(ordersQuery.data));
-    }
-  }, [ordersQuery.data]);
+  // useEffect(() => {
+  //   if (typeof ordersQuery.data === "object") {
+  //     console.log("new class");
+  //     setorderMap(open_close_Trades(ordersQuery.data));
+  //   }
+  // }, [ordersQuery.data]);
 
-  useEffect(() => {
-    console.log(orderMap);
-  }, [orderMap]);
+  // useEffect(() => {
+  //   console.log(orderMap);
+  // }, [orderMap]);
 
-  if (typeof ordersQuery.data === "string") return <>{ordersQuery}</>;
+  // if (typeof ordersQuery.data === "string") return <>{ordersQuery}</>;
   return (
     <>
       <div className="w-full bg-white">
-        <div className="flex w-full p-2">
+        {/* <div className="flex w-full p-2">
           <span className="grow text-[1.125rem] text-[#444444]">
             Open orders ({orderMap?.open.size})
           </span>
@@ -61,7 +61,7 @@ function Positions() {
             dataList={closed_open_OrdersData(orderMap.open)}
           />
         </div>
-        {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
+        {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> 
       </div>
       <div className="w-full bg-white">
         <div className="flex w-full p-2">
@@ -77,7 +77,7 @@ function Positions() {
             dataList={closed_open_OrdersData(orderMap.close)}
           />
         </div>
-        {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
+        <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
       </div>
     </>
   );

@@ -1,21 +1,22 @@
 import type { PropsWithChildren } from "react";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { env } from "~/env";
 import useSocket from "../../_hooks/useSocket";
+import { RootState } from "../../redux/store";
 import { useToast } from "../Toast/toast-context";
-import DataContext from "../data/data";
 import { BackndWSContextProvider } from "./backendWS";
 
 const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
   props,
 ) => {
   const { children } = props;
-  const { dataState, loading } = useContext(DataContext);
+  const UserInfo = useSelector((state: RootState) => state.UserInfo);
 
   const toast = useToast();
   const { socket, isConnected, lastMessage } = useSocket(
     env.NEXT_PUBLIC_BACKEND_WS,
-    dataState.userDetails.TradingAccountId,
+    UserInfo.TradingAccountId,
     {},
   );
   useEffect(() => {

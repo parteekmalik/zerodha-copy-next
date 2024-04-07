@@ -19,7 +19,7 @@ export type TsymbolTrade = {
   T: number;
   m: boolean;
   M: boolean;
-}; 
+};
 export type TsymbolLive = {
   symbol: string;
   curPrice: number;
@@ -31,31 +31,27 @@ export type TsymbolLive = {
 
 export type IsymbolLiveContextState = {
   Livestream: Record<string, TsymbolLive>;
-  symbolsList: Record<string, JSONType>;
-  last24hrdata: Record<string, TtickerChangeType>;
 };
 
 export const defaultsymbolLiveContextState = {
   Livestream: {},
-  symbolsList: {},
-  last24hrdata: {},
 };
 export interface IsymbolLiveContextProps {
   symbolLiveState: IsymbolLiveContextState;
   symbolLiveDispatch: React.Dispatch<IsymbolLiveContextActions>;
   socketSend: (payload: Twsbinance) => void;
-  closed_open_OrdersData: (list: TsMap<string, TOrderCalculations>) => {
-    id: string;
-    data: {
-      Product: string;
-      Instrument: string;
-      Quantity: number;
-      AVG: number;
-      LTP: number;
-      "P&L": string;
-      change: string;
-    };
-  }[];
+  // closed_open_OrdersData: (list: TsMap<string, TOrderCalculations>) => {
+  //   id: string;
+  //   data: {
+  //     Product: string;
+  //     Instrument: string;
+  //     Quantity: number;
+  //     AVG: number;
+  //     LTP: number;
+  //     "P&L": string;
+  //     change: string;
+  //   };
+  // }[];
 }
 [];
 // TODO :fix and auto asses types solution
@@ -67,7 +63,7 @@ const SymbolLiveContext = createContext<IsymbolLiveContextProps>({
   socketSend: () => {
     console.log("due to ts error");
   },
-  closed_open_OrdersData: () => {};
+  // closed_open_OrdersData: () => {};
 });
 
 export const PageContextConsumer = SymbolLiveContext.Consumer;
