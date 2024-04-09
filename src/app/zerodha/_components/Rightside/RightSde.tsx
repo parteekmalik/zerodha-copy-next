@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { useSelector } from "react-redux";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
-import { RootState } from "../../redux/store";
+import { RootState } from "../../_redux/store";
 import Dashboard from "./Dashboard";
 import Funds from "./Funds";
 import Order from "./Order";

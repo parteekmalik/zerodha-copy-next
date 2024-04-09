@@ -1,20 +1,36 @@
 import axios from "axios";
 import type { PropsWithChildren } from "react";
-import React, { useEffect, useReducer } from "react";
-import { useSelector } from "react-redux";
+import React, { createContext, useEffect, useReducer } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import TsMap from "ts-map";
-import { api } from "~/trpc/react";
 import { TOrderCalculations } from "../../_components/Rightside/Positions/functions/OrderCalculations";
 import { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
 import useLiveWS from "../../_hooks/useLiveWS";
-import { RootState } from "../../redux/store";
-import type { TsymbolTrade } from "./SymbolLive";
-import {
-  SymbolLiveContextProvider,
-  defaultsymbolLiveContextState,
-} from "./SymbolLive";
+import { updateLivestream } from "../../_redux/Livestream/Livestream";
+import { AppDispatch, RootState } from "../../_redux/store";
+import { defaultsymbolLiveContextState } from "./SymbolLive";
 import { symbolLiveReducer } from "./SymbolLiveReducer";
-
+export type TsymbolTrade = {
+  e: string;
+  E: number;
+  s: string;
+  t: number;
+  p: string;
+  q: string;
+  b: number;
+  a: number;
+  T: number;
+  m: boolean;
+  M: boolean;
+};
+export type TsymbolLive = {
+  symbol: string;
+  curPrice: number;
+  isup: boolean;
+  prevPrice?: number;
+  PriceChange?: string;
+  PriceChangePercent?: string;
+};
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
 export type TtickerChangeType = {
   symbol: string;
@@ -44,6 +60,9 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   props,
 ) => {
   const { children } = props;
+  const Livestream = useSelector((state: RootState) => state.Livestream);
+  const dispatch = useDispatch<AppDispatch>();
+
   const [symbolLiveState, symbolLiveDispatch] = useReducer(
     symbolLiveReducer,
     defaultsymbolLiveContextState,
@@ -58,11 +77,7 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   function processMessages(data: TsymbolTrade) {
     if (data.e !== "trade") {
       // console.log(data);
-    }
-    symbolLiveDispatch({
-      type: "update_symbol",
-      payload: { curPrice: data.p, symbol: data.s },
-    });
+    } else dispatch(updateLivestream({ curPrice: data.p, symbol: data.s }));
   }
 
   const headerPin = useSelector((state: RootState) => state.headerPin);
@@ -110,71 +125,22 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
         })
         .catch((error) => console.log(error));
   }, [subscriptions]);
-  const closed_open_OrdersData = (list: TsMap<string, TOrderCalculations>) => {
-    return list.keys().map((key, i) => {
-      const value = list.get(key);
-      let data: {
-        Product: string;
-        Instrument: string;
-        Quantity: number;
-        AVG: number;
-        LTP: number;
-        "P&L": string;
-        change: string;
-      } = {
-        Product: "SPOT",
-        Instrument: key,
-        Quantity: 0,
-        AVG: 0,
-        LTP: 0,
-        "P&L": "0",
-        change: "0",
-      };
-      if (value) {
-        const QUANTITY = value.BuyQuantity - value.SellQuantity;
-        const AVG =
-          QUANTITY === 0 ? 0 : value.BuyPriceTotal / value.BuyQuantity;
-        const CURPRICE = symbolLiveState.Livestream[key]?.curPrice ?? 0;
-        const PROFIT =
-          (QUANTITY !== 0 ? QUANTITY * CURPRICE : 0) +
-          value.SellPriceTotal -
-          value.BuyPriceTotal;
-
-        const CHANGE =
-          QUANTITY === 0
-            ? "0.00%"
-            : ((PROFIT * 100) / value.BuyPriceTotal).toFixed(2) + "%";
-
-        data = {
-          ...data,
-          Quantity: QUANTITY,
-          AVG: AVG,
-          LTP: CURPRICE,
-          "P&L": PROFIT.toFixed(2),
-          change: CHANGE,
-        };
-      }
-      return {
-        id: "" + i,
-        data,
-      };
-    });
-  };
   return (
-    <SymbolLiveContextProvider
+    <SymbolLiveContext.Provider
       value={{
-        symbolLiveState,
-        symbolLiveDispatch,
         socketSend,
       }}
     >
       {children}
-    </SymbolLiveContextProvider>
+    </SymbolLiveContext.Provider>
   );
 };
 
 export default SymbolLiveContextComponent;
-// (
-//   QUANTITY * (symbolLiveState.Livestream[key]?.curPrice ?? 1) -
-//   PROFIT
-// ).toFixed(2)
+
+export interface IsymbolLiveContextProps {
+  socketSend: (payload: Twsbinance) => void;
+}
+[];
+// TODO :fix and auto asses types solution
+const SymbolLiveContext = createContext<typeof value>({});

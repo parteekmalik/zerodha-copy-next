@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { JSONType, symbolList } from "public/symbolname";
 import { listToRecord } from "../../utils";
+import { JSONType } from "public/symbolNameType";
 type TtickerChangeType = {
   symbol: string;
   priceChange: string;

@@ -1,8 +1,8 @@
 import { Reorder } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "~/app/zerodha/redux/store";
-import { updateWatchList } from "~/app/zerodha/redux/watchList/watchList";
+import { AppDispatch } from "~/app/zerodha/_redux/store";
+import { updateWatchList } from "~/app/zerodha/_redux/watchList/watchList";
 import { api } from "~/trpc/react";
 import SymbolLiveContext from "../../../_contexts/SymbolLive/SymbolLive";
 import type { Tsymbol } from "../watchList";

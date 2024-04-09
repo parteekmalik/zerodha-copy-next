@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useContext, useEffect } from "react";
 import SymbolLiveContext from "../../../_contexts/SymbolLive/SymbolLive";
 import { useSelector } from "react-redux";
-import { RootState } from "~/app/zerodha/redux/store";
+import { RootState } from "~/app/zerodha/_redux/store";
 
 function SearchList({
   search,

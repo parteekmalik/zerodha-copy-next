@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import SymbolLiveContext from "../_contexts/SymbolLive/SymbolLive";
 import { Twsbinance } from "./WatchList/drag_drop_wishlist/symbolInWL";
 import { shadowBox } from "./tcss";
-import { AppDispatch, RootState } from "../redux/store";
-import { updateRightSide } from "../redux/rightSideData/rightSideData";
+import { AppDispatch, RootState } from "../_redux/store";
+import { updateRightSide } from "../_redux/rightSideData/rightSideData";
 
 type RightSideType =
   | "Dashboard"
@@ -23,7 +23,7 @@ function Header() {
   ];
 
   const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
-  const headerPin = useSelector((state: RootState) => state.headerPin); 
+  const headerPin = useSelector((state: RootState) => state.headerPin);
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
   const rightSide = useSelector((state: RootState) => state.rightSide);
   const dispatch = useDispatch<AppDispatch>();

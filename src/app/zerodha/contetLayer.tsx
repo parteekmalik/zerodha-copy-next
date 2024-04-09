@@ -5,8 +5,8 @@ import { ToastProvider } from "./_contexts/Toast/toast";
 import BackendWSContextComponent from "./_contexts/backendWS/backendWSContextComponent";
 
 import { Provider } from "react-redux";
-import { store } from "./redux/store";
-import StoreComponent from "./redux/storeComponent";
+import { store } from "./_redux/store";
+import StoreComponent from "./_redux/storeComponent";
 
 export default function ContextLayer() {
   return (

@@ -1,6 +1,6 @@
 "use client";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState } from "../_redux/store";
 import OrderForm from "./OrderForm/orderForm";
 import RightSide from "./Rightside/RightSde";
 import WatchList from "./WatchList/watchList";

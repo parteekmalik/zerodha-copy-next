@@ -1,5 +1,3 @@
-import { type JSONType } from "../../../../../public/symbolname";
-import { listToRecord } from "../../utils";
 import type { IsymbolLiveContextState, TsymbolLive } from "./SymbolLive";
 
 export type IsymbolLiveContextActions =
@@ -25,24 +23,7 @@ export const symbolLiveReducer = (
     // );
   }
   switch (Atype) {
-    case "update_symbol": {
-      const Livestream = { ...state.Livestream };
-      const isup = (curent: string, prev: number | undefined): boolean => {
-        if (!prev) return true;
-        return parseFloat(curent) >= prev;
-      };
-      let temp: TsymbolLive = {
-        ...payload,
-        curPrice: Number(payload.curPrice),
-        isup: isup(payload.curPrice, Livestream[payload.symbol]?.curPrice),
-      };
-      const data = Livestream[payload.symbol];
-      if (data?.prevPrice)
-        temp = { ...temp, ...getChange(data.prevPrice, data.curPrice) };
 
-      Livestream[payload.symbol] = temp;
-      return { ...state, Livestream };
-    }
 
     case "update_last24hrdata": {
       const Livestream = { ...state.Livestream };

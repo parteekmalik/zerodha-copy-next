@@ -6,6 +6,7 @@ import headerPinReducer from "./headerPin/headerPin";
 import ordersReducer from "./orders/orders";
 import watchListReducer from "./watchList/watchList";
 import symbolsListReducer from "./symbolsList/symbolsList";
+import LivestreamReducer from "./Livestream/Livestream";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     orders: ordersReducer,
     watchList: watchListReducer,
     symbolsList: symbolsListReducer,
+    Livestream: LivestreamReducer,
   },
 });
 

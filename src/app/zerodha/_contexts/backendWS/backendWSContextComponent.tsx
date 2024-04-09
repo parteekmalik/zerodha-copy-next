@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { env } from "~/env";
 import useSocket from "../../_hooks/useSocket";
-import { RootState } from "../../redux/store";
+import { RootState } from "../../_redux/store";
 import { useToast } from "../Toast/toast-context";
 import { BackndWSContextProvider } from "./backendWS";
 

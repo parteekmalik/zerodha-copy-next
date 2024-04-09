@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "~/trpc/react";
-import { AppDispatch, RootState } from "../../redux/store";
-import { updateWatchList } from "../../redux/watchList/watchList";
+import { AppDispatch, RootState } from "../../_redux/store";
+import { updateWatchList } from "../../_redux/watchList/watchList";
 import { searchAndSort } from "../../utils";
 import { shadowBox } from "../tcss";
 import SymbolInWL from "./drag_drop_wishlist/symbolInWL";
@@ -15,7 +15,6 @@ export type Tsymbol = string;
 function WatchList() {
   const [watchListNo, setWatchListNo] = useState(0);
   const symbolsList = useSelector((state: RootState) => state.symbolsList);
-
 
   const [search, setSearch] = useState({
     focus: false,
