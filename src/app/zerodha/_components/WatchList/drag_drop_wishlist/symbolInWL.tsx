@@ -1,7 +1,7 @@
 import { Reorder } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "~/app/zerodha/_redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "~/app/zerodha/_redux/store";
 import { updateWatchList } from "~/app/zerodha/_redux/watchList/watchList";
 import { api } from "~/trpc/react";
 import SymbolLiveContext from "../../../_contexts/SymbolLive/SymbolLive";
@@ -20,7 +20,8 @@ interface ISymbolInWL {
   listNo: number;
 }
 function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
-  const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
+  const { socketSend } = useContext(SymbolLiveContext);
+  const Livestream = useSelector((state: RootState) => state.Livestream);
 
   const [list, setList] = useState<Tsymbol[]>([]);
   // const [selected, setSelected] = useState(null);
@@ -85,8 +86,8 @@ function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
           const symbolName = symbol.toUpperCase();
           return (
             <Item
-              diff={symbolLiveState.Livestream[symbolName]?.isup ? 1 : -1}
-              symbolLiveTemp={symbolLiveState.Livestream[symbolName]}
+              diff={Livestream[symbolName]?.isup ? 1 : -1}
+              symbolLiveTemp={Livestream[symbolName]}
               symbolName={symbolName}
               listNo={listNo}
               submitUpdate={submitUpdate}

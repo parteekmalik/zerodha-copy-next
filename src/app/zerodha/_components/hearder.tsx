@@ -22,8 +22,9 @@ function Header() {
     "Funds",
   ];
 
-  const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
+  const { socketSend } = useContext(SymbolLiveContext);
   const headerPin = useSelector((state: RootState) => state.headerPin);
+  const Livestream = useSelector((state: RootState) => state.Livestream);
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
   const rightSide = useSelector((state: RootState) => state.rightSide);
   const dispatch = useDispatch<AppDispatch>();
@@ -61,7 +62,7 @@ function Header() {
             >
               {headerPin.Pin0.toUpperCase()}
             </div>
-            <div>{symbolLiveState.Livestream[headerPin.Pin0]?.curPrice}</div>
+            <div>{Livestream[headerPin.Pin0]?.curPrice}</div>
           </div>
           <div className="flex cursor-pointer gap-1">
             <div
@@ -77,7 +78,7 @@ function Header() {
             >
               {headerPin.Pin1.toUpperCase()}
             </div>
-            <div>{symbolLiveState.Livestream[headerPin.Pin1]?.curPrice}</div>
+            <div>{Livestream[headerPin.Pin1]?.curPrice}</div>
           </div>
         </div>
         <div className="flex h-full grow items-center ">

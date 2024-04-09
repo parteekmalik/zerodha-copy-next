@@ -1,4 +1,4 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 export type TsymbolTrade = { curPrice: string; symbol: string };
 export type TsymbolLive = {
   symbol: string;
@@ -8,7 +8,11 @@ export type TsymbolLive = {
   PriceChange?: string;
   PriceChangePercent?: string;
 };
-
+export type Tsymbol24hr = {
+  symbol: string;
+  prevPrice: string;
+  curPrice: string;
+};
 export type TLivestreamType = Record<string, TsymbolLive>;
 
 const initialState: TLivestreamType = {};
@@ -37,10 +41,25 @@ const LivestreamSlice = createSlice({
       return { ...Livestream };
       // return action.payload;
     },
+    update_last24hrdata: (state, action: PayloadAction<Tsymbol24hr[]>) => {
+      const Livestream = state;
+      action.payload.map((x) => {
+        const data = Livestream[x.symbol];
+        Livestream[x.symbol] = {
+          ...(data ?? {
+            symbol: x.symbol,
+            isup: true,
+            curPrice: Number(x.curPrice),
+          }),
+          ...getChange(Number(x.prevPrice), Number(x.curPrice)),
+        };
+        return Livestream;
+      });
+    },
   },
 });
 
-export const { updateLivestream } = LivestreamSlice.actions;
+export const { updateLivestream,update_last24hrdata } = LivestreamSlice.actions;
 
 export default LivestreamSlice.reducer;
 

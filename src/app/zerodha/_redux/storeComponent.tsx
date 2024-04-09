@@ -9,6 +9,7 @@ import { updateSymbolsList } from "./symbolsList/symbolsList";
 import { TOrderCalculations } from "../_components/Rightside/Positions/functions/OrderCalculations";
 import TsMap from "ts-map";
 import { TLivestreamType } from "./Livestream/Livestream";
+import axios from "axios";
 
 export type TsymbolTrade = {
   e: string;
@@ -75,30 +76,6 @@ const StoreComponent: React.FunctionComponent = (props) => {
   useEffect(() => {
     if (symbolList) dispatch(updateSymbolsList(symbolList));
   }, [symbolList]);
-
-  useEffect(() => {
-    const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
-    const subSymbol = JSON.stringify(
-      subscriptions.map((item) => item.split("@")[0]?.toUpperCase()),
-    );
-
-    if (subSymbol !== "[]")
-      axios
-        .get(url + subSymbol)
-        .then((data: { data: TtickerChangeType[] }) => {
-          console.log("TtickerChangeType -> ", data.data);
-          const payload = data.data.map((item) => {
-            return {
-              symbol: item.symbol,
-              prevPrice: item.openPrice,
-              curPrice: item.lastPrice,
-            };
-          });
-          
-          // return data.data;
-        })
-        .catch((error) => console.log(error));
-  }, [subscriptions]);
 
   useEffect(() => {
     console.log(state);

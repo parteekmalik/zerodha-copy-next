@@ -1,15 +1,15 @@
 import axios from "axios";
 import type { PropsWithChildren } from "react";
-import React, { createContext, useEffect, useReducer } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import TsMap from "ts-map";
-import { TOrderCalculations } from "../../_components/Rightside/Positions/functions/OrderCalculations";
 import { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
 import useLiveWS from "../../_hooks/useLiveWS";
-import { updateLivestream } from "../../_redux/Livestream/Livestream";
+import {
+  updateLivestream,
+  update_last24hrdata,
+} from "../../_redux/Livestream/Livestream";
 import { AppDispatch, RootState } from "../../_redux/store";
-import { defaultsymbolLiveContextState } from "./SymbolLive";
-import { symbolLiveReducer } from "./SymbolLiveReducer";
+import { SymbolLiveContextProvider } from "./SymbolLive";
 export type TsymbolTrade = {
   e: string;
   E: number;
@@ -22,14 +22,6 @@ export type TsymbolTrade = {
   T: number;
   m: boolean;
   M: boolean;
-};
-export type TsymbolLive = {
-  symbol: string;
-  curPrice: number;
-  isup: boolean;
-  prevPrice?: number;
-  PriceChange?: string;
-  PriceChangePercent?: string;
 };
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
 export type TtickerChangeType = {
@@ -60,13 +52,9 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   props,
 ) => {
   const { children } = props;
-  const Livestream = useSelector((state: RootState) => state.Livestream);
+  
+  const headerPin = useSelector((state: RootState) => state.headerPin);
   const dispatch = useDispatch<AppDispatch>();
-
-  const [symbolLiveState, symbolLiveDispatch] = useReducer(
-    symbolLiveReducer,
-    defaultsymbolLiveContextState,
-  );
 
   const [Ssend, subscriptions] = useLiveWS(
     "wss://stream.binance.com:9443/ws",
@@ -79,8 +67,6 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
       // console.log(data);
     } else dispatch(updateLivestream({ curPrice: data.p, symbol: data.s }));
   }
-
-  const headerPin = useSelector((state: RootState) => state.headerPin);
 
   function socketSend(payload: Twsbinance) {
     payload.params = payload.params.map((item) => {
@@ -110,37 +96,27 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
         .get(url + subSymbol)
         .then((data: { data: TtickerChangeType[] }) => {
           console.log("TtickerChangeType -> ", data.data);
-          const payload = data.data.map((item) => {
+          const last24hrData = data.data.map((item) => {
             return {
               symbol: item.symbol,
               prevPrice: item.openPrice,
               curPrice: item.lastPrice,
             };
           });
-          symbolLiveDispatch({
-            type: "update_last24hrdata",
-            payload,
-          });
+          dispatch(update_last24hrdata(last24hrData));
           return data.data;
         })
         .catch((error) => console.log(error));
   }, [subscriptions]);
   return (
-    <SymbolLiveContext.Provider
+    <SymbolLiveContextProvider
       value={{
         socketSend,
       }}
     >
       {children}
-    </SymbolLiveContext.Provider>
+    </SymbolLiveContextProvider>
   );
 };
 
 export default SymbolLiveContextComponent;
-
-export interface IsymbolLiveContextProps {
-  socketSend: (payload: Twsbinance) => void;
-}
-[];
-// TODO :fix and auto asses types solution
-const SymbolLiveContext = createContext<typeof value>({});

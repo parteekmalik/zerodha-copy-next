@@ -8,9 +8,9 @@ import Order from "./Order";
 import Chart from "./chart";
 
 function RightSide() {
-  const { symbolLiveState } = useContext(SymbolLiveContext);
   const data = useSelector((state: RootState) => state.rightSide);
   const symbolsList = useSelector((state: RootState) => state.symbolsList);
+  const Livestream = useSelector((state: RootState) => state.Livestream);
 
   switch (data.type) {
     case "chart": {
@@ -41,8 +41,8 @@ function RightSide() {
       return (
         <div className="text-">
           <div>
-            {Object.keys(symbolLiveState.Livestream).map((key) => {
-              const item = symbolLiveState.Livestream[key];
+            {Object.keys(Livestream).map((key) => {
+              const item = Livestream[key];
               return (
                 <div className="" key={key}>
                   {JSON.stringify(item)}

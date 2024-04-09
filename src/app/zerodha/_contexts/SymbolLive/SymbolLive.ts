@@ -1,11 +1,5 @@
 import { createContext } from "react";
 import type { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
-import { JSONType } from "../../../../../public/symbolname";
-import { TtickerChangeType } from "./SymbolLiveContextComponent";
-import type { IsymbolLiveContextActions } from "./SymbolLiveReducer";
-import { TOrderCalculations } from "../../_components/Rightside/Positions/functions/OrderCalculations";
-import TsMap from "ts-map";
-import { any } from "zod";
 
 export type TsymbolTrade = {
   e: string;
@@ -29,16 +23,7 @@ export type TsymbolLive = {
   PriceChangePercent?: string;
 };
 
-export type IsymbolLiveContextState = {
-  Livestream: Record<string, TsymbolLive>;
-};
-
-export const defaultsymbolLiveContextState = {
-  Livestream: {},
-};
 export interface IsymbolLiveContextProps {
-  symbolLiveState: IsymbolLiveContextState;
-  symbolLiveDispatch: React.Dispatch<IsymbolLiveContextActions>;
   socketSend: (payload: Twsbinance) => void;
   // closed_open_OrdersData: (list: TsMap<string, TOrderCalculations>) => {
   //   id: string;
@@ -56,10 +41,6 @@ export interface IsymbolLiveContextProps {
 [];
 // TODO :fix and auto asses types solution
 const SymbolLiveContext = createContext<IsymbolLiveContextProps>({
-  symbolLiveState: defaultsymbolLiveContextState,
-  symbolLiveDispatch: () => {
-    console.log("due to ts error");
-  },
   socketSend: () => {
     console.log("due to ts error");
   },
