@@ -27,7 +27,9 @@ const useSocket = (
 ) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [lastMessage, setLastmessage] = useState<orderType| "connected" | "disconneted" | null>();
+  const [lastMessage, setLastmessage] = useState<
+    orderType | "connected" | "disconneted" | null
+  >();
 
   useEffect(() => {
     const socketInstance = io(serverUrl, { ...opts });
@@ -39,6 +41,13 @@ const useSocket = (
     socketInstance.on("disconnect", () => {
       setIsConnected(false);
     });
+    socketInstance.on("Authentication", (msg: unknown) =>
+      console.log("Authentication", msg),
+    );
+    socketInstance.on(
+      "backendServerUpdate",
+      (msg: "connected" | "disconneted") => setLastmessage(msg),
+    );
     socketInstance.on("notification", (msg: orderType) => {
       setLastmessage(msg);
     });

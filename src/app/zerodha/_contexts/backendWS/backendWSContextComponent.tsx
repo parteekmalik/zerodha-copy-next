@@ -23,9 +23,9 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
     {},
   );
   useEffect(() => {
+    console.log("lastMessage -> ", typeof lastMessage, lastMessage);
     if (toast && lastMessage) {
       if (typeof lastMessage === "object") {
-        console.log("lastMessage -> ", typeof lastMessage, lastMessage);
         toast.open({
           name: lastMessage.name,
           state:

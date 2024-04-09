@@ -18,7 +18,7 @@ const useWS = (
   }[readyState];
 
   const socketSend = (payload: string) => {
-    console.log("mesageq send ->", JSON.stringify(payload));
+    // console.log("mesageq send ->", JSON.stringify(payload));
     sendMessage(payload);
   };
 

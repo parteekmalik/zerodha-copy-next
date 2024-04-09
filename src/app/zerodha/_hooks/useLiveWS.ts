@@ -29,7 +29,7 @@ const useLiveWS = (
           id: 1,
         } as Twsbinance;
 
-        console.log("mesageq send ->", JSON.stringify(msg));
+        // console.log("mesageq send ->", JSON.stringify(msg));
         subscriptions = messageQ;
         sendMessage(JSON.stringify(msg));
       }
@@ -72,7 +72,7 @@ const useLiveWS = (
     if (!Payload || Payload.params.length === 0) return;
 
     if (connectionStatus === "Open") {
-      console.log("mesage send ->", JSON.stringify(Payload), subscriptions);
+      // console.log("mesage send ->", JSON.stringify(Payload), subscriptions);
       subscriptions = [...subscriptions, ...payload.params];
       sendMessage(JSON.stringify(Payload));
     } else {
