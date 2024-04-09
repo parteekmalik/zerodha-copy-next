@@ -1,15 +1,14 @@
 "use client";
-import { useContext } from "react";
-import BackndWSContext from "../_contexts/backendWS/backendWS";
-import DataContext from "../_contexts/data/data";
+import { useSelector } from "react-redux";
+import { RootState } from "../_redux/store";
 import OrderForm from "./OrderForm/orderForm";
 import RightSide from "./Rightside/RightSde";
 import WatchList from "./WatchList/watchList";
 import Header from "./hearder";
 // import { getCookie, getCookies } from "cookies-next";
 export default function Home() {
-  const { dataState, loading } = useContext(DataContext);
   // const cookie = getCookies();
+  const FormData = useSelector((state: RootState) => state.FormData);
 
   return (
     <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center  justify-center overflow-hidden  bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
@@ -23,14 +22,11 @@ export default function Home() {
         </div>
       </div>
       <div className="w-full " style={{ wordWrap: "break-word" }}>
-        {JSON.stringify({ ...dataState, loading })}
+        {/* {JSON.stringify({ ...dataState, loading })} */}
         {/* {JSON.stringify(status)} */}
       </div>
-      {dataState.FormData.isvisible ? (
-        <OrderForm
-          symbol={dataState.FormData.symbol}
-          type={dataState.FormData.type}
-        />
+      {FormData.isvisible ? (
+        <OrderForm symbol={FormData.symbol} type={FormData.type} />
       ) : null}
     </main>
   );

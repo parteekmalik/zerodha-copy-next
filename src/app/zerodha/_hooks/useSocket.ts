@@ -27,7 +27,7 @@ const useSocket = (
 ) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [lastMessage, setLastmessage] = useState<orderType | null>();
+  const [lastMessage, setLastmessage] = useState<orderType| "connected" | "disconneted" | null>();
 
   useEffect(() => {
     const socketInstance = io(serverUrl, { ...opts });

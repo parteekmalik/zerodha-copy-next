@@ -10,7 +10,12 @@ const useLiveWS = (
   url: string,
   opt: Options,
   processMessages?: (data: TsymbolTrade) => void,
-): [(payload: Twsbinance) => void, string[], MessageEvent<string> | null] => {
+): [
+  (payload: Twsbinance) => void,
+  string[],
+  MessageEvent<string> | null,
+  string,
+] => {
   //   const socketRef = useRef<WebSocket>(new WebSocket(url)); // Changed to allow initialization to
   const [sendMessage, connectionStatus, lastMessage] = useWS(url, {
     ...opt,
@@ -82,6 +87,6 @@ const useLiveWS = (
     }
   };
 
-  return [socketSend, subscriptions, lastMessage];
+  return [socketSend, subscriptions, lastMessage, connectionStatus];
 };
 export default useLiveWS;

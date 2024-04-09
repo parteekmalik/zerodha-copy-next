@@ -1,14 +1,16 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
-import DataContext from "../../_contexts/data/data";
+import { api } from "~/trpc/react";
+import { useToast } from "../../_contexts/Toast/toast-context";
+import BackndWSContext from "../../_contexts/backendWS/backendWS";
+import { updateFormData } from "../../_redux/FormData/FormData";
+import { AppDispatch, RootState } from "../../_redux/store";
 import { TFormSchema } from "./FrmSchema";
 import InputDiv from "./InputDiv";
 import { CheckBox, OrderTypeDiv } from "./OrderTypeDiv";
-import { api } from "~/trpc/react";
-import { useToast } from "../../_contexts/Toast/toast-context";
-import { useQueryClient } from "@tanstack/react-query";
-import BackndWSContext from "../../_contexts/backendWS/backendWS";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -44,7 +46,9 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
       marketType: "SPOT",
     },
   });
-  const { dataDispatch, dataState } = useContext(DataContext);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const FormData = useSelector((state: RootState) => state.FormData);
 
   useEffect(() => {
     setValue("symbolName", symbol);
@@ -59,7 +63,7 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
   }>({ sl: false, tp: false, orderType: "MARKET" });
   const toast = useToast();
   const queryClient = useQueryClient(); // Initialize queryClient
-  const { WSsendOrder,  } = useContext(BackndWSContext);
+  const { WSsendOrder } = useContext(BackndWSContext);
 
   const orderapi = api.orders.create.useMutation({
     onSuccess: (msg) => {
@@ -96,13 +100,12 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
       trigerType: isAvl.orderType,
     });
 
-    dataDispatch({
-      type: "update_FormData",
-      payload: {
-        ...dataState.FormData,
+    dispatch(
+      updateFormData({
+        ...FormData,
         isvisible: false,
-      },
-    });
+      }),
+    );
   };
   const style = {
     bgcolor: watch().orderType === "BUY" ? "bg-[#4184f3]" : "bg-[#ff5722]",
@@ -258,13 +261,12 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
           <div
             className="cursor-pointer border border-[#444444] bg-white p-[8px_12px] text-[#444444] hover:bg-[#444444] hover:text-white"
             onClick={() =>
-              dataDispatch({
-                type: "update_FormData",
-                payload: {
-                  ...dataState.FormData,
+              dispatch(
+                updateFormData({
+                  ...FormData,
                   isvisible: false,
-                },
-              })
+                }),
+              )
             }
           >
             Cancel

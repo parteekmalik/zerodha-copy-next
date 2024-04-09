@@ -1,16 +1,17 @@
 import { useContext } from "react";
+import { useSelector } from "react-redux";
 import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
-import DataContext from "../../_contexts/data/data";
+import { RootState } from "../../_redux/store";
 import Dashboard from "./Dashboard";
-import Chart from "./chart";
-import Order from "./Order";
 import Funds from "./Funds";
-import Holdings from "./Holdings/Holdings";
-import Positions from "./Positions/Positions";
+import Order from "./Order";
+import Chart from "./chart";
 
 function RightSide() {
-  const { symbolLiveState } = useContext(SymbolLiveContext);
-  const data = useContext(DataContext).dataState.rightSideData;
+  const data = useSelector((state: RootState) => state.rightSide);
+  const symbolsList = useSelector((state: RootState) => state.symbolsList);
+  const Livestream = useSelector((state: RootState) => state.Livestream);
+
   switch (data.type) {
     case "chart": {
       return (
@@ -27,22 +28,21 @@ function RightSide() {
     case "Orders": {
       return <Order />;
     }
-    case "Positions": {
-      return <Positions />;
-    }
+    // case "Positions": {
+    //   return <Positions />;
+    // }
     case "Funds": {
       return <Funds />;
     }
-    case "Holdings": {
-      return <Holdings />;
-    }
+    // case "Holdings": {
+    //   return <Holdings />;
+    // }
     default:
       return (
         <div className="text-">
-          <div>{JSON.stringify(symbolLiveState.last24hrdata)}</div>
           <div>
-            {Object.keys(symbolLiveState.Livestream).map((key) => {
-              const item = symbolLiveState.Livestream[key];
+            {Object.keys(Livestream).map((key) => {
+              const item = Livestream[key];
               return (
                 <div className="" key={key}>
                   {JSON.stringify(item)}
@@ -51,7 +51,7 @@ function RightSide() {
             })}
           </div>
           {/* <div>{symbolLiveState.Livestream}</div> */}
-          <div>{JSON.stringify(Object.keys(symbolLiveState.symbolsList))}</div>
+          <div>{JSON.stringify(Object.keys(symbolsList))}</div>
         </div>
       );
   }

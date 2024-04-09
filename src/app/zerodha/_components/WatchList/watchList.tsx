@@ -1,19 +1,20 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { api } from "~/trpc/react";
-import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
-import DataContext from "../../_contexts/data/data";
+import { AppDispatch, RootState } from "../../_redux/store";
+import { updateWatchList } from "../../_redux/watchList/watchList";
 import { searchAndSort } from "../../utils";
 import { shadowBox } from "../tcss";
-import SearchList from "./search/searchList";
 import SymbolInWL from "./drag_drop_wishlist/symbolInWL";
-import WatchlistBittom from "./watchlistBittom";
 import SearchInput from "./search/searchInput";
+import SearchList from "./search/searchList";
+import WatchlistBittom from "./watchlistBittom";
 
 export type Tsymbol = string;
 
 function WatchList() {
   const [watchListNo, setWatchListNo] = useState(0);
-  const { symbolLiveState } = useContext(SymbolLiveContext);
+  const symbolsList = useSelector((state: RootState) => state.symbolsList);
 
   const [search, setSearch] = useState({
     focus: false,
@@ -21,13 +22,14 @@ function WatchList() {
     data: "",
     Selected: 0,
   });
-  const list = useContext(DataContext).dataState.watchList;
-  const { dataDispatch } = useContext(DataContext);
+  const list = useSelector((state: RootState) => state.watchList);
 
-  const updateWatchList = api.accountInfo.updateWatchList.useMutation({
+  const dispatch = useDispatch<AppDispatch>();
+
+  const updateWatchListAPI = api.accountInfo.updateWatchList.useMutation({
     onSuccess: async (data) => {
       if (data) {
-        dataDispatch({ type: "update_watchList", payload: data });
+        dispatch(updateWatchList(data));
         setSearch((prev) => {
           return { ...prev, focus: false, data: "", Selected: 0 };
         });
@@ -36,7 +38,7 @@ function WatchList() {
   });
   function submitUpdate(index: number) {
     console.log("UPDATING WATCHLIST -> ", search, index);
-    updateWatchList.mutate({
+    updateWatchListAPI.mutate({
       name: [...(list[watchListNo] ?? []), search.matchingSymbol[index]].join(
         " ",
       ),
@@ -47,7 +49,7 @@ function WatchList() {
   useEffect(() => {
     const temp = searchAndSort(
       search.data,
-      Object.keys(symbolLiveState.symbolsList),
+      Object.keys(symbolsList),
       list[watchListNo] ?? [],
     );
     if (

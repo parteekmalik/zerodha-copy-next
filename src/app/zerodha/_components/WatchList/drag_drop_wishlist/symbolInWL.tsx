@@ -1,8 +1,10 @@
 import { Reorder } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "~/app/zerodha/_redux/store";
+import { updateWatchList } from "~/app/zerodha/_redux/watchList/watchList";
 import { api } from "~/trpc/react";
 import SymbolLiveContext from "../../../_contexts/SymbolLive/SymbolLive";
-import DataContext from "../../../_contexts/data/data";
 import type { Tsymbol } from "../watchList";
 import Item from "./Item";
 
@@ -18,7 +20,8 @@ interface ISymbolInWL {
   listNo: number;
 }
 function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
-  const { symbolLiveState, socketSend } = useContext(SymbolLiveContext);
+  const { socketSend } = useContext(SymbolLiveContext);
+  const Livestream = useSelector((state: RootState) => state.Livestream);
 
   const [list, setList] = useState<Tsymbol[]>([]);
   // const [selected, setSelected] = useState(null);
@@ -54,16 +57,16 @@ function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
     };
   }, [DataList]);
 
-  const { dataDispatch, dataState } = useContext(DataContext);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const updateWatchList = api.accountInfo.updateWatchList.useMutation({
+  const updateWatchListAPI = api.accountInfo.updateWatchList.useMutation({
     onSuccess: async (data) => {
-      if (data) dataDispatch({ type: "update_watchList", payload: data });
+      if (data) dispatch(updateWatchList(data));
     },
   });
   function submitUpdate() {
     console.log("symbolinwl");
-    updateWatchList.mutate({
+    updateWatchListAPI.mutate({
       name: list.join(" "),
       row: listNo,
     });
@@ -83,8 +86,8 @@ function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
           const symbolName = symbol.toUpperCase();
           return (
             <Item
-              diff={symbolLiveState.Livestream[symbolName]?.isup ? 1 : -1}
-              symbolLiveTemp={symbolLiveState.Livestream[symbolName]}
+              diff={Livestream[symbolName]?.isup ? 1 : -1}
+              symbolLiveTemp={Livestream[symbolName]}
               symbolName={symbolName}
               listNo={listNo}
               submitUpdate={submitUpdate}

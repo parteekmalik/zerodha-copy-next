@@ -1,36 +1,29 @@
-import { symbolList, type JSONType } from "../../../../../public/symbolname";
-import { listToRecord } from "../../utils";
-import type { IsymbolLiveContextState, TsymbolLive } from "./SymbolLive";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+export type TsymbolTrade = { curPrice: string; symbol: string };
+export type TsymbolLive = {
+  symbol: string;
+  curPrice: number;
+  isup: boolean;
+  prevPrice?: number;
+  PriceChange?: string;
+  PriceChangePercent?: string;
+};
+export type Tsymbol24hr = {
+  symbol: string;
+  prevPrice: string;
+  curPrice: string;
+};
+export type TLivestreamType = Record<string, TsymbolLive>;
 
-export type IsymbolLiveContextActions =
-  | {
-      type: "update_symbol";
-      payload: { curPrice: string; symbol: string };
-    }
-  | {
-      type: "update_symbolList";
-      payload: JSONType[];
-    }
-  | {
-      type: "update_last24hrdata";
-      payload: { symbol: string; prevPrice: string; curPrice: string }[];
-    };
-
-const excludeType = ["update_symbol", "update_symbolList"];
-export const symbolLiveReducer = (
-  state: IsymbolLiveContextState,
-  action: IsymbolLiveContextActions,
-) => {
-  const { type: Atype, payload } = action;
-  if (!excludeType.includes(Atype)) {
-    // console.log(
-    //   "Update State - Action: " + action.type + " - Payload: ",
-    //   action.payload,
-    // );
-  }
-  switch (Atype) {
-    case "update_symbol": {
-      const Livestream = { ...state.Livestream };
+const initialState: TLivestreamType = {};
+const LivestreamSlice = createSlice({
+  name: "LivestreamType",
+  initialState,
+  reducers: {
+    updateLivestream: (state, action: PayloadAction<TsymbolTrade>) => {
+      console.log(action);
+      const payload = action.payload;
+      const Livestream = { ...state };
       const isup = (curent: string, prev: number | undefined): boolean => {
         if (!prev) return true;
         return parseFloat(curent) >= prev;
@@ -45,16 +38,12 @@ export const symbolLiveReducer = (
         temp = { ...temp, ...getChange(data.prevPrice, data.curPrice) };
 
       Livestream[payload.symbol] = temp;
-      return { ...state, Livestream };
-    }
-    case "update_symbolList": {
-      const symbolsList = listToRecord(symbolList, "symbol");
-
-      return { ...state, symbolsList };
-    }
-    case "update_last24hrdata": {
-      const Livestream = { ...state.Livestream };
-      payload.map((x) => {
+      return { ...Livestream };
+      // return action.payload;
+    },
+    update_last24hrdata: (state, action: PayloadAction<Tsymbol24hr[]>) => {
+      const Livestream = state;
+      action.payload.map((x) => {
         const data = Livestream[x.symbol];
         Livestream[x.symbol] = {
           ...(data ?? {
@@ -64,14 +53,16 @@ export const symbolLiveReducer = (
           }),
           ...getChange(Number(x.prevPrice), Number(x.curPrice)),
         };
+        return Livestream;
       });
+    },
+  },
+});
 
-      return { ...state, Livestream };
-    }
-    default:
-      return state;
-  }
-};
+export const { updateLivestream,update_last24hrdata } = LivestreamSlice.actions;
+
+export default LivestreamSlice.reducer;
+
 function getChange(prevPrice: number | string, curPrice: number | string) {
   const PriceChange = Number(Number(curPrice) - Number(prevPrice));
   const PriceChangePercent = Number(

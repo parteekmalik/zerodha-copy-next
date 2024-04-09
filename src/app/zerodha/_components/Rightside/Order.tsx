@@ -60,7 +60,7 @@ function Order() {
             </span>
             <input className="w-[50px]" value={"search"}></input>
           </div>
-          <Table
+          {/* <Table
             headings={[
               "Time",
               "Type",
@@ -88,7 +88,7 @@ function Order() {
               };
             })}
             options={{ selectedAction }}
-          />
+          /> */}
         </div>
       ) : null}
       {executedOrders.length ? (
@@ -98,7 +98,7 @@ function Order() {
               Executed orders ({executedOrders?.length})
             </span>
           </div>
-          <Table
+          {/* <Table
             headings={[
               "Time",
               "Type",
@@ -126,7 +126,7 @@ function Order() {
               };
             })}
             options={{}}
-          />
+          /> */}
         </div>
       ) : null}
 

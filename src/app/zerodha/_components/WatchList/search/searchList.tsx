@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction, useContext, useEffect } from "react";
 import SymbolLiveContext from "../../../_contexts/SymbolLive/SymbolLive";
+import { useSelector } from "react-redux";
+import { RootState } from "~/app/zerodha/_redux/store";
 
 function SearchList({
   search,
@@ -22,7 +24,7 @@ function SearchList({
   >;
   updateWatchList: (index: number) => void;
 }) {
-  const { symbolLiveState } = useContext(SymbolLiveContext);
+  const symbolsList = useSelector((state: RootState) => state.symbolsList);
 
   const handleClickOutside = (event: globalThis.KeyboardEvent) => {
     if (event.key === "ArrowUp")
@@ -76,7 +78,7 @@ function SearchList({
             key={"search" + name}
           >
             <div className="grow">{name}</div>
-            <div>{symbolLiveState.symbolsList[name]?.name}</div>
+            <div>{symbolsList[name]?.name}</div>
           </div>
         );
       })}

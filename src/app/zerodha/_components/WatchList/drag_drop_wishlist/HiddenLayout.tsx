@@ -1,9 +1,30 @@
-import { useContext } from "react";
-import type { TsymbolLive } from "../../../_contexts/SymbolLive/SymbolLive";
-import DataContext from "../../../_contexts/data/data";
-import type { IdataContextActions } from "../../../_contexts/data/dataReduer";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  TFormDataType,
+  updateFormData,
+} from "~/app/zerodha/_redux/FormData/FormData";
+import { updateHeaderPin } from "~/app/zerodha/_redux/headerPin/headerPin";
+import {
+  TrightSideType,
+  updateRightSide,
+} from "~/app/zerodha/_redux/rightSideData/rightSideData";
+import { AppDispatch, RootState } from "~/app/zerodha/_redux/store";
+import { updateWatchList } from "~/app/zerodha/_redux/watchList/watchList";
 import { api } from "~/trpc/react";
-
+import type { TsymbolLive } from "../../../_contexts/SymbolLive/SymbolLive";
+type IdataContextActions =
+  | {
+      type: "update_rightHandSide";
+      payload: TrightSideType;
+    }
+  | {
+      type: "update_watchList";
+      payload: string[][];
+    }
+  | {
+      type: "update_FormData";
+      payload: TFormDataType;
+    };
 export function BaseSymbolLayout({
   symbolName,
   symbolLiveTemp,
@@ -50,7 +71,11 @@ export function HiddenLayout({
   symbolName: string;
   listNo: number;
 }) {
-  const { dataDispatch, dataState } = useContext(DataContext);
+  const rightSide = useSelector((state: RootState) => state.rightSide);
+  const FormData = useSelector((state: RootState) => state.FormData);
+  const watchList = useSelector((state: RootState) => state.watchList);
+  const dispatch = useDispatch<AppDispatch>();
+
   const hiddendata: {
     bgcolor: string;
     text_color: string;
@@ -68,7 +93,7 @@ export function HiddenLayout({
       payload: {
         type: "update_FormData",
         payload: {
-          ...dataState.FormData,
+          ...FormData,
           isvisible: true,
           type: "BUY",
           symbol: symbolName,
@@ -83,7 +108,7 @@ export function HiddenLayout({
       payload: {
         type: "update_FormData",
         payload: {
-          ...dataState.FormData,
+          ...FormData,
           isvisible: true,
           type: "SELL",
           symbol: symbolName,
@@ -131,13 +156,13 @@ export function HiddenLayout({
   const deleteApi = api.accountInfo.updateWatchList.useMutation({
     onSuccess: async (data) => {
       if (data) {
-        dataDispatch({ type: "update_watchList", payload: data });
+        dispatch(updateWatchList(data));
       }
     },
   });
   function deleteFunc(symbol: string) {
     symbol = symbol.toUpperCase();
-    const list = dataState.watchList[listNo];
+    const list = watchList[listNo];
     if (list) {
       const newList = list.filter(
         (item) => item.toUpperCase() !== symbol.toUpperCase(),
@@ -149,7 +174,7 @@ export function HiddenLayout({
   const updatePinApi = api.accountInfo.updatePins.useMutation({
     onSuccess: async (data) => {
       if (typeof data === "string") console.log(data);
-      else dataDispatch({ type: "update_Pins", payload: data });
+      else dispatch(updateHeaderPin(data));
     },
   });
   return (
@@ -163,16 +188,21 @@ export function HiddenLayout({
               console.log("clicked hidden elements payload ->", payload);
               if (payload) {
                 if ("type" in payload) {
-                  dataDispatch(payload);
-                } else if (payload.Type === "Supdate_Pins") {
-                  console.log("updatePin->");
-                  updatePinApi.mutate({
-                    name: symbolName,
-                    pos: payload.pos,
-                  });
-                } else if (payload.Type === "delete_watchListItem") {
-                  console.log("updatewatchliast->");
-                  deleteFunc(symbolName);
+                  if (payload.type === "update_rightHandSide")
+                    dispatch(updateRightSide(payload.payload));
+                  else if (payload.type === "update_FormData")
+                    dispatch(updateFormData(payload.payload));
+                } else if ("Type" in payload) {
+                  if (payload.Type === "Supdate_Pins") {
+                    console.log("updatePin->");
+                    updatePinApi.mutate({
+                      name: symbolName,
+                      pos: payload.pos,
+                    });
+                  } else if (payload.Type === "delete_watchListItem") {
+                    console.log("updatewatchliast->");
+                    deleteFunc(symbolName);
+                  }
                 }
               }
             }}
