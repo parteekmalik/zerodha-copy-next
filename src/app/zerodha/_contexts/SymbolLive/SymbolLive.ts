@@ -25,26 +25,14 @@ export type TsymbolLive = {
 
 export interface IsymbolLiveContextProps {
   socketSend: (payload: Twsbinance) => void;
-  // closed_open_OrdersData: (list: TsMap<string, TOrderCalculations>) => {
-  //   id: string;
-  //   data: {
-  //     Product: string;
-  //     Instrument: string;
-  //     Quantity: number;
-  //     AVG: number;
-  //     LTP: number;
-  //     "P&L": string;
-  //     change: string;
-  //   };
-  // }[];
+  BinanceConnectionStatus: string
 }
-[];
-// TODO :fix and auto asses types solution
+
 const SymbolLiveContext = createContext<IsymbolLiveContextProps>({
   socketSend: () => {
     console.log("due to ts error");
   },
-  // closed_open_OrdersData: () => {};
+  BinanceConnectionStatus: ""
 });
 
 export const PageContextConsumer = SymbolLiveContext.Consumer;

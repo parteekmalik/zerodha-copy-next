@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
 import useLiveWS from "../../_hooks/useLiveWS";
 import {
+  Tsymbol24hr,
   updateLivestream,
   update_last24hrdata,
 } from "../../_redux/Livestream/Livestream";
@@ -52,11 +53,11 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   props,
 ) => {
   const { children } = props;
-  
+
   const headerPin = useSelector((state: RootState) => state.headerPin);
   const dispatch = useDispatch<AppDispatch>();
 
-  const [Ssend, subscriptions] = useLiveWS(
+  const [Ssend, subscriptions, , BinanceConnectionStatus] = useLiveWS(
     "wss://stream.binance.com:9443/ws",
     {},
     processMessages,
@@ -86,32 +87,15 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   }
 
   useEffect(() => {
-    const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
-    const subSymbol = JSON.stringify(
-      subscriptions.map((item) => item.split("@")[0]?.toUpperCase()),
+    getLast24hrData(subscriptions).then((last24hrData) =>
+      dispatch(update_last24hrdata(last24hrData)),
     );
-
-    if (subSymbol !== "[]")
-      axios
-        .get(url + subSymbol)
-        .then((data: { data: TtickerChangeType[] }) => {
-          console.log("TtickerChangeType -> ", data.data);
-          const last24hrData = data.data.map((item) => {
-            return {
-              symbol: item.symbol,
-              prevPrice: item.openPrice,
-              curPrice: item.lastPrice,
-            };
-          });
-          dispatch(update_last24hrdata(last24hrData));
-          return data.data;
-        })
-        .catch((error) => console.log(error));
   }, [subscriptions]);
   return (
     <SymbolLiveContextProvider
       value={{
         socketSend,
+        BinanceConnectionStatus
       }}
     >
       {children}
@@ -120,3 +104,27 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
 };
 
 export default SymbolLiveContextComponent;
+
+const getLast24hrData = async (subscriptions: string[]) => {
+  const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
+  const subSymbol = JSON.stringify(
+    subscriptions.map((item) => item.split("@")[0]?.toUpperCase()),
+  );
+  return await axios
+    .get(url + subSymbol)
+    .then((data: { data: TtickerChangeType[] }) => {
+      console.log("TtickerChangeType -> ", data.data);
+      const last24hrData: Tsymbol24hr[] = data.data.map((item) => {
+        return {
+          symbol: item.symbol,
+          prevPrice: item.openPrice,
+          curPrice: item.lastPrice,
+        };
+      });
+      return last24hrData;
+    })
+    .catch((error) => {
+      console.log(error);
+      return [] as Tsymbol24hr[];
+    });
+};

@@ -5,6 +5,7 @@ import { Twsbinance } from "./WatchList/drag_drop_wishlist/symbolInWL";
 import { shadowBox } from "./tcss";
 import { AppDispatch, RootState } from "../_redux/store";
 import { updateRightSide } from "../_redux/rightSideData/rightSideData";
+import WifiIcon from "./savages/WifiIcon";
 
 type RightSideType =
   | "Dashboard"
@@ -22,7 +23,7 @@ function Header() {
     "Funds",
   ];
 
-  const { socketSend } = useContext(SymbolLiveContext);
+  const { socketSend, BinanceConnectionStatus } = useContext(SymbolLiveContext);
   const headerPin = useSelector((state: RootState) => state.headerPin);
   const Livestream = useSelector((state: RootState) => state.Livestream);
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
@@ -42,6 +43,7 @@ function Header() {
     };
   }, [headerPin]);
   // ff5722
+
   return (
     <header
       className={" flex w-full justify-center bg-white text-xs " + shadowBox}
@@ -88,6 +90,19 @@ function Header() {
               src="https://kite.zerodha.com/static/images/kite-logo.svg"
               alt=""
             />
+            <div className=" h-[20px] w-[20px]">
+              <WifiIcon
+                color={BinanceConnectionStatus === "Open" ? "green" : "red"}
+                size={"20px"}
+              />
+            </div>
+            {/* TODO: inpleent status of backend server up or not */}
+            {/* <div className=" h-[20px] w-[20px]">
+              <WifiIcon
+                color={BinanceConnectionStatus === "Open" ? "green" : "red"}
+                size={"20px"}
+              />
+            </div> */}
             <div className="flex grow justify-end gap-4">
               {rightSideItems.map((x: RightSideType) => (
                 <div
