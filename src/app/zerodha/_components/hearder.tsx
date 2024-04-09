@@ -6,6 +6,8 @@ import { shadowBox } from "./tcss";
 import { AppDispatch, RootState } from "../_redux/store";
 import { updateRightSide } from "../_redux/rightSideData/rightSideData";
 import WifiIcon from "./savages/WifiIcon";
+import BackendWSContextComponent from "../_contexts/backendWS/backendWSContextComponent";
+import BackndWSContext from "../_contexts/backendWS/backendWS";
 
 type RightSideType =
   | "Dashboard"
@@ -24,6 +26,7 @@ function Header() {
   ];
 
   const { socketSend, BinanceConnectionStatus } = useContext(SymbolLiveContext);
+  const { backendServerConnection } = useContext(BackndWSContext);
   const headerPin = useSelector((state: RootState) => state.headerPin);
   const Livestream = useSelector((state: RootState) => state.Livestream);
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
@@ -90,19 +93,15 @@ function Header() {
               src="https://kite.zerodha.com/static/images/kite-logo.svg"
               alt=""
             />
+
             <div className=" h-[20px] w-[20px]">
               <WifiIcon
-                color={BinanceConnectionStatus === "Open" ? "green" : "red"}
+                color={
+                  backendServerConnection === "connected" ? "green" : "red"
+                }
                 size={"20px"}
               />
             </div>
-            {/* TODO: inpleent status of backend server up or not */}
-            {/* <div className=" h-[20px] w-[20px]">
-              <WifiIcon
-                color={BinanceConnectionStatus === "Open" ? "green" : "red"}
-                size={"20px"}
-              />
-            </div> */}
             <div className="flex grow justify-end gap-4">
               {rightSideItems.map((x: RightSideType) => (
                 <div
