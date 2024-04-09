@@ -87,15 +87,15 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   }
 
   useEffect(() => {
-    getLast24hrData(subscriptions).then((last24hrData) =>
-      dispatch(update_last24hrdata(last24hrData)),
-    );
+    getLast24hrData(subscriptions)
+      .then((last24hrData) => dispatch(update_last24hrdata(last24hrData)))
+      .catch((err) => console.log(err));
   }, [subscriptions]);
   return (
     <SymbolLiveContextProvider
       value={{
         socketSend,
-        BinanceConnectionStatus
+        BinanceConnectionStatus,
       }}
     >
       {children}
