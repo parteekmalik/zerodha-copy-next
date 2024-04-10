@@ -62,7 +62,7 @@ const StoreComponent: React.FunctionComponent = (props) => {
   const symbolList = api.symbolList.getSymbolList.useQuery().data;
 
   const userDetails = useSelector((state: RootState) => state.UserInfo);
-  const state = useSelector((state: RootState) => state);
+  // const state = useSelector((state: RootState) => state);
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
@@ -77,9 +77,6 @@ const StoreComponent: React.FunctionComponent = (props) => {
     if (symbolList) dispatch(updateSymbolsList(symbolList));
   }, [symbolList]);
 
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
   return null;
 };
 

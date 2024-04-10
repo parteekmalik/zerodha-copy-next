@@ -21,7 +21,6 @@ const LivestreamSlice = createSlice({
   initialState,
   reducers: {
     updateLivestream: (state, action: PayloadAction<TsymbolTrade>) => {
-      console.log(action);
       const payload = action.payload;
       const Livestream = { ...state };
       const isup = (curent: string, prev: number | undefined): boolean => {
@@ -59,7 +58,8 @@ const LivestreamSlice = createSlice({
   },
 });
 
-export const { updateLivestream,update_last24hrdata } = LivestreamSlice.actions;
+export const { updateLivestream, update_last24hrdata } =
+  LivestreamSlice.actions;
 
 export default LivestreamSlice.reducer;
 

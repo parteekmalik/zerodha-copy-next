@@ -7,6 +7,7 @@ import ordersReducer from "./orders/orders";
 import watchListReducer from "./watchList/watchList";
 import symbolsListReducer from "./symbolsList/symbolsList";
 import LivestreamReducer from "./Livestream/Livestream";
+import { get } from "lodash";
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,10 @@ export const store = configureStore({
     watchList: watchListReducer,
     symbolsList: symbolsListReducer,
     Livestream: LivestreamReducer,
+  },
+  middleware(getDefaultMiddleware) {
+    console.log(getDefaultMiddleware());
+    return getDefaultMiddleware();
   },
 });
 
