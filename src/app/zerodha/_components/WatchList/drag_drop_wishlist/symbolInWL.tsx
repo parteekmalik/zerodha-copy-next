@@ -1,10 +1,9 @@
 import { Reorder } from "framer-motion";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "~/app/zerodha/_redux/store";
-import { updateWatchList } from "~/app/zerodha/_redux/watchList/watchList";
+import { updateWatchList } from "~/app/zerodha/_redux/Slices/watchList";
+import { AppDispatch, RootState, socketSend } from "~/app/zerodha/_redux/store";
 import { api } from "~/trpc/react";
-import SymbolLiveContext from "../../../_contexts/SymbolLive/SymbolLive";
 import type { Tsymbol } from "../watchList";
 import Item from "./Item";
 
@@ -20,8 +19,8 @@ interface ISymbolInWL {
   listNo: number;
 }
 function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
-  const { socketSend } = useContext(SymbolLiveContext);
-  const Livestream = useSelector((state: RootState) => state.Livestream);
+  // const { socketSend } = useContext(SymbolLiveContext);
+  const Livestream = useSelector((state: RootState) => state.Livestream.LiveData);
 
   const [list, setList] = useState<Tsymbol[]>([]);
   // const [selected, setSelected] = useState(null);
@@ -43,18 +42,18 @@ function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
     });
     // console.log("message sent->", msg);
     socketSend(msg);
-    return () => {
-      if (!DataList) return;
-      const msg: Twsbinance = {
-        method: "UNSUBSCRIBE",
-        params: [],
-        id: 2,
-      };
-      DataList?.map((symbol) => {
-        msg.params.push(symbol + "@trade");
-      });
-      socketSend(msg);
-    };
+    // return () => {
+    //   if (!DataList) return;
+    //   const msg: Twsbinance = {
+    //     method: "UNSUBSCRIBE",
+    //     params: [],
+    //     id: 2,
+    //   };
+    //   DataList?.map((symbol) => {
+    //     msg.params.push(symbol + "@trade");
+    //   });
+    //   socketSend(msg);
+    // };
   }, [DataList]);
 
   const dispatch = useDispatch<AppDispatch>();

@@ -1,6 +1,5 @@
 "use client";
 import Home from "./_components/Home";
-import SymbolLiveContextComponent from "./_contexts/SymbolLive/SymbolLiveContextComponent";
 import { ToastProvider } from "./_contexts/Toast/toast";
 import BackendWSContextComponent from "./_contexts/backendWS/backendWSContextComponent";
 
@@ -12,14 +11,12 @@ export default function ContextLayer() {
   return (
     <ToastProvider>
       <Provider store={store}>
-        <SymbolLiveContextComponent>
-          <BackendWSContextComponent>
-            {/* <SessionProvider session={session}> */}
-            <StoreComponent />
-            <Home />
-            {/* </SessionProvider> */}
-          </BackendWSContextComponent>
-        </SymbolLiveContextComponent>
+        <BackendWSContextComponent>
+          {/* <SessionProvider session={session}> */}
+          <StoreComponent />
+          <Home />
+          {/* </SessionProvider> */}
+        </BackendWSContextComponent>
       </Provider>
     </ToastProvider>
   );

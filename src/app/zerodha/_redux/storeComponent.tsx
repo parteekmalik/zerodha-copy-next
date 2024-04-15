@@ -1,15 +1,13 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "~/trpc/react";
-import { updateHeaderPin } from "./headerPin/headerPin";
+import { updateHeaderPin } from "./Slices/headerPin";
+import { updateSymbolsList } from "./Slices/symbolsList";
+import { updateUserInfo } from "./Slices/userInfo";
+import { updateWatchList } from "./Slices/watchList";
 import { AppDispatch, RootState } from "./store";
-import { updateUserInfo } from "./userInfo/userInfo";
-import { updateWatchList } from "./watchList/watchList";
-import { updateSymbolsList } from "./symbolsList/symbolsList";
-import { TOrderCalculations } from "../_components/Rightside/Positions/functions/OrderCalculations";
-import TsMap from "ts-map";
-import { TLivestreamType } from "./Livestream/Livestream";
 import axios from "axios";
+import { Tsymbol24hr, update_Last24hrdata } from "./Slices/Livestream";
 
 export type TsymbolTrade = {
   e: string;
@@ -62,6 +60,9 @@ const StoreComponent: React.FunctionComponent = (props) => {
   const symbolList = api.symbolList.getSymbolList.useQuery().data;
 
   const userDetails = useSelector((state: RootState) => state.UserInfo);
+  const subscriptions = useSelector(
+    (state: RootState) => state.Livestream.subscriptions,
+  );
   // const state = useSelector((state: RootState) => state);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -76,8 +77,37 @@ const StoreComponent: React.FunctionComponent = (props) => {
   useEffect(() => {
     if (symbolList) dispatch(updateSymbolsList(symbolList));
   }, [symbolList]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getLast24hrData(subscriptions);
+      dispatch(update_Last24hrdata(data));
+    };
+    if (subscriptions.length) fetchData();
+  }, [subscriptions]);
 
   return null;
 };
-
+const getLast24hrData = async (subscriptions: string[]) => {
+  const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
+  const subSymbol = JSON.stringify(
+    subscriptions.map((item) => item.split("@")[0]?.toUpperCase()),
+  );
+  return await axios
+    .get(url + subSymbol)
+    .then((data: { data: TtickerChangeType[] }) => {
+      console.log("TtickerChangeType -> ", data.data);
+      const last24hrData: Tsymbol24hr[] = data.data.map((item) => {
+        return {
+          symbol: item.symbol,
+          prevPrice: item.openPrice,
+          curPrice: item.lastPrice,
+        };
+      });
+      return last24hrData;
+    })
+    .catch((error) => {
+      console.log(error);
+      return [] as Tsymbol24hr[];
+    });
+};
 export default StoreComponent;

@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction, useContext, useEffect } from "react";
-import SymbolLiveContext from "../../../_contexts/SymbolLive/SymbolLive";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "~/app/zerodha/_redux/store";
 

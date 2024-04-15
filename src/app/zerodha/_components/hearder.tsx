@@ -1,13 +1,11 @@
 import { useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import SymbolLiveContext from "../_contexts/SymbolLive/SymbolLive";
-import { Twsbinance } from "./WatchList/drag_drop_wishlist/symbolInWL";
-import { shadowBox } from "./tcss";
-import { AppDispatch, RootState } from "../_redux/store";
-import { updateRightSide } from "../_redux/rightSideData/rightSideData";
-import WifiIcon from "./savages/WifiIcon";
-import BackendWSContextComponent from "../_contexts/backendWS/backendWSContextComponent";
 import BackndWSContext from "../_contexts/backendWS/backendWS";
+import { updateRightSide } from "../_redux/Slices/rightSideData";
+import { AppDispatch, RootState, socketSend } from "../_redux/store";
+import { Twsbinance } from "./WatchList/drag_drop_wishlist/symbolInWL";
+import WifiIcon from "./savages/WifiIcon";
+import { shadowBox } from "./tcss";
 
 type RightSideType =
   | "Dashboard"
@@ -25,10 +23,9 @@ function Header() {
     "Funds",
   ];
 
-  const { socketSend, BinanceConnectionStatus } = useContext(SymbolLiveContext);
   const { backendServerConnection } = useContext(BackndWSContext);
   const headerPin = useSelector((state: RootState) => state.headerPin);
-  const Livestream = useSelector((state: RootState) => state.Livestream);
+  const Livestream = useSelector((state: RootState) => state.Livestream.LiveData);
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
   const rightSide = useSelector((state: RootState) => state.rightSide);
   const dispatch = useDispatch<AppDispatch>();
@@ -40,10 +37,10 @@ function Header() {
       id: 1,
     };
     if (headerPin.Pin0) socketSend(msg);
-    return () => {
-      msg.method = "UNSUBSCRIBE";
-      if (msg.params[0] !== "@trade") socketSend(msg);
-    };
+    // return () => {
+    //   msg.method = "UNSUBSCRIBE";
+    //   if (msg.params[0] !== "@trade") socketSend(msg);
+    // };
   }, [headerPin]);
   // ff5722
 

@@ -1,6 +1,6 @@
 import { Reorder, useDragControls } from "framer-motion";
-import { TsymbolLive } from "../../../_contexts/SymbolLive/SymbolLive";
 import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
+import { TsymbolLive } from "~/app/zerodha/_redux/storeComponent";
 
 function Item({
   diff,
