@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "~/trpc/react";
 import { AppDispatch, RootState } from "../../_redux/store";
-import { updateWatchList } from "../../_redux/watchList/watchList";
+import { updateWatchList } from "../../_redux/Slices/watchList";
 import { searchAndSort } from "../../utils";
 import { shadowBox } from "../tcss";
 import SymbolInWL from "./drag_drop_wishlist/symbolInWL";

@@ -1,17 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  TFormDataType,
-  updateFormData,
-} from "~/app/zerodha/_redux/FormData/FormData";
-import { updateHeaderPin } from "~/app/zerodha/_redux/headerPin/headerPin";
-import {
-  TrightSideType,
-  updateRightSide,
-} from "~/app/zerodha/_redux/rightSideData/rightSideData";
+
+import { TFormDataType, updateFormData } from "~/app/zerodha/_redux/Slices/FormData";
+import { updateHeaderPin } from "~/app/zerodha/_redux/Slices/headerPin";
+import { TrightSideType, updateRightSide } from "~/app/zerodha/_redux/Slices/rightSideData";
+import { updateWatchList } from "~/app/zerodha/_redux/Slices/watchList";
 import { AppDispatch, RootState } from "~/app/zerodha/_redux/store";
-import { updateWatchList } from "~/app/zerodha/_redux/watchList/watchList";
+import { TsymbolLive } from "~/app/zerodha/_redux/storeComponent";
 import { api } from "~/trpc/react";
-import type { TsymbolLive } from "../../../_contexts/SymbolLive/SymbolLive";
 type IdataContextActions =
   | {
       type: "update_rightHandSide";

@@ -6,7 +6,7 @@ import { z } from "zod";
 import { api } from "~/trpc/react";
 import { useToast } from "../../_contexts/Toast/toast-context";
 import BackndWSContext from "../../_contexts/backendWS/backendWS";
-import { updateFormData } from "../../_redux/FormData/FormData";
+import { updateFormData } from "../../_redux/Slices/FormData";
 import { AppDispatch, RootState } from "../../_redux/store";
 import { TFormSchema } from "./FrmSchema";
 import InputDiv from "./InputDiv";
