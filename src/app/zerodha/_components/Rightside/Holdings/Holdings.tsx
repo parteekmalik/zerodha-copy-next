@@ -1,12 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import { api } from "~/trpc/react";
 
-import TsMap from "ts-map";
-import SymbolLiveContext from "~/app/zerodha/_contexts/SymbolLive/SymbolLive";
-import open_close_Trades, {
-  TOrderCalculations,
-} from "../Positions/functions/OrderCalculations";
-import Table from "../Table/table";
 const headings = [
   "Product",
   "Instrument",
