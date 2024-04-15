@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import createSagaMiddleware from "redux-saga";
 import BinanceWSStatsReducer from "./Slices/BinanceWSStats";
 import FormDataReducer from "./Slices/FormData";
 import LivestreamReducer from "./Slices/Livestream";
@@ -10,8 +9,6 @@ import symbolsListReducer from "./Slices/symbolsList";
 import userInfoReducer from "./Slices/userInfo";
 import watchListReducer from "./Slices/watchList";
 import setupSocket, { Twsbinance } from "./sagas/Bnance/socket";
-
-const sagaMiddleware = createSagaMiddleware();
 
 export const store = configureStore({
   reducer: {
@@ -25,19 +22,6 @@ export const store = configureStore({
     Livestream: LivestreamReducer,
     BinanceWSStats: BinanceWSStatsReducer,
   },
-  middleware(getDefaultMiddleware) {
-    console.log(getDefaultMiddleware());
-    return getDefaultMiddleware().concat(sagaMiddleware);
-  },
-  // enhancers: [
-  //   composeWithDevTools({
-  //     serialize: {
-  //       // Filter actions based on specific conditions
-  //       actionSanitizer: (action) =>
-  //         action.type.startsWith("SOMETHING") ? action : null,
-  //     },
-  //   }),
-  // ],
 });
 const socket = setupSocket(store.dispatch, "wss://stream.binance.com:9443/ws");
 
@@ -47,12 +31,6 @@ const sendWSBinanceMessage = (message: Twsbinance) => {
   const listSubReq = { method: "LIST_SUBSCRIPTIONS", id: 3 };
   setTimeout(() => socket.send(JSON.stringify(listSubReq)), 500);
 };
-
-// sagaMiddleware.run(handleNewMessage, { socket });
-//
-// export type pramsForSagaMiddleware = {
-//   socket: typeof socket;
-// };
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
