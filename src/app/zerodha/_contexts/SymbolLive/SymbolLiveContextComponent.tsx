@@ -1,15 +1,10 @@
 import axios from "axios";
 import type { PropsWithChildren } from "react";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
-import useLiveWS from "../../_hooks/useLiveWS";
-import {
-  Tsymbol24hr,
-  updateLivestream,
-  update_last24hrdata,
-} from "../../_redux/Livestream/Livestream";
-import { AppDispatch, RootState } from "../../_redux/store";
+import { Tsymbol24hr } from "../../_redux/Slices/Livestream";
+import { RootState } from "../../_redux/store";
 import { SymbolLiveContextProvider } from "./SymbolLive";
 export type TsymbolTrade = {
   e: string;
@@ -55,19 +50,7 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
   const { children } = props;
 
   const headerPin = useSelector((state: RootState) => state.headerPin);
-  const dispatch = useDispatch<AppDispatch>();
-
-  const [Ssend, subscriptions, , BinanceConnectionStatus] = useLiveWS(
-    "wss://stream.binance.com:9443/ws",
-    {},
-    processMessages,
-  );
-
-  function processMessages(data: TsymbolTrade) {
-    if (data.e !== "trade") {
-      // console.log(data);
-    } else dispatch(updateLivestream({ curPrice: data.p, symbol: data.s }));
-  }
+  const BinanceConnectionStatus = "true";
 
   function socketSend(payload: Twsbinance) {
     payload.params = payload.params.map((item) => {
@@ -83,18 +66,12 @@ const SymbolLiveContextComponent: React.FunctionComponent<PropsWithChildren> = (
       );
       // console.log("remove pins from unsubscribe ->", payload);
     }
-    if (payload.params.length) Ssend(payload);
+    // if (payload.params.length) Ssend(payload);
   }
 
-  useEffect(() => {
-    getLast24hrData(subscriptions)
-      .then((last24hrData) => dispatch(update_last24hrdata(last24hrData)))
-      .catch((err) => console.log(err));
-  }, [subscriptions]);
   return (
     <SymbolLiveContextProvider
       value={{
-        socketSend,
         BinanceConnectionStatus,
       }}
     >

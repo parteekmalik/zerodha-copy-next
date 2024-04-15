@@ -1,5 +1,4 @@
 import { createContext } from "react";
-import type { Twsbinance } from "../../_components/WatchList/drag_drop_wishlist/symbolInWL";
 
 export type TsymbolTrade = {
   e: string;
@@ -24,14 +23,10 @@ export type TsymbolLive = {
 };
 
 export interface IsymbolLiveContextProps {
-  socketSend: (payload: Twsbinance) => void;
   BinanceConnectionStatus: string
 }
 
 const SymbolLiveContext = createContext<IsymbolLiveContextProps>({
-  socketSend: () => {
-    console.log("due to ts error");
-  },
   BinanceConnectionStatus: ""
 });
 
