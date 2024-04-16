@@ -15,15 +15,15 @@ const BinanceWSStatsSlice = createSlice({
   reducers: {
     updateBinanceWSStats: (state, action: PayloadAction<boolean>) => {
       state.isConnected = action.payload;
-      return state;
     },
     updateBinanceWSSubsriptions: (state, action: PayloadAction<string[]>) => {
+      console.log(action);
       state.subsciptions = action.payload;
-      return state;
     },
   },
 });
 
-export const { updateBinanceWSStats } = BinanceWSStatsSlice.actions;
+export const { updateBinanceWSStats, updateBinanceWSSubsriptions } =
+  BinanceWSStatsSlice.actions;
 
 export default BinanceWSStatsSlice.reducer;

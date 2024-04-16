@@ -1,9 +1,8 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BackndWSContext from "../_contexts/backendWS/backendWS";
 import { updateRightSide } from "../_redux/Slices/rightSideData";
-import { AppDispatch, RootState, socketSend } from "../_redux/store";
-import { Twsbinance } from "./WatchList/drag_drop_wishlist/symbolInWL";
+import { AppDispatch, RootState } from "../_redux/store";
 import WifiIcon from "./savages/WifiIcon";
 import { shadowBox } from "./tcss";
 
@@ -25,23 +24,11 @@ function Header() {
 
   const { backendServerConnection } = useContext(BackndWSContext);
   const headerPin = useSelector((state: RootState) => state.headerPin);
-  const Livestream = useSelector((state: RootState) => state.Livestream.LiveData);
+  const Livestream = useSelector((state: RootState) => state.Livestream);
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
   const rightSide = useSelector((state: RootState) => state.rightSide);
   const dispatch = useDispatch<AppDispatch>();
 
-  useEffect(() => {
-    const msg: Twsbinance = {
-      method: "SUBSCRIBE",
-      params: [headerPin.Pin0 + "@trade", headerPin.Pin1 + "@trade"],
-      id: 1,
-    };
-    if (headerPin.Pin0) socketSend(msg);
-    // return () => {
-    //   msg.method = "UNSUBSCRIBE";
-    //   if (msg.params[0] !== "@trade") socketSend(msg);
-    // };
-  }, [headerPin]);
   // ff5722
 
   return (

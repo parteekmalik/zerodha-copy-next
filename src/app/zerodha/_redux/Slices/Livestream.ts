@@ -121,11 +121,15 @@ export type TtickerChangeType = {
   lastId: number;
   count: number;
 };
-const getLast24hrData = async (subscriptions: string[]) => {
+export const getLast24hrData = async (subscriptions: string[]) => {
+  console.log("subscriptions", subscriptions);
+  if (subscriptions.length === 0) return [] as Tsymbol24hr[];
+  subscriptions = subscriptions.filter((i) => i !== "");
   const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
   const subSymbol = JSON.stringify(
     subscriptions.map((item) => item.split("@")[0]?.toUpperCase()),
   );
+  console.log("url", url);
   return await axios
     .get(url + subSymbol)
     .then((data: { data: TtickerChangeType[] }) => {

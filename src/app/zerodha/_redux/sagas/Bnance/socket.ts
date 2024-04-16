@@ -1,5 +1,5 @@
-import { updateBinanceWSStats } from "../../Slices/BinanceWSStats";
-import { updateLivestream, updateSubscription } from "../../Slices/Livestream";
+import { updateBinanceWSStats, updateBinanceWSSubsriptions } from "../../Slices/BinanceWSStats";
+import { updateLivestream } from "../../Slices/Livestream";
 import { store } from "../../store";
 
 export type TsymbolTrade = {
@@ -29,13 +29,6 @@ const setupSocket = (dispatch: typeof store.dispatch, url: string) => {
   socket.onopen = () => {
     console.log("redux-saga connected websocket to binance");
     dispatch(updateBinanceWSStats(true));
-    socket.send(
-      JSON.stringify({
-        method: "SUBSCRIBE",
-        params: ["btcusdt@trade"],
-        id: 1,
-      } as Twsbinance),
-    );
   };
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data as string) as
@@ -45,7 +38,7 @@ const setupSocket = (dispatch: typeof store.dispatch, url: string) => {
       console.log("redux-saga recieved message", data);
       if (data.result) {
         console.log(typeof data.result, data.result);
-        dispatch(updateSubscription(data.result));
+        dispatch(updateBinanceWSSubsriptions(data.result));
       }
     } else {
       dispatch(updateLivestream({ curPrice: data.p, symbol: data.s }));

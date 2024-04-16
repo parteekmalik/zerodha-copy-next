@@ -6,8 +6,6 @@ import { updateSymbolsList } from "./Slices/symbolsList";
 import { updateUserInfo } from "./Slices/userInfo";
 import { updateWatchList } from "./Slices/watchList";
 import { AppDispatch, RootState } from "./store";
-import axios from "axios";
-import { Tsymbol24hr, update_Last24hrdata } from "./Slices/Livestream";
 
 export type TsymbolTrade = {
   e: string;
@@ -31,83 +29,27 @@ export type TsymbolLive = {
   PriceChangePercent?: string;
 };
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
-export type TtickerChangeType = {
-  symbol: string;
-  priceChange: string;
-  priceChangePercent: string;
-  weightedAvgPrice: string;
-  prevClosePrice: string;
-  lastPrice: string;
-  lastQty: string;
-  bidPrice: string;
-  bidQty: string;
-  askPrice: string;
-  askQty: string;
-  openPrice: string;
-  highPrice: string;
-  lowPrice: string;
-  volume: string;
-  quoteVolume: string;
-  openTime: number;
-  closeTime: number;
-  firstId: number;
-  lastId: number;
-  count: number;
-};
 
 const StoreComponent: React.FunctionComponent = (props) => {
   const initData = api.accountInfo.getInitInfo.useQuery().data;
   const symbolList = api.symbolList.getSymbolList.useQuery().data;
 
   const userDetails = useSelector((state: RootState) => state.UserInfo);
-  const subscriptions = useSelector(
-    (state: RootState) => state.Livestream.subscriptions,
-  );
   // const state = useSelector((state: RootState) => state);
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     if (initData && userDetails?.name === "not_found" && symbolList) {
-      console.log("REDUX");
       dispatch(updateWatchList(initData.watchList));
       dispatch(updateHeaderPin(initData.Pins));
       dispatch(updateUserInfo(initData.userInfo));
     }
   }, [initData]);
+
   useEffect(() => {
     if (symbolList) dispatch(updateSymbolsList(symbolList));
   }, [symbolList]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getLast24hrData(subscriptions);
-      dispatch(update_Last24hrdata(data));
-    };
-    if (subscriptions.length) fetchData();
-  }, [subscriptions]);
 
   return null;
-};
-const getLast24hrData = async (subscriptions: string[]) => {
-  const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
-  const subSymbol = JSON.stringify(
-    subscriptions.map((item) => item.split("@")[0]?.toUpperCase()),
-  );
-  return await axios
-    .get(url + subSymbol)
-    .then((data: { data: TtickerChangeType[] }) => {
-      console.log("TtickerChangeType -> ", data.data);
-      const last24hrData: Tsymbol24hr[] = data.data.map((item) => {
-        return {
-          symbol: item.symbol,
-          prevPrice: item.openPrice,
-          curPrice: item.lastPrice,
-        };
-      });
-      return last24hrData;
-    })
-    .catch((error) => {
-      console.log(error);
-      return [] as Tsymbol24hr[];
-    });
 };
 export default StoreComponent;

@@ -2,7 +2,7 @@ import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateWatchList } from "~/app/zerodha/_redux/Slices/watchList";
-import { AppDispatch, RootState, socketSend } from "~/app/zerodha/_redux/store";
+import { AppDispatch, RootState } from "~/app/zerodha/_redux/store";
 import { api } from "~/trpc/react";
 import type { Tsymbol } from "../watchList";
 import Item from "./Item";

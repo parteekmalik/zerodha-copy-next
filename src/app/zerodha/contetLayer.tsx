@@ -12,10 +12,8 @@ export default function ContextLayer() {
     <ToastProvider>
       <Provider store={store}>
         <BackendWSContextComponent>
-          {/* <SessionProvider session={session}> */}
           <StoreComponent />
           <Home />
-          {/* </SessionProvider> */}
         </BackendWSContextComponent>
       </Provider>
     </ToastProvider>

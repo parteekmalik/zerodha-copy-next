@@ -28,7 +28,7 @@ export const closed_open_OrdersData = (
     if (value) {
       const QUANTITY = value.BuyQuantity - value.SellQuantity;
       const AVG = QUANTITY === 0 ? 0 : value.BuyPriceTotal / value.BuyQuantity;
-      const CURPRICE = Livestream.LiveData[key]?.curPrice ?? 0;
+      const CURPRICE = Livestream[key]?.curPrice ?? 0;
       const PROFIT =
         (QUANTITY !== 0 ? QUANTITY * CURPRICE : 0) +
         value.SellPriceTotal -

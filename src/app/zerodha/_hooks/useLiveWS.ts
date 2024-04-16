@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { Options } from "react-use-websocket";
 import { Twsbinance } from "../_components/WatchList/drag_drop_wishlist/symbolInWL";
-import { TsymbolTrade } from "../_contexts/SymbolLive/SymbolLive";
 import useWS from "./useWS";
+import { TsymbolTrade } from "../_redux/storeComponent";
 
 let subscriptions: string[] = [];
 

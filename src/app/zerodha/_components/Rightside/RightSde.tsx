@@ -1,6 +1,4 @@
-import { useContext } from "react";
 import { useSelector } from "react-redux";
-import SymbolLiveContext from "../../_contexts/SymbolLive/SymbolLive";
 import { RootState } from "../../_redux/store";
 import Dashboard from "./Dashboard";
 import Funds from "./Funds";
@@ -10,6 +8,9 @@ import Chart from "./chart";
 function RightSide() {
   const data = useSelector((state: RootState) => state.rightSide);
   const symbolsList = useSelector((state: RootState) => state.symbolsList);
+  const subsciptions = useSelector(
+    (state: RootState) => state.BinanceWSStats.subsciptions,
+  );
   const Livestream = useSelector((state: RootState) => state.Livestream);
 
   switch (data.type) {
@@ -52,6 +53,7 @@ function RightSide() {
           </div>
           {/* <div>{symbolLiveState.Livestream}</div> */}
           <div>{JSON.stringify(Object.keys(symbolsList))}</div>
+          <div>{JSON.stringify(Object.keys(subsciptions))}</div>
         </div>
       );
   }

@@ -20,11 +20,13 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
   const { socket, isConnected, lastMessage } = useSocket(
     env.NEXT_PUBLIC_BACKEND_WS,
     UserInfo.TradingAccountId,
-    {},
+    {
+      reconnection: false,
+    },
   );
   useEffect(() => {
-    console.log("lastMessage -> ", typeof lastMessage, lastMessage);
     if (toast && lastMessage) {
+      console.log("lastMessage -> ", typeof lastMessage, lastMessage);
       if (typeof lastMessage === "object") {
         toast.open({
           name: lastMessage.name,
