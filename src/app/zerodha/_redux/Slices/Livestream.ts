@@ -1,6 +1,6 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { TtickerChangeType } from "../storeComponent";
+
 export type TsymbolTrade = { curPrice: string; symbol: string };
 export type TsymbolLive = {
   symbol: string;
@@ -15,19 +15,25 @@ export type Tsymbol24hr = {
   prevPrice: string;
   curPrice: string;
 };
-export type TLivestreamType = {
-  LiveData: Record<string, TsymbolLive>;
-  subscriptions: string[];
-};
+export type TLivestreamType = Record<string, TsymbolLive>;
 
-const initialState: TLivestreamType = { LiveData: {}, subscriptions: [] };
+const initialState: TLivestreamType = {};
+
+export const update_Last24hrdata = createAsyncThunk(
+  "LivestreamType/update_Last24hrdata",
+  async (subscriptions: string[], thunkApi) => {
+    const response = await getLast24hrData(subscriptions);
+    return response;
+  },
+);
+
 const LivestreamSlice = createSlice({
   name: "LivestreamType",
   initialState,
   reducers: {
     updateLivestream: (state, action: PayloadAction<TsymbolTrade>) => {
       const payload = action.payload;
-      const Livestream = state.LiveData;
+      const Livestream = state;
       const isup = (curent: string, prev: number | undefined): boolean => {
         if (!prev) return true;
         return parseFloat(curent) >= prev;
@@ -45,14 +51,14 @@ const LivestreamSlice = createSlice({
 
       return state;
     },
-    updateSubscription: (state, action: PayloadAction<string[]>) => {
-      state.subscriptions = action.payload;
-      return state;
-    },
-    update_Last24hrdata: (state, action: PayloadAction<Tsymbol24hr[]>) => {
-      const LiveData = state.LiveData;
+  },
+  extraReducers: (builder) => {
+    builder.addCase(update_Last24hrdata.fulfilled, (state, action) => {
+      console.log("LivestreamType/update_Last24hrdata");
 
-      action.payload.map((x) => {
+      const LiveData = state;
+
+      action.payload.forEach((x: Tsymbol24hr) => {
         const data = LiveData[x.symbol];
         LiveData[x.symbol] = {
           ...(data ?? {
@@ -63,13 +69,11 @@ const LivestreamSlice = createSlice({
           ...getChange(Number(x.prevPrice), Number(x.curPrice)),
         };
       });
-      return state;
-    },
+    });
   },
 });
 
-export const { updateLivestream, updateSubscription, update_Last24hrdata } =
-  LivestreamSlice.actions;
+export const { updateLivestream } = LivestreamSlice.actions;
 
 export default LivestreamSlice.reducer;
 
@@ -94,3 +98,49 @@ function getPointCount(price: string | number) {
   }
   return Math.max(i, 2);
 }
+export type TtickerChangeType = {
+  symbol: string;
+  priceChange: string;
+  priceChangePercent: string;
+  weightedAvgPrice: string;
+  prevClosePrice: string;
+  lastPrice: string;
+  lastQty: string;
+  bidPrice: string;
+  bidQty: string;
+  askPrice: string;
+  askQty: string;
+  openPrice: string;
+  highPrice: string;
+  lowPrice: string;
+  volume: string;
+  quoteVolume: string;
+  openTime: number;
+  closeTime: number;
+  firstId: number;
+  lastId: number;
+  count: number;
+};
+const getLast24hrData = async (subscriptions: string[]) => {
+  const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
+  const subSymbol = JSON.stringify(
+    subscriptions.map((item) => item.split("@")[0]?.toUpperCase()),
+  );
+  return await axios
+    .get(url + subSymbol)
+    .then((data: { data: TtickerChangeType[] }) => {
+      console.log("TtickerChangeType -> ", data.data);
+      const last24hrData: Tsymbol24hr[] = data.data.map((item) => {
+        return {
+          symbol: item.symbol,
+          prevPrice: item.openPrice,
+          curPrice: item.lastPrice,
+        };
+      });
+      return last24hrData;
+    })
+    .catch((error) => {
+      console.log(error);
+      return [] as Tsymbol24hr[];
+    });
+};

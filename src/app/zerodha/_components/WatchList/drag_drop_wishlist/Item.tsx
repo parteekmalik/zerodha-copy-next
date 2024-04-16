@@ -1,29 +1,36 @@
 import { Reorder, useDragControls } from "framer-motion";
 import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
 import { TsymbolLive } from "~/app/zerodha/_redux/storeComponent";
+import { useSelector } from "react-redux";
+import { RootState } from "~/app/zerodha/_redux/store";
 
 function Item({
   diff,
   symbolLiveTemp,
   symbolName,
-  listNo,
   submitUpdate,
 }: {
   diff: number;
   symbolLiveTemp: TsymbolLive | undefined;
   symbolName: string;
-  listNo: number;
   submitUpdate: () => void;
 }) {
   const dragControls = useDragControls();
+
   return (
     <Reorder.Item
       id={symbolName}
       dragListener={false}
       dragControls={dragControls}
       value={symbolName}
-      onDragEnd={() => submitUpdate()}
-      className="relative translate-x-0"
+      onDrag={(e) => console.log(e)}
+      onDragEnd={(e) => {
+        submitUpdate();
+        console.log(e);
+      }}
+      className="relative"
+      // style={{}}
+      translate="no"
     >
       <div
         className={
@@ -33,7 +40,8 @@ function Item({
         style={{ fontSize: ".8125rem" }}
       >
         <div
-          className=" absolute h-full w-full text-white hover:cursor-move"
+          className=" absolute h-full w-full text-white hover:cursor-move "
+          style={{ transform: "translateX(-15px) translateY(-12px)" }}
           onPointerDown={(e) => dragControls.start(e)}
         ></div>
         {symbolLiveTemp ? (
@@ -44,7 +52,7 @@ function Item({
               symbolLiveTemp={symbolLiveTemp}
             />
             <div className=" invisible absolute right-0 top-0 flex h-full gap-2 p-[8px_15px_8px_2px] text-white group-hover/item:visible">
-              <HiddenLayout symbolName={symbolName} listNo={listNo} />
+              <HiddenLayout symbolName={symbolName}  />
             </div>
           </>
         ) : (
@@ -56,7 +64,7 @@ function Item({
 }
 
 export const getColor = (diff: number | string) => {
-  if (typeof diff === "string" && diff.endsWith('%'))
+  if (typeof diff === "string" && diff.endsWith("%"))
     diff = diff.split("%")[0] ?? "";
   diff = Number(diff);
   if (diff > 0) {

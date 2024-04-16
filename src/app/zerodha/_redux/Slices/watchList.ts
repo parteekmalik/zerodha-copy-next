@@ -1,19 +1,22 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-export type TwatchListType = string[][];
+export type TwatchListType = { List: string[][]; ListNo: number };
 
-const initialState: TwatchListType = [];
+const initialState: TwatchListType = { List: [], ListNo: 0 };
 const watchListSlice = createSlice({
   name: "watchListType",
   initialState,
   reducers: {
-    updateWatchList: (state, action: PayloadAction<TwatchListType>) => {
+    updateWatchList: (state, action: PayloadAction<string[][]>) => {
       console.log(action);
-      return action.payload;
+      state.List = action.payload;
+    },
+    updateWatchListNo: (state, action: PayloadAction<number>) => {
+      state.ListNo = action.payload;
     },
   },
 });
 
-export const { updateWatchList } = watchListSlice.actions;
+export const { updateWatchList,updateWatchListNo } = watchListSlice.actions;
 
 export default watchListSlice.reducer;

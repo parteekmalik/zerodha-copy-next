@@ -13,7 +13,6 @@ import WatchlistBittom from "./watchlistBittom";
 export type Tsymbol = string;
 
 function WatchList() {
-  const [watchListNo, setWatchListNo] = useState(0);
   const symbolsList = useSelector((state: RootState) => state.symbolsList);
 
   const [search, setSearch] = useState({
@@ -22,7 +21,7 @@ function WatchList() {
     data: "",
     Selected: 0,
   });
-  const list = useSelector((state: RootState) => state.watchList);
+  const watchList = useSelector((state: RootState) => state.watchList);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -39,10 +38,11 @@ function WatchList() {
   function submitUpdate(index: number) {
     console.log("UPDATING WATCHLIST -> ", search, index);
     updateWatchListAPI.mutate({
-      name: [...(list[watchListNo] ?? []), search.matchingSymbol[index]].join(
-        " ",
-      ),
-      row: watchListNo,
+      name: [
+        ...(watchList.List[watchList.ListNo] ?? []),
+        search.matchingSymbol[index],
+      ].join(" "),
+      row: watchList.ListNo,
     });
   }
 
@@ -50,7 +50,7 @@ function WatchList() {
     const temp = searchAndSort(
       search.data,
       Object.keys(symbolsList),
-      list[watchListNo] ?? [],
+      watchList.List[watchList.ListNo] ?? [],
     );
     if (
       search.focus &&
@@ -70,7 +70,7 @@ function WatchList() {
       }
     >
       <SearchInput
-        symbolCount={list[watchListNo]?.length ?? 0}
+        symbolCount={watchList.List[watchList.ListNo]?.length ?? 0}
         search={search}
         submitUpdate={submitUpdate}
         setSearch={setSearch}
@@ -89,14 +89,11 @@ function WatchList() {
           </div>
         ) : null}
         <div className="custom-scrollbar scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-200  flex  grow  flex-col overflow-y-auto overflow-x-hidden">
-          <SymbolInWL list={list[watchListNo] ?? []} listNo={watchListNo} />
+          <SymbolInWL list={watchList.List[watchList.ListNo] ?? []} />
         </div>
       </div>
       <div className="min-h-[50px]">
-        <WatchlistBittom
-          watchListNo={watchListNo}
-          setWatchListNo={setWatchListNo}
-        />
+        <WatchlistBittom />
       </div>
     </div>
   );

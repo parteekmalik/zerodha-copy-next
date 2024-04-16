@@ -1,8 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 
-import { TFormDataType, updateFormData } from "~/app/zerodha/_redux/Slices/FormData";
+import {
+  TFormDataType,
+  updateFormData,
+} from "~/app/zerodha/_redux/Slices/FormData";
 import { updateHeaderPin } from "~/app/zerodha/_redux/Slices/headerPin";
-import { TrightSideType, updateRightSide } from "~/app/zerodha/_redux/Slices/rightSideData";
+import {
+  TrightSideType,
+  updateRightSide,
+} from "~/app/zerodha/_redux/Slices/rightSideData";
 import { updateWatchList } from "~/app/zerodha/_redux/Slices/watchList";
 import { AppDispatch, RootState } from "~/app/zerodha/_redux/store";
 import { TsymbolLive } from "~/app/zerodha/_redux/storeComponent";
@@ -59,13 +65,7 @@ export function BaseSymbolLayout({
     </>
   );
 }
-export function HiddenLayout({
-  symbolName,
-  listNo,
-}: {
-  symbolName: string;
-  listNo: number;
-}) {
+export function HiddenLayout({ symbolName }: { symbolName: string }) {
   const rightSide = useSelector((state: RootState) => state.rightSide);
   const FormData = useSelector((state: RootState) => state.FormData);
   const watchList = useSelector((state: RootState) => state.watchList);
@@ -157,13 +157,13 @@ export function HiddenLayout({
   });
   function deleteFunc(symbol: string) {
     symbol = symbol.toUpperCase();
-    const list = watchList[listNo];
+    const list = watchList.List[watchList.ListNo];
     if (list) {
       const newList = list.filter(
         (item) => item.toUpperCase() !== symbol.toUpperCase(),
       );
       console.log("delete api ->", symbol, list, newList);
-      deleteApi.mutate({ name: newList.join(" "), row: listNo });
+      deleteApi.mutate({ name: newList.join(" "), row: watchList.ListNo });
     }
   }
   const updatePinApi = api.accountInfo.updatePins.useMutation({

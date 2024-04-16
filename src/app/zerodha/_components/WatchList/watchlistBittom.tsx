@@ -1,10 +1,10 @@
-import type { Dispatch, SetStateAction } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateWatchListNo } from "../../_redux/Slices/watchList";
+import { RootState } from "../../_redux/store";
 
-interface IWatchlistBittom {
-  watchListNo: number;
-  setWatchListNo: Dispatch<SetStateAction<number>>;
-}
-function WatchlistBittom({ watchListNo, setWatchListNo }: IWatchlistBittom) {
+function WatchlistBittom() {
+  const watchListNo = useSelector((state: RootState) => state.watchList.ListNo);
+  const dispatch = useDispatch();
   return (
     <div className="flex cursor-pointer ">
       <div className="flex  w-full border-y-[1px] ">
@@ -16,7 +16,7 @@ function WatchlistBittom({ watchListNo, setWatchListNo }: IWatchlistBittom) {
                 (watchListNo === i && "bg-[#f9f9f9] text-[#fd9522]")
               }
               key={"watchlist" + i}
-              onClick={() => setWatchListNo(i)}
+              onClick={() => dispatch(updateWatchListNo(i))}
             >
               {i}
             </div>

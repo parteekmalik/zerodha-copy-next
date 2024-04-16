@@ -16,86 +16,52 @@ export type Twsbinance = {
 
 interface ISymbolInWL {
   list: Tsymbol[];
-  listNo: number;
 }
-function SymbolInWL({ list: DataList, listNo }: ISymbolInWL) {
+function SymbolInWL({ list: DataList }: ISymbolInWL) {
   // const { socketSend } = useContext(SymbolLiveContext);
-  const Livestream = useSelector((state: RootState) => state.Livestream.LiveData);
+  const Livestream = useSelector((state: RootState) => state.Livestream);
+  const headerPin = useSelector((state: RootState) => state.headerPin);
 
-  const [list, setList] = useState<Tsymbol[]>([]);
-  // const [selected, setSelected] = useState(null);
-
-  useEffect(() => {
-    setList(DataList);
-    // console.log("useEffect -> ", DataList);
-  }, [DataList]);
+  const [LocalList, setLocalList] = useState<Tsymbol[]>([]);
 
   useEffect(() => {
-    if (!DataList) return;
-    const msg: Twsbinance = {
-      method: "SUBSCRIBE",
-      params: [],
-      id: 2,
-    };
-    DataList?.map((symbol) => {
-      msg.params.push(symbol + "@trade");
-    });
-    // console.log("message sent->", msg);
-    socketSend(msg);
-    // return () => {
-    //   if (!DataList) return;
-    //   const msg: Twsbinance = {
-    //     method: "UNSUBSCRIBE",
-    //     params: [],
-    //     id: 2,
-    //   };
-    //   DataList?.map((symbol) => {
-    //     msg.params.push(symbol + "@trade");
-    //   });
-    //   socketSend(msg);
-    // };
+    setLocalList(DataList);
   }, [DataList]);
 
   const dispatch = useDispatch<AppDispatch>();
+  const listNo = useSelector((state: RootState) => state.watchList.ListNo);
 
   const updateWatchListAPI = api.accountInfo.updateWatchList.useMutation({
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       if (data) dispatch(updateWatchList(data));
     },
   });
   function submitUpdate() {
-    console.log("symbolinwl");
     updateWatchListAPI.mutate({
-      name: list.join(" "),
+      name: LocalList.join(" "),
       row: listNo,
     });
   }
-  if (!list) return null;
+  if (!LocalList) return null;
   return (
-    <>
-      <Reorder.Group
-        values={list}
-        onReorder={(e) => {
-          // console.log(e);
-          setList(e);
-        }}
-        axis="y"
-      >
-        {list.map((symbol) => {
-          const symbolName = symbol.toUpperCase();
-          return (
-            <Item
-              diff={Livestream[symbolName]?.isup ? 1 : -1}
-              symbolLiveTemp={Livestream[symbolName]}
-              symbolName={symbolName}
-              listNo={listNo}
-              submitUpdate={submitUpdate}
-              key={symbolName}
-            />
-          );
-        })}
-      </Reorder.Group>
-    </>
+    <Reorder.Group
+      values={LocalList}
+      onReorder={(e) => setLocalList(e)}
+      axis="y"
+    >
+      {LocalList.map((symbol) => {
+        const symbolName = symbol.toUpperCase();
+        return (
+          <Item
+            diff={Livestream[symbolName]?.isup ? 1 : -1}
+            symbolLiveTemp={Livestream[symbolName]}
+            symbolName={symbolName}
+            submitUpdate={submitUpdate}
+            key={symbolName}
+          />
+        );
+      })}
+    </Reorder.Group>
   );
 }
 
