@@ -4,7 +4,6 @@ import {
 } from "../../Slices/BinanceWSStats";
 import { updateLivestream } from "../../Slices/Livestream";
 import { store } from "../../store";
-import { WebSocket } from "ws";
 
 export type TsymbolTrade = {
   e: string;
@@ -32,7 +31,6 @@ const setupSocket = (dispatch: typeof store.dispatch, url: string) => {
   };
   socket.onopen = () => {
     console.log("redux-saga connected websocket to binance");
-    console.log(socket);
     dispatch(updateBinanceWSStats(true));
   };
   socket.onmessage = (event) => {
