@@ -123,8 +123,8 @@ export type TtickerChangeType = {
 };
 export const getLast24hrData = async (subscriptions: string[]) => {
   console.log("subscriptions", subscriptions);
-  if (subscriptions.length === 0) return [] as Tsymbol24hr[];
   subscriptions = subscriptions.filter((i) => i !== "");
+  if (subscriptions.length === 0) return [] as Tsymbol24hr[];
   const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
   const subSymbol = JSON.stringify(
     subscriptions.map((item) => item.split("@")[0]?.toUpperCase()),

@@ -1,15 +1,16 @@
 import { Middleware, configureStore } from "@reduxjs/toolkit";
 import BinanceWSStatsReducer from "./Slices/BinanceWSStats";
 import FormDataReducer from "./Slices/FormData";
-import LivestreamReducer, { update_Last24hrdata } from "./Slices/Livestream";
-import headerPinReducer, { TheaderPinType } from "./Slices/headerPin";
+import LivestreamReducer, {
+  update_Last24hrdata
+} from "./Slices/Livestream";
+import headerPinReducer from "./Slices/headerPin";
 import ordersReducer from "./Slices/orders";
 import rightSideReducer from "./Slices/rightSideData";
 import symbolsListReducer from "./Slices/symbolsList";
 import userInfoReducer from "./Slices/userInfo";
 import watchListReducer from "./Slices/watchList";
 import setupSocket, { Twsbinance } from "./sagas/Bnance/socket";
-import { News_Cycle } from "next/font/google";
 
 const subsciptionsMddleware: Middleware = (Store) => (next) => (action) => {
   next(action);
