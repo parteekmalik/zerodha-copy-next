@@ -54,8 +54,6 @@ const LivestreamSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(update_Last24hrdata.fulfilled, (state, action) => {
-      console.log("LivestreamType/update_Last24hrdata");
-
       const LiveData = state;
 
       action.payload.forEach((x: Tsymbol24hr) => {
@@ -122,18 +120,18 @@ export type TtickerChangeType = {
   count: number;
 };
 export const getLast24hrData = async (subscriptions: string[]) => {
-  console.log("subscriptions", subscriptions);
+  // console.log("subscriptions", subscriptions);
   subscriptions = subscriptions.filter((i) => i !== "");
   if (subscriptions.length === 0) return [] as Tsymbol24hr[];
   const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
   const subSymbol = JSON.stringify(
     subscriptions.map((item) => item.split("@")[0]?.toUpperCase()),
   );
-  console.log("url", url);
+  // console.log("url", url);
   return await axios
     .get(url + subSymbol)
     .then((data: { data: TtickerChangeType[] }) => {
-      console.log("TtickerChangeType -> ", data.data);
+      // console.log("TtickerChangeType -> ", data.data);
       const last24hrData: Tsymbol24hr[] = data.data.map((item) => {
         return {
           symbol: item.symbol,

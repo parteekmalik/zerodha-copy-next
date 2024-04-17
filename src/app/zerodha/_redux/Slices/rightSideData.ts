@@ -20,7 +20,6 @@ const rightSideSlice = createSlice({
   initialState,
   reducers: {
     updateRightSide: (state, action: PayloadAction<TrightSideType>) => {
-      console.log(action);
       return action.payload;
     },
   },

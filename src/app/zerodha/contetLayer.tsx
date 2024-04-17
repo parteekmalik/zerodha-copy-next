@@ -6,6 +6,8 @@ import BackendWSContextComponent from "./_contexts/backendWS/backendWSContextCom
 import { Provider } from "react-redux";
 import { store } from "./_redux/store";
 import StoreComponent from "./_redux/storeComponent";
+import { wsConnect } from "./_redux/middlewares/Bnance/modules";
+import { useEffect } from "react";
 
 export default function ContextLayer() {
   return (

@@ -20,7 +20,6 @@ const userInfoSlice = createSlice({
   initialState,
   reducers: {
     updateUserInfo: (state, action: PayloadAction<TuserInfo>) => {
-      console.log(action);
       return action.payload;
     },
   },

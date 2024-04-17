@@ -17,7 +17,6 @@ const symbolsListSlice = createSlice({
   initialState,
   reducers: {
     updateSymbolsList: (state, action: PayloadAction<JSONType[]>) => {
-      console.log(action);
       const symbolsList = listToRecord(
         action.payload
           .map((item) => {

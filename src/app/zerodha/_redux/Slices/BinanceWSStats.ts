@@ -17,7 +17,6 @@ const BinanceWSStatsSlice = createSlice({
       state.isConnected = action.payload;
     },
     updateBinanceWSSubsriptions: (state, action: PayloadAction<string[]>) => {
-      console.log(action);
       state.subsciptions = action.payload;
     },
   },

@@ -9,7 +9,6 @@ const ordersSlice = createSlice({
   initialState,
   reducers: {
     updateOrders: (state, action: PayloadAction<TordersType>) => {
-      console.log(action);
       return action.payload;
     },
   },

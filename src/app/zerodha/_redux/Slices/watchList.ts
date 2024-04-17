@@ -8,7 +8,6 @@ const watchListSlice = createSlice({
   initialState,
   reducers: {
     updateWatchList: (state, action: PayloadAction<string[][]>) => {
-      console.log(action);
       state.List = action.payload;
     },
     updateWatchListNo: (state, action: PayloadAction<number>) => {
@@ -17,6 +16,6 @@ const watchListSlice = createSlice({
   },
 });
 
-export const { updateWatchList,updateWatchListNo } = watchListSlice.actions;
+export const { updateWatchList, updateWatchListNo } = watchListSlice.actions;
 
 export default watchListSlice.reducer;

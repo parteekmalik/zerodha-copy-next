@@ -8,7 +8,6 @@ const headerPinSlice = createSlice({
   initialState,
   reducers: {
     updateHeaderPin: (state, action: PayloadAction<TheaderPinType>) => {
-      console.log(action);
        return action.payload;
     },
   },
