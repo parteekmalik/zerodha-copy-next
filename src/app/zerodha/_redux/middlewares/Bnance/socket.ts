@@ -1,4 +1,3 @@
-"use client";
 import { Dispatch, Middleware, MiddlewareAPI, UnknownAction } from "redux";
 import {
   updateBinanceWSStats,
