@@ -16,17 +16,9 @@ import symbolsListReducer from "./Slices/symbolsList";
 import userInfoReducer from "./Slices/userInfo";
 import watchListReducer from "./Slices/watchList";
 import setupSocket from "./middlewares/Bnance/socket";
+import subsciptionsMddleware from "./middlewares/subsciptions";
 
-const subsciptionsMddleware: ThunkMiddleware =
-  (Store) => (next) => (action) => {
-    next(action);
-    const { type } = JSON.parse(JSON.stringify(action)) as { type: string };
 
-    if (type === "BinanceWSStatsType/updateBinanceWSSubsriptions") {
-      const newState = Store.getState() as RootState;
-      Store.dispatch(update_Last24hrdata(newState.BinanceWSStats.subsciptions)).catch(err=>console.log(err));
-    }
-  };
 const middleware = [setupSocket("wss://stream.binance.com:9443/ws"), subsciptionsMddleware];
 export const store = configureStore({
   reducer: {
