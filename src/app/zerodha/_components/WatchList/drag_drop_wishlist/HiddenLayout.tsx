@@ -31,7 +31,7 @@ export function BaseSymbolLayout({
   symbolLiveTemp,
 }: {
   symbolName: string;
-  symbolLiveTemp: TsymbolLive;
+  symbolLiveTemp: TsymbolLive | undefined;
 }) {
   const diff = symbolLiveTemp?.isup ? 1 : -1;
   return (
@@ -47,18 +47,22 @@ export function BaseSymbolLayout({
               {symbolLiveTemp?.PriceChangePercent}
             </div>
 
-            <span className="my-auto text-[.652rem]  ">%</span>
+            <span className="my-auto text-[.652rem]  ">
+              {symbolLiveTemp && "%"}
+            </span>
           </div>
         </div>
         <div className="flex ">
-          <a
-            className={
-              ` px-2 font-semibold    ` +
-              (diff > 0
-                ? "rotate-90 after:content-['<']"
-                : "rotate-90 after:content-['>']")
-            }
-          ></a>
+          {symbolLiveTemp && (
+            <a
+              className={
+                ` px-2 font-semibold    ` +
+                (diff > 0
+                  ? "rotate-90 after:content-['<']"
+                  : "rotate-90 after:content-['>']")
+              }
+            ></a>
+          )}
           <a className="min-w-[60px] text-right">{symbolLiveTemp?.curPrice}</a>
         </div>
       </div>

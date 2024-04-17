@@ -29,7 +29,7 @@ export type Twsbinance = {
 function sendWSBinanceMessage(socket: WebSocket, message: Twsbinance | string) {
   function waitForSocketConnection(callback: () => void) {
     setTimeout(() => {
-      if (socket.readyState === 1) {
+      if (socket.readyState === socket.OPEN) {
         callback();
       } else {
         waitForSocketConnection(callback);
@@ -39,11 +39,11 @@ function sendWSBinanceMessage(socket: WebSocket, message: Twsbinance | string) {
 
   waitForSocketConnection(() => {
     console.log("Socket sending message:", message);
-    if (typeof message === "string") {
-      socket.send(message);
-    } else {
-      socket.send(JSON.stringify(message));
-    }
+    // if (typeof message === "string") {
+    //   socket.send(message);
+    // } else {
+    //   socket.send(JSON.stringify(message));
+    // }
   });
 }
 function socketSend(socket: WebSocket, payload: Twsbinance) {

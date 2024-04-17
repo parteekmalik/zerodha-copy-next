@@ -26,8 +26,7 @@ function Item({
       onDragEnd={(e) => {
         submitUpdate();
       }}
-      className="relative translate-x-0"
-      translate="no"
+      className="relative"
     >
       <div
         className={
@@ -41,7 +40,7 @@ function Item({
           style={{ transform: "translateX(-15px) translateY(-12px)" }}
           onPointerDown={(e) => dragControls.start(e)}
         ></div>
-        {symbolLiveTemp ? (
+        {
           <>
             <BaseSymbolLayout
               key={"watchlistItem_" + symbolName}
@@ -52,9 +51,7 @@ function Item({
               <HiddenLayout symbolName={symbolName} />
             </div>
           </>
-        ) : (
-          <div className="h-10 w-full border p-2">{symbolName}</div>
-        )}
+        }
       </div>
     </Reorder.Item>
   );
