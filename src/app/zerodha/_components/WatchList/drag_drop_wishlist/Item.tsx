@@ -23,13 +23,10 @@ function Item({
       dragListener={false}
       dragControls={dragControls}
       value={symbolName}
-      onDrag={(e) => console.log(e)}
       onDragEnd={(e) => {
         submitUpdate();
-        console.log(e);
       }}
-      className="relative"
-      // style={{}}
+      className="relative translate-x-0"
       translate="no"
     >
       <div
@@ -52,7 +49,7 @@ function Item({
               symbolLiveTemp={symbolLiveTemp}
             />
             <div className=" invisible absolute right-0 top-0 flex h-full gap-2 p-[8px_15px_8px_2px] text-white group-hover/item:visible">
-              <HiddenLayout symbolName={symbolName}  />
+              <HiddenLayout symbolName={symbolName} />
             </div>
           </>
         ) : (
