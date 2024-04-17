@@ -59,7 +59,7 @@ function socketSend(socket: WebSocket, payload: Twsbinance) {
 }
 
 const setupSocket = (url: string) => {
-  let socket: WebSocket = new WebSocket(url);
+  const socket: WebSocket = new WebSocket(url);
   let attachActions = false;
   const onClose =
     (store: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) => () => {
