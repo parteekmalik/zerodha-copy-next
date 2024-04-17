@@ -27,7 +27,7 @@ const subsciptionsMddleware: ThunkMiddleware =
       Store.dispatch(update_Last24hrdata(newState.BinanceWSStats.subsciptions)).catch(err=>console.log(err));
     }
   };
-const middleware = [setupSocket(), subsciptionsMddleware];
+const middleware = [setupSocket("wss://stream.binance.com:9443/ws"), subsciptionsMddleware];
 export const store = configureStore({
   reducer: {
     UserInfo: userInfoReducer,

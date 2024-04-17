@@ -1,20 +1,15 @@
 "use client";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../_redux/store";
 import OrderForm from "./OrderForm/orderForm";
 import RightSide from "./Rightside/RightSde";
 import WatchList from "./WatchList/watchList";
 import Header from "./hearder";
-import { wsConnect } from "../_redux/middlewares/Bnance/modules";
-import { useEffect } from "react";
 // import { getCookie, getCookies } from "cookies-next";
 export default function Home() {
   // const cookie = getCookies();
   const FormData = useSelector((state: RootState) => state.FormData);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(wsConnect("wss://stream.binance.com:9443/ws"));
-  }, []);
+
   return (
     <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center  justify-center overflow-hidden  bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
       <Header />
@@ -33,12 +28,6 @@ export default function Home() {
       {FormData.isvisible ? (
         <OrderForm symbol={FormData.symbol} type={FormData.type} />
       ) : null}
-      <button
-        className="h-2 w-2"
-        onClick={(e) => dispatch(wsConnect("wss://stream.binance.com:9443/ws"))}
-      >
-        X
-      </button>
     </main>
   );
 }

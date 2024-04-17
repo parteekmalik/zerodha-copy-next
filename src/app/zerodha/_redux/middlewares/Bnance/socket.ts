@@ -26,6 +26,7 @@ export type Twsbinance = {
   params: string[];
   id: number;
 };
+
 function sendWSBinanceMessage(socket: WebSocket, message: Twsbinance | string) {
   function waitForSocketConnection(callback: () => void) {
     setTimeout(() => {
@@ -57,16 +58,18 @@ function socketSend(socket: WebSocket, payload: Twsbinance) {
   if (payload.params.length) sendWSBinanceMessage(socket, payload);
 }
 
-const setupSocket = () => {
-  let socket: WebSocket | null = null;
+const setupSocket = (url: string) => {
+  let socket: WebSocket = new WebSocket(url);
+  let attachActions = false;
   const onClose =
     (store: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) => () => {
       store.dispatch(updateBinanceWSStats(false));
     };
-  const onOpen = (store: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) => () => {
-    console.log("redux-middleware connected websocket to binance");
-    store.dispatch(updateBinanceWSStats(true));
-  };
+  const onOpen =
+    (store: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) => () => {
+      console.log("redux-middleware connected websocket to binance");
+      store.dispatch(updateBinanceWSStats(true));
+    };
   const onMessage =
     (store: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) =>
     (event: { data: string }) => {
@@ -85,22 +88,15 @@ const setupSocket = () => {
     };
 
   const subUnsubMddleware: Middleware = (store) => (next) => (action) => {
-    const { type, host } = JSON.parse(JSON.stringify(action)) as {
+    const { type } = JSON.parse(JSON.stringify(action)) as {
       type: string;
-      host: string;
     };
-    if (type === "WS_CONNECT") {
-      if (socket !== null) {
-        socket.close();
-      }
-
-      // connect to the remote host
-      socket = new WebSocket(host);
-
+    if (!attachActions) {
       // websocket handlers
       socket.onmessage = onMessage(store);
       socket.onclose = onClose(store);
       socket.onopen = onOpen(store);
+      attachActions = true;
     }
     let unsubparams: string[] = [];
     if (
