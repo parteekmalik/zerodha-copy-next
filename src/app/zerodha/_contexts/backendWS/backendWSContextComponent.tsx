@@ -20,9 +20,7 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
   const { socket, isConnected, lastMessage } = useSocket(
     env.NEXT_PUBLIC_BACKEND_WS,
     UserInfo.TradingAccountId,
-    {
-      reconnection: false,
-    },
+    {},
   );
   useEffect(() => {
     if (toast && lastMessage) {
