@@ -127,20 +127,23 @@ const setupSocket = (url: string) => {
       ].map((i) => i + "@trade");
 
       const common = subparams.filter((x) => unsubparams.includes(x));
-      socketSend(socket, {
+      const subMsg: Twsbinance = {
         method: "SUBSCRIBE",
         params: subparams.filter((i) => !common.includes(i)),
         id: 1,
-      });
-      socketSend(socket, {
-        method: "UNSUBSCRIBE",
-        params: unsubparams.filter((i) => !common.includes(i)),
+      };
+      socketSend(socket, subMsg);
+      const unsubMsg: Twsbinance = {
+        method: "SUBSCRIBE",
+        params: subparams.filter((i) => !common.includes(i)),
         id: 1,
-      });
-      sendWSBinanceMessage(
-        socket,
-        JSON.stringify({ method: "LIST_SUBSCRIPTIONS", id: 3 }),
-      );
+      };
+      socketSend(socket, unsubMsg);
+      if (unsubMsg.params.length || subMsg.params.length)
+        sendWSBinanceMessage(
+          socket,
+          JSON.stringify({ method: "LIST_SUBSCRIPTIONS", id: 3 }),
+        );
     }
   };
   return subUnsubMddleware;
