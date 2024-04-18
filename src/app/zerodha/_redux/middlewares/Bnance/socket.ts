@@ -134,9 +134,9 @@ const setupSocket = (url: string) => {
       };
       socketSend(socket, subMsg);
       const unsubMsg: Twsbinance = {
-        method: "SUBSCRIBE",
-        params: subparams.filter((i) => !common.includes(i)),
-        id: 1,
+        method: "UNSUBSCRIBE",
+        params: unsubparams.filter((i) => !common.includes(i)),
+        id: 2,
       };
       socketSend(socket, unsubMsg);
       if (unsubMsg.params.length || subMsg.params.length)
