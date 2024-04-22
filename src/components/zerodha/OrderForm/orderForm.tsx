@@ -182,9 +182,15 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
           <div className="m-2 mr-3">
             <OrderTypeDiv
               isMarketOrder={watch().isMarketOrder}
-              setFormdata={(isSelected: boolean) =>
-                setValue("isMarketOrder", isSelected)
-              }
+              setFormdata={(isSelected: boolean) => {
+                setValue("isMarketOrder", isSelected);
+                if (!isSelected)
+                  setValue(
+                    "price",
+                    Livestream[watch().symbolName]?.curPrice ?? 0,
+                  );
+                else setValue("price", 0);
+              }}
             />
           </div>
         </div>
