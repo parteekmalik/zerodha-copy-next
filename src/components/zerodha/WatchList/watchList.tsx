@@ -94,7 +94,7 @@ function WatchList() {
           className=" flex  h-full  flex-col overflow-x-hidden overflow-y-scroll"
           style={{ scrollbarWidth: "none" }}
         >
-          <SymbolInWL list={watchList.List[watchList.ListNo] ?? []} />
+          <SymbolInWL list={watchList.List[watchList.ListNo] ?? []} setSearch={setSearch} />
         </div>
       </div>
       <div className="min-h-[50px]">

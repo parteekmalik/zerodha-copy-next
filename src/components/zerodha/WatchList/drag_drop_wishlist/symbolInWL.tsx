@@ -1,5 +1,5 @@
 import { Reorder } from "framer-motion";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
@@ -16,8 +16,16 @@ export type Twsbinance = {
 
 interface ISymbolInWL {
   list: Tsymbol[];
+  setSearch: Dispatch<
+    SetStateAction<{
+      focus: boolean;
+      matchingSymbol: string[];
+      data: string;
+      Selected: number;
+    }>
+  >;
 }
-function SymbolInWL({ list: DataList }: ISymbolInWL) {
+function SymbolInWL({ list: DataList, setSearch }: ISymbolInWL) {
   // const { socketSend } = useContext(SymbolLiveContext);
   const Livestream = useSelector((state: RootState) => state.Livestream);
   const headerPin = useSelector((state: RootState) => state.headerPin);
@@ -60,7 +68,14 @@ function SymbolInWL({ list: DataList }: ISymbolInWL) {
         </div>
         <button
           className="cursor-pointer rounded bg-[#4183f3] p-[10px_20px] text-[.925rem] text-white"
-          onClick={() => {}}
+          onClick={() =>
+            setSearch({
+              focus: true,
+              matchingSymbol: [],
+              data: "",
+              Selected: 0,
+            })
+          }
         >
           ADD instrument
         </button>

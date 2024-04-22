@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 const SearchIcon = () => {
   return (
     <svg
@@ -17,7 +17,8 @@ const SearchIcon = () => {
 function SearchInput({
   submitUpdate,
   setSearch,
-  symbolCount,search
+  symbolCount,
+  search,
 }: {
   symbolCount: number;
   submitUpdate: (index: number) => void;
@@ -36,12 +37,18 @@ function SearchInput({
     }>
   >;
 }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (search.focus) inputRef.current?.focus();
+    else inputRef.current?.blur();
+  }, [search.focus]);
   return (
     <div className=" flex min-h-[50px] min-w-[0px] items-center justify-center border-b p-3">
       <div className=" h-[15px] w-[15px]">
         <SearchIcon />
       </div>
       <input
+        ref={inputRef}
         className="boarder-[0px] grow px-2 text-sm focus:outline-0"
         type="text"
         autoComplete="off"
