@@ -16,7 +16,10 @@ export default function Home() {
       <div className="text-red flex w-full max-w-[1536px] grow select-none overflow-hidden ">
         <WatchList />
         <div className={" flex max-w-[1110px] grow "}>
-          <div className="w-full overflow-y-auto overflow-x-hidden">
+          <div
+            className="w-full overflow-y-auto overflow-x-hidden"
+            style={{ scrollbarWidth: "none" }}
+          >
             <RightSide />
           </div>
         </div>

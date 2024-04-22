@@ -79,7 +79,10 @@ function WatchList() {
         style={{ maxHeight: "calc(100% - 100px)" }}
       >
         {search.focus ? (
-          <div className="absolute z-10 h-[40vh]  w-full overflow-y-auto text-[.8125rem]    ">
+          <div
+            className="absolute z-10 h-[40vh]  w-full overflow-y-auto text-[.8125rem]    "
+            style={{ scrollbarWidth: "thin" }}
+          >
             <SearchList
               search={search}
               updateWatchList={submitUpdate}
@@ -87,7 +90,10 @@ function WatchList() {
             />
           </div>
         ) : null}
-        <div className=" flex  h-full  flex-col overflow-x-hidden overflow-y-scroll">
+        <div
+          className=" flex  h-full  flex-col overflow-x-hidden overflow-y-scroll"
+          style={{ scrollbarWidth: "none" }}
+        >
           <SymbolInWL list={watchList.List[watchList.ListNo] ?? []} />
         </div>
       </div>
