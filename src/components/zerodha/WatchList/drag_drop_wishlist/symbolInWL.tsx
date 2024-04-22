@@ -42,7 +42,30 @@ function SymbolInWL({ list: DataList }: ISymbolInWL) {
       row: listNo,
     });
   }
-  if (!LocalList) return null;
+  if (!LocalList.length)
+    return (
+      <div className="flex w-full  flex-col items-center justify-center ">
+        <img
+          style={{ width: "100px", height: "100px" }}
+          src="https://kite.zerodha.com/static/images/illustrations/marketwatch.svg"
+          alt="Market Watch"
+        />
+        <div className=" mb-[20px]">
+          <h2 className="text-center text-[1.225rem] text-[#444444]">
+            Nothing here
+          </h2>
+          <p className="text-center text-[.8125rem] text-[#9b9b9b]">
+            Use the search bar to add instruments.
+          </p>
+        </div>
+        <button
+          className="cursor-pointer rounded bg-[#4183f3] p-[10px_20px] text-[.925rem] text-white"
+          onClick={() => {}}
+        >
+          ADD instrument
+        </button>
+      </div>
+    );
   return (
     <Reorder.Group
       values={LocalList}

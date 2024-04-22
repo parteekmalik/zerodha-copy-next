@@ -4,6 +4,7 @@ import Funds from "./Funds";
 import Order from "./Order";
 import Chart from "./chart";
 import { RootState } from "~/components/zerodha/_redux/store";
+import Positions from "./Positions/Positions";
 
 function RightSide() {
   const data = useSelector((state: RootState) => state.rightSide);
@@ -29,9 +30,9 @@ function RightSide() {
     case "Orders": {
       return <Order />;
     }
-    // case "Positions": {
-    //   return <Positions />;
-    // }
+    case "Positions": {
+      return <Positions />;
+    }
     case "Funds": {
       return <Funds />;
     }

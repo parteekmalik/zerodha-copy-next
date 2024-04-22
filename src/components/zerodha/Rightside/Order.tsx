@@ -60,7 +60,7 @@ function Order() {
             </span>
             <input className="w-[50px]" value={"search"}></input>
           </div>
-          {/* <Table
+          <Table
             headings={[
               "Time",
               "Type",
@@ -75,20 +75,20 @@ function Order() {
             dataList={openOrders.map((item) => {
               return {
                 id: item.id,
-                data: [
-                  item.createdAt.toTimeString().split(" ")[0] ?? "",
-                  item.type,
-                  item.name,
-                  "SPOT",
-                  `${0}/${item.quantity}`,
-                  "LTP",
-                  item.price,
-                  item.status,
-                ],
+                data: {
+                  Time: item.createdAt.toTimeString().split(" ")[0] ?? "",
+                  Type: item.type,
+                  Instrument: item.name,
+                  Product: "SPOT",
+                  Quantity: `${0}/${item.quantity}`,
+                  LTP: "LTP",
+                  Price: item.price,
+                  Status: item.status,
+                },
               };
             })}
             options={{ selectedAction }}
-          /> */}
+          />
         </div>
       ) : null}
       {executedOrders.length ? (
@@ -98,7 +98,7 @@ function Order() {
               Executed orders ({executedOrders?.length})
             </span>
           </div>
-          {/* <Table
+          <Table
             headings={[
               "Time",
               "Type",
@@ -113,20 +113,20 @@ function Order() {
             dataList={executedOrders.map((item) => {
               return {
                 id: item.id,
-                data: [
-                  item.createdAt.toTimeString().split(" ")[0] ?? "",
-                  item.type,
-                  item.name,
-                  "SPOT",
-                  `${item.quantity}/${item.quantity}`,
-                  "LTP",
-                  item.price,
-                  item.status,
-                ],
+                data: {
+                  Time: item.createdAt.toTimeString().split(" ")[0] ?? "",
+                  Type: item.type,
+                  Instrument: item.name,
+                  Product: "SPOT",
+                  Quantity: `${item.quantity}/${item.quantity}`,
+                  LTP: "LTP",
+                  Price: item.price,
+                  Status: item.status,
+                },
               };
             })}
             options={{}}
-          /> */}
+          />
         </div>
       ) : null}
 

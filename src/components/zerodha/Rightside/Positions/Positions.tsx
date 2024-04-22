@@ -1,3 +1,8 @@
+import { api } from "~/trpc/react";
+import { closed_open_OrdersData } from "./functions/tableData";
+import open_close_Trades, { TOrderCalculations } from "./functions/OrderCalculations";
+import TsMap from "ts-map";
+import { useEffect, useState } from "react";
 
 const headings = [
   "Product",
@@ -17,43 +22,42 @@ const position_stylesList = {
 };
 
 function Positions() {
-  // const ordersQuery = api.orders.getOrders24hr.useQuery();
-  // const { closed_open_OrdersData } = useContext(SymbolLiveContext);
+  const ordersQuery = api.orders.getOrders24hr.useQuery();
+  
+  const [orderMap, setorderMap] = useState<{
+    open: TsMap<string, TOrderCalculations>;
+    close: TsMap<string, TOrderCalculations>;
+  }>(open_close_Trades([]));
 
-  // const [orderMap, setorderMap] = useState<{
-  //   open: TsMap<string, TOrderCalculations>;
-  //   close: TsMap<string, TOrderCalculations>;
-  // }>(open_close_Trades([]));
-
-  // useEffect(() => {
-  //   if (typeof ordersQuery.data === "object") {
-  //     console.log("new class");
-  //     setorderMap(open_close_Trades(ordersQuery.data));
-  //   }
-  // }, [ordersQuery.data]);
+  useEffect(() => {
+    if (typeof ordersQuery.data === "object") {
+      console.log("new class");
+      setorderMap(open_close_Trades(ordersQuery.data));
+    }
+  }, [ordersQuery.data]);
 
   // useEffect(() => {
   //   console.log(orderMap);
   // }, [orderMap]);
 
-  // if (typeof ordersQuery.data === "string") return <>{ordersQuery}</>;
+  if (typeof ordersQuery.data === "string") return <>{ordersQuery}</>;
   return (
     <>
       <div className="w-full bg-white">
-        {/* <div className="flex w-full p-2">
+        <div className="flex w-full p-2">
           <span className="grow text-[1.125rem] text-[#444444]">
             Open orders ({orderMap?.open.size})
           </span>
         </div>
         <div className="flex w-full items-center justify-center">
-          <Table
+          {/* <Table
             stylesList={position_stylesList}
             options={{ colorIndex: { quantity: 2, list: [2, 5, 6] } }}
             headings={headings}
             dataList={closed_open_OrdersData(orderMap.open)}
-          />
+          /> */}
         </div>
-        {/* <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> 
+         <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orderMap.open)}</div> 
       </div>
       <div className="w-full bg-white">
         <div className="flex w-full p-2">
@@ -62,14 +66,14 @@ function Positions() {
           </span>
         </div>
         <div className="flex w-full items-center justify-center">
-          <Table
+          {/* <Table
             stylesList={position_stylesList}
             options={{ colorIndex: { quantity: 2, list: [2, 5, 6] } }}
             headings={headings}
             dataList={closed_open_OrdersData(orderMap.close)}
-          />
+          /> */}
         </div>
-        <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orders)}</div> */}
+        <div style={{ wordWrap: "break-word" }}>{JSON.stringify(orderMap.close)}</div>
       </div>
     </>
   );
