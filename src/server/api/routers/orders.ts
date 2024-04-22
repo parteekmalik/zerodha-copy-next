@@ -1,7 +1,7 @@
 import moment from "moment";
 import { z } from "zod";
-import { FormSchema } from "~/app/zerodha/_components/OrderForm/FrmSchema";
-import getLTP from "~/app/zerodha/_components/OrderForm/getLTP";
+import { FormSchema } from "~/components/zerodha/OrderForm/FrmSchema";
+import getLTP from "~/components/zerodha/OrderForm/getLTP";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 

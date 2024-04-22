@@ -1,7 +1,6 @@
 // math.test.ts
 
 import moment from "moment";
-import { TOrder } from "../app/zerodha/_components/Rightside/Order";
 import { parsePrice } from "../app/zerodha/utils";
 // const sample: TcalculateTradesSummaryFIFO[] = [
 //   {

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
-import { CreatePost } from "./zerodha/_components/create-post";
+import { CreatePost } from "./create-post";
 
 export default async function BasePage() {
   const hello = await api.post.hello.query({ text: "from tRPC" });

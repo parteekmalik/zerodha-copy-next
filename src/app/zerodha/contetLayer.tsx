@@ -1,11 +1,11 @@
 "use client";
-import Home from "./_components/Home";
-import { ToastProvider } from "./_contexts/Toast/toast";
-import BackendWSContextComponent from "./_contexts/backendWS/backendWSContextComponent";
+import Home from "./Home";
+import { ToastProvider } from "../../components/zerodha/_contexts/Toast/toast";
+import BackendWSContextComponent from "../../components/zerodha/_contexts/backendWS/backendWSContextComponent";
 
 import { Provider } from "react-redux";
-import { store } from "./_redux/store";
-import StoreComponent from "./_redux/storeComponent";
+import { store } from "../../components/zerodha/_redux/store";
+import StoreComponent from "../../components/zerodha/_redux/storeComponent";
 
 export default function ContextLayer() {
   return (
