@@ -45,7 +45,10 @@ function Item({
               symbolName={symbolName}
               symbolLiveTemp={symbolLiveTemp}
             />
-            <div className=" invisible absolute right-0 top-0 flex h-full gap-2 p-[8px_15px_8px_2px] text-white group-hover/item:visible">
+            <div
+              className=" invisible absolute right-0 top-0 flex h-full gap-[2px] p-[8px_15px_8px_2px] text-white opacity-0 group-hover/item:visible group-hover/item:opacity-100  "
+              style={{ transition: "all 0.15s ease" }}
+            >
               <HiddenLayout symbolName={symbolName} />
             </div>
           </>

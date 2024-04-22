@@ -181,7 +181,12 @@ export function HiddenLayout({ symbolName }: { symbolName: string }) {
       {hiddendata.map(({ payload, text_color, bgcolor, text }) => {
         return (
           <div
-            className={`h-full w-[35px] cursor-pointer rounded  p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color}`}
+            className={
+              `h-full w-[35px] cursor-pointer rounded   p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color} ` +
+              ((text !== "B" && text !== "S")
+                ? " border border-black "
+                : " border border-white ")
+            }
             key={"hiddenitems" + text}
             onClick={() => {
               console.log("clicked hidden elements payload ->", payload);
