@@ -57,12 +57,13 @@ export function divdeIntoClosedOpen(buyTrades: TOrder[], sellTrades: TOrder[]) {
   );
 }
 
-export default function open_close_Trades(orders: TOrder[]) {
+export function open_close_Trades(orders: TOrder[]) {
   // console.log("filling orderDetailsMap");
-  
+
   orders = orders.filter((i) => i.status === "completed");
 
   const orderMap = fillOrderMap(orders);
+  console.log("orderMap", orderMap);
   const orderDetailsMap = {
     open: new TsMap<string, TOrderCalculations>(),
     close: new TsMap<string, TOrderCalculations>(),
@@ -71,15 +72,20 @@ export default function open_close_Trades(orders: TOrder[]) {
     if (key && value && map) {
       const { buyList, sellList } = divideIntoBUYSELL(value);
       const res = divdeIntoClosedOpen([...buyList], [...sellList]);
-
-      orderDetailsMap.open.set(key, OrderCalculations(res.openTrades, []));
-      orderDetailsMap.close.set(
-        key,
-        OrderCalculations(
-          res.ClosedTrades.buyTrades,
-          res.ClosedTrades.sellTrades,
-        ),
-      );
+      console.log("divdeIntoClosedOpen", res);
+      if (res.openTrades.length)
+        orderDetailsMap.open.set(key, OrderCalculations(res.openTrades, []));
+      if (
+        res.ClosedTrades.buyTrades.length &&
+        res.ClosedTrades.sellTrades.length
+      )
+        orderDetailsMap.close.set(
+          key,
+          OrderCalculations(
+            res.ClosedTrades.buyTrades,
+            res.ClosedTrades.sellTrades,
+          ),
+        );
     }
   });
   return orderDetailsMap;

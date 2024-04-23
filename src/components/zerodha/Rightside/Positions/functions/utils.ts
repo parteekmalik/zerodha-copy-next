@@ -25,9 +25,12 @@ export function remaingOrders(
 ) {
   let buyquantity = 0;
   const buyCommonList = [];
+  // for(let i=0;i<buyList.length;i++){
+  //   if(buyquantity + buyList[i] <=)
+  // }
   while (
     buyList.length &&
-    buyquantity + (buyList[0]?.quantity ?? 0) < commonQty
+    buyquantity + (buyList[0]?.quantity ?? 0) <= commonQty
   ) {
     const order = buyList.shift();
     if (order) {
@@ -35,7 +38,7 @@ export function remaingOrders(
       buyquantity += order.quantity;
     }
   }
-  //   console.log("common total", buytotal, selltotal);
+
 
   if (buyquantity < commonQty) {
     const leftQty = commonQty - buyquantity;
@@ -52,8 +55,6 @@ export function remaingOrders(
       });
     } else console.log("an error encountered");
   }
-  //   console.log("total", buytotal, selltotal);
-  //   console.log("common profit", profitOrLoss, buyList);
 
   return {
     ClosedTrades: { buyTrades: buyCommonList, sellTrades: sellList },
