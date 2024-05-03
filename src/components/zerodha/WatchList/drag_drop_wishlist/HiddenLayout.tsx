@@ -152,7 +152,7 @@ export function HiddenLayout({ symbolName }: { symbolName: string }) {
       payload: { Type: "Supdate_Pins", pos: 1 },
     },
   ];
-  const deleteApi = api.accountInfo.updateWatchList.useMutation({
+  const deleteApi = api.upadteAccountInfo.updateWatchList.useMutation({
     onSuccess: async (data) => {
       if (data) {
         dispatch(updateWatchList(data));
@@ -170,7 +170,7 @@ export function HiddenLayout({ symbolName }: { symbolName: string }) {
       deleteApi.mutate({ name: newList.join(" "), row: watchList.ListNo });
     }
   }
-  const updatePinApi = api.accountInfo.updatePins.useMutation({
+  const updatePinApi = api.upadteAccountInfo.updatePins.useMutation({
     onSuccess: async (data) => {
       if (typeof data === "string") console.log(data);
       else dispatch(updateHeaderPin(data));

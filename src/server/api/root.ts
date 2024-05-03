@@ -1,9 +1,9 @@
 import { postRouter } from "~/server/api/routers/post";
 import { createTRPCRouter } from "~/server/api/trpc";
-import { accountInfoRouter } from "./routers/accountInfo";
-import { orderRouter } from "./routers/orders";
+import { orderRouter } from "./routers/Orders/orders";
 import { SymbolList } from "./routers/symbolList";
-import { updateAcoount } from "./routers/updateAcoount";
+import { getAccountInfoRouter } from "./routers/TradingAccount/accountInfo";
+import { updateAccountInfoRouter } from "./routers/TradingAccount/UpdateaccountInfo";
 
 /**
  * This is the primary router for your server.
@@ -12,10 +12,10 @@ import { updateAcoount } from "./routers/updateAcoount";
  */
 export const appRouter = createTRPCRouter({
   post: postRouter,
-  accountInfo: accountInfoRouter,
+  getAccountInfo: getAccountInfoRouter,
+  upadteAccountInfo: updateAccountInfoRouter,
   orders: orderRouter,
   symbolList: SymbolList,
-  updateAcoount: updateAcoount,
 });
 
 // export type definition of API

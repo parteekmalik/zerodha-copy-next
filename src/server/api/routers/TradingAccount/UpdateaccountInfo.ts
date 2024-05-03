@@ -1,52 +1,10 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { convert1D_2D } from "./accountInfo";
+import USDTBalance from "./USDTBalance";
 
-export const accountInfoRouter = createTRPCRouter({
-
-  getInitInfo: protectedProcedure.query(async ({ ctx }) => {
-    const Taccounts = (
-      await ctx.db.user.findFirst({
-        where: { name: ctx.session.user.name },
-        select: {
-          Taccounts: true,
-        },
-      })
-    )?.Taccounts;
-    console.log("checking trading account -> ", Taccounts);
-
-    if (!Taccounts || Taccounts?.length === 0) {
-      const res = await ctx.db.tradingAccount.create({
-        data: {
-          User: { connect: { id: ctx.session.user.id } },
-        },
-      });
-      console.log("created new trading account -> ", res);
-    }
-    // return Taccounts;
-
-    const data = (
-      await ctx.db.user.findFirst({
-        where: { name: ctx.session.user.name },
-        select: {
-          Taccounts: {
-            select: { watchList: true, Pin0: true, Pin1: true, id: true },
-          },
-        },
-      })
-    )?.Taccounts[0];
-
-    if (data) {
-      const { watchList, Pin0, Pin1, id } = data;
-      return {
-        userInfo: { ...ctx.session.user, TradingAccountId: id },
-        watchList: convert1D_2D(watchList ?? []),
-        Pins: { Pin0: Pin0 ?? "BTCUSDT", Pin1: Pin1 ?? "ETHUSDT" },
-      };
-    }
-  }),
-
-  
+export const updateAccountInfoRouter = createTRPCRouter({
   updatePins: protectedProcedure
     .input(z.object({ name: z.string().min(1), pos: z.number().min(0).max(1) }))
     .mutation(async ({ ctx, input }) => {
@@ -99,17 +57,14 @@ export const accountInfoRouter = createTRPCRouter({
         return convert1D_2D(res);
       } else console.log("trading account not found", details);
     }),
-});
-
-function convert1D_2D(input: string[]): string[][] {
-  const watchlistFinal: string[][] = [];
-  input?.map((symbol) => {
-    watchlistFinal.push(
-      symbol.split(" ").filter((x) => {
-        if (x !== "") return x;
+  addBalance: protectedProcedure
+    .input(
+      z.object({
+        account: z.string().min(1),
+        amount: z.number().min(-5000).max(5000),
       }),
-    );
-  });
-  console.log(watchlistFinal);
-  return watchlistFinal;
-}
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await USDTBalance(ctx.db, input);
+    }),
+});

@@ -25,10 +25,8 @@ function Funds() {
     (state: RootState) => state.UserInfo.TradingAccountId,
   );
 
-  const balance = api.updateAcoount.getbalance.useQuery({
-    account: TradingAccountId,
-  }).data;
-
+  const balance = api.getAccountInfo.getBalance.useQuery(TradingAccountId).data;
+  if (!balance) return <>error fro server</>;
   return (
     <div className="h-full w-full bg-white p-[30px_20px]">
       <div className="mb-3 flex justify-end gap-5">
@@ -62,9 +60,12 @@ function Funds() {
           <ListBox Style={{ textColor: " text-[#444444] " }}>
             <MainBox
               data={[
-                { name: "Avl bal", value: balance ?? 0 },
-                { name: "Avl bal", value: 40 },
-                { name: "Avl bal", value: 40 },
+                {
+                  name: "TOTAL bal",
+                  value: balance.freeAmount + balance.lockedAmount ?? 0,
+                },
+                { name: "FREE bal", value: balance.freeAmount },
+                { name: "LOCKED bal", value: balance.lockedAmount },
               ]}
               isMain={true}
               Style={["  ", " text-[2em] "]}
@@ -129,7 +130,7 @@ function AddFunds({
   const queryClient = useQueryClient(); // Initialize queryClient
   const toast = useToast();
 
-  const orderapi = api.updateAcoount.addBalance.useMutation({
+  const orderapi = api.upadteAccountInfo.addBalance.useMutation({
     onSuccess: (msg) => {
       queryClient.refetchQueries().catch((err) => console.log(err));
       if (typeof msg !== "string") {

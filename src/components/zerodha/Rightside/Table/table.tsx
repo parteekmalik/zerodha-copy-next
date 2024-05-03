@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getColor } from "../../WatchList/drag_drop_wishlist/Item";
 
 export default function Table({
@@ -9,7 +9,7 @@ export default function Table({
 }: {
   headings: string[];
   stylesList: {
-    row: string[];
+    row: { [key in (typeof headings)[number]]: string };
     table: string;
     head: string;
     body: string;
@@ -17,15 +17,42 @@ export default function Table({
   };
   dataList: {
     id: string;
-    data: { [key in (typeof headings)[number]]: string | number };
+    data: {
+      [key in (typeof headings)[number]]:
+        | string
+        | number
+        | (() => string | number);
+    };
   }[];
-  options: {
+  options?: {
     selectedAction?: (orderids: string[]) => void;
-    colorIndex?: { quantity: number; list: number[] };
+    colorIndex?: (typeof headings)[number][];
   };
 }) {
   const [selected, setSelected] = useState<boolean[]>([]);
   const [selectedCount, setselectedCount] = useState(0);
+  const modifiedDataList = useMemo(() => {
+    if (dataList.length) {
+      return dataList.map((item) => {
+        const data: {
+          id: string;
+          data: (string | number)[];
+        } = {
+          id: item.id,
+          data: [],
+        };
+        headings.map((key) => {
+          let value = item.data[key];
+          if (value === undefined) value = key;
+          if (typeof value === "function") data.data.push(value());
+          else data.data.push(value);
+        });
+        return data;
+      });
+    }
+  }, [dataList]);
+  // useEffect(() => console.log("checking"), [dataList]);
+
   useEffect(() => {
     console.log("selected table", selected);
     setselectedCount(
@@ -35,23 +62,20 @@ export default function Table({
       }, 0),
     );
   }, [selected]);
-  useEffect(() => {
-    console.log("selectedCount", selectedCount);
-  }, [selectedCount]);
-  useEffect(() => {
-    // console.log("dataList",dataList);
-  }, [dataList]);
+
   return (
     <table className={stylesList.table}>
       <thead className={stylesList.head}>
         <tr>
-          {options.selectedAction && <th>checkbox</th>}
+          {options?.selectedAction && <th>checkbox</th>}
           {headings.map((item, i) => {
             return (
               <th
-                key={JSON.stringify(item) + i}
+                key={JSON.stringify(item) + i + "dfs"}
                 className={
-                  stylesList.padding + stylesList.row[i] + " hover:bg-[#f9f9f9]"
+                  stylesList.padding +
+                  stylesList.row[item] +
+                  " hover:bg-[#f9f9f9]"
                 }
               >
                 {item}
@@ -61,13 +85,13 @@ export default function Table({
         </tr>
       </thead>
       <tbody className={stylesList.body}>
-        {dataList?.map((items, i) => {
+        {modifiedDataList?.map((items, i) => {
           return (
             <tr
               key={JSON.stringify(items) + i}
               className={"hover:bg-[#f9f9f9]"}
             >
-              {options.selectedAction && (
+              {options?.selectedAction && (
                 <td className={stylesList.padding}>
                   <input
                     key={"checkbox" + items.id}
@@ -82,26 +106,23 @@ export default function Table({
                   />
                 </td>
               )}
-              {Object.keys(items.data).map((key, i) => {
-                const item = items.data[key];
-                if (item)
-                  return (
-                    <td
-                      // using random for key
-                      key={JSON.stringify(item) + i}
-                      className={
-                        stylesList.padding +
-                        stylesList.row[i] +
-                        (options.colorIndex &&
-                        items.data[options.colorIndex.quantity] !== 0 &&
-                        options.colorIndex?.list.includes(i)
-                          ? getColor(item)
-                          : " ")
-                      }
-                    >
-                      {item}
-                    </td>
-                  );
+              {items.data.map((value, i) => {
+                return (
+                  <td
+                    // using random for key
+                    key={JSON.stringify(value) + i + "Dsfsf"}
+                    className={
+                      stylesList.padding +
+                      (stylesList.row[headings[i] ?? ""] ?? " ") +
+                      (options?.colorIndex &&
+                      options.colorIndex.includes(headings[i] ?? "")
+                        ? getColor(value)
+                        : " ")
+                    }
+                  >
+                    {value}
+                  </td>
+                );
               })}
             </tr>
           );
@@ -121,7 +142,8 @@ export default function Table({
                     }
                     return prev;
                   }, []);
-                  if (options.selectedAction) options.selectedAction(list);
+                  if (options?.selectedAction) options.selectedAction(list);
+                  setSelected([]);
                 }}
               >
                 Cancel {selectedCount} order

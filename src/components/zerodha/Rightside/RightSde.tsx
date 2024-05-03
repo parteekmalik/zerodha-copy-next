@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
+import { RootState } from "~/components/zerodha/_redux/store";
 import Dashboard from "./Dashboard";
 import Funds from "./Funds";
 import Order from "./Order";
-import Chart from "./chart";
-import { RootState } from "~/components/zerodha/_redux/store";
 import Positions from "./Positions/Positions";
+import Chart from "./chart";
 
 function RightSide() {
   const data = useSelector((state: RootState) => state.rightSide);

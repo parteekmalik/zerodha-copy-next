@@ -78,37 +78,29 @@ model VerificationToken {
 
 model TradingAccount {
     id        String   @id @default(cuid())
-    balance   Float    @default(1000)
     margin    Int      @default(100)
-    assets    Assets[]
+    Assets    Assets[]
     statemnet Orders[]
-    User      User?    @relation(fields: [userId], references: [id])
-    userId    String?
+    User      User     @relation(fields: [userId], references: [id])
+    userId    String
     watchList String[] @default(["", "", "", "", "", "", ""])
     Pin0      String   @default("ETHUSDT")
     Pin1      String   @default("BTCUSDT")
 }
 
-// model Transection {
-//     id               String          @id @default(cuid())
-//     type             String
-//     asset            String
-//     amount           Float
-//     order            FullOrder?
-//     TradingAccount   TradingAccount? @relation(fields: [tradingAccountId], references: [id])
-//     tradingAccountId String?
-//     fullOrderId      String?
-// }
-
+// TODO: update db and code acc to avgprice 
 model Assets {
-    id           String @id @default(cuid())
+    id           String   @id @default(cuid())
     name         String
-    totalAmount  Float
-    lockedAmount Float
+    lockedAmount Float    @default(0)
     freeAmount   Float
+    AvgPrice     Float    @default(0)
+    Orders       Orders[]
 
-    TradingAccount   TradingAccount? @relation(fields: [tradingAccountId], references: [id])
-    tradingAccountId String?
+    TradingAccount   TradingAccount @relation(fields: [TradingAccountId], references: [id])
+    TradingAccountId String
+
+    @@unique([TradingAccountId, name], name: "unique_TradingAccountId_name")
 }
 
 model Orders {
@@ -122,11 +114,11 @@ model Orders {
     triggerType      EtriggerType // Corrected typo from "trigerType" to "triggerType"
     sl               Int            @default(0)
     tp               Int            @default(0)
+    Assets           Assets         @relation(fields: [AssetsId], references: [id])
+    AssetsId         String
     TradingAccount   TradingAccount @relation(fields: [TradingAccountId], references: [id])
     TradingAccountId String
 }
-
-
 
 enum EtriggerType {
     LIMIT

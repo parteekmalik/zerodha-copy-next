@@ -39,7 +39,7 @@ function SymbolInWL({ list: DataList, setSearch }: ISymbolInWL) {
   const dispatch = useDispatch<AppDispatch>();
   const listNo = useSelector((state: RootState) => state.watchList.ListNo);
 
-  const updateWatchListAPI = api.accountInfo.updateWatchList.useMutation({
+  const updateWatchListAPI = api.upadteAccountInfo.updateWatchList.useMutation({
     onSuccess: (data) => {
       if (data) dispatch(updateWatchList(data));
     },
@@ -91,7 +91,7 @@ function SymbolInWL({ list: DataList, setSearch }: ISymbolInWL) {
         const symbolName = symbol.toUpperCase();
         return (
           <Item
-            diff={Livestream[symbolName]?.isup ? 1 : -1}
+            isup={Livestream[symbolName]?.isup ?? 0}
             symbolLiveTemp={Livestream[symbolName]}
             symbolName={symbolName}
             submitUpdate={submitUpdate}

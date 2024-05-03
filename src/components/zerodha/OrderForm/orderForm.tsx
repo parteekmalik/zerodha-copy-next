@@ -1,16 +1,16 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
+import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
+import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
+import { updateFormData } from "~/components/zerodha/_redux/Slices/FormData";
+import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
 import { TFormSchema } from "./FrmSchema";
 import InputDiv from "./InputDiv";
 import { CheckBox, OrderTypeDiv } from "./OrderTypeDiv";
-import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
-import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
-import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
-import { updateFormData } from "~/components/zerodha/_redux/Slices/FormData";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 // export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -73,20 +73,27 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
       queryClient.refetchQueries().catch((err) => console.log(err));
       if (msg && toast) {
         console.log("mutation nsucess -> ", msg);
-        toast.open({
-          name: msg.name,
-          state:
-            msg.status === "open"
-              ? "placed"
-              : msg.status === "completed"
-                ? "sucess"
-                : "error",
-          quantity: msg.quantity,
-          orderId: msg.id,
-          type: msg.type,
-        });
-        if (msg.status === "open") {
-          WSsendOrder("order", msg);
+        if (typeof msg === "string") {
+          toast.open({
+            state: "error",
+            errorMessage: msg,
+          });
+        } else {
+          toast.open({
+            name: msg.name,
+            state:
+              msg.status === "open"
+                ? "placed"
+                : msg.status === "completed"
+                  ? "sucess"
+                  : "error",
+            quantity: msg.quantity,
+            orderId: msg.id,
+            type: msg.type,
+          });
+          if (msg.status === "open") {
+            WSsendOrder("order", msg);
+          }
         }
       }
     },

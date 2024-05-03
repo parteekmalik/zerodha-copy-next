@@ -1,6 +1,5 @@
 // toast.tsx
 import { $Enums } from "@prisma/client";
-import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ToastContext } from "./toast-context";
 
@@ -35,19 +34,21 @@ type ToastProviderProps = {
 };
 type ToastType = {
   message: messageType;
-  id: string;
+  id: string | number;
 };
 export function ToastProvider({ children }: ToastProviderProps) {
+  const ToastCount = useRef(0);
   const [toasts, settoasts] = useState<ToastType[]>([]);
 
   function openToast(message: messageType) {
     const newToast = {
-      id: moment().toDate().toString(),
+      id: ToastCount.current,
       message,
     };
+    ToastCount.current++;
     settoasts((prev) => [...prev, newToast]);
   }
-  function closeToast(id: string) {
+  function closeToast(id: string | number) {
     settoasts((prev) => prev.filter((toast) => toast.id !== id));
   }
   const contextValue = useMemo(
@@ -66,7 +67,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
             {toasts.map((toast) => {
               return (
                 <Toast
-                  key={toast.id}
+                  key={"toast" + toast.id}
                   message={toast.message}
                   close={() => closeToast(toast.id)}
                 ></Toast>
@@ -103,11 +104,11 @@ const ToastStaticData: Record<
   },
 };
 function Toast({ message, close }: ToastProperties) {
-  useTimeout(() => close(), 10000);
+  useTimeout(close, 10000);
   return (
     <div
       className={
-        "boarder-[0.677px] reative relative m-[0px_10px_10px_0px]  max-w-[400px] animate-slidein   rounded border-l-[20px] bg-white p-[10px_20px_15px_15px]" +
+        "boarder-[0.677px] reative animate-slidein relative  m-[0px_10px_10px_0px] max-w-[400px]   rounded border-l-[20px] bg-white p-[10px_20px_15px_15px]" +
         ToastStaticData[message.state].color
       }
       style={{ wordWrap: "break-word" }}

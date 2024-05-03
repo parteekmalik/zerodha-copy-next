@@ -25,7 +25,7 @@ function WatchList() {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const updateWatchListAPI = api.accountInfo.updateWatchList.useMutation({
+  const updateWatchListAPI = api.upadteAccountInfo.updateWatchList.useMutation({
     onSuccess: async (data) => {
       if (data) {
         dispatch(updateWatchList(data));
@@ -65,7 +65,8 @@ function WatchList() {
   return (
     <div
       className={
-        "flex h-full w-[430px] min-w-[430px] flex-col bg-white " + shadowBox
+        "flex h-full w-[430px] min-w-[430px] flex-col border bg-white " +
+        shadowBox
       }
     >
       <SearchInput
@@ -94,7 +95,10 @@ function WatchList() {
           className=" flex  h-full  flex-col overflow-x-hidden overflow-y-scroll"
           style={{ scrollbarWidth: "none" }}
         >
-          <SymbolInWL list={watchList.List[watchList.ListNo] ?? []} setSearch={setSearch} />
+          <SymbolInWL
+            list={watchList.List[watchList.ListNo] ?? []}
+            setSearch={setSearch}
+          />
         </div>
       </div>
       <div className="min-h-[50px]">

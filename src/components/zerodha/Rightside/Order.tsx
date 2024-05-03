@@ -1,9 +1,12 @@
 import { $Enums } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useMemo, useRef } from "react";
+import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { api } from "~/trpc/react";
 import Table from "./Table/table";
-import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
+import { useSelector } from "react-redux";
+import { RootState } from "../_redux/store";
+
 export type TOrder = {
   id: string;
   createdAt: Date;
@@ -17,27 +20,23 @@ export type TOrder = {
   tp: number;
   TradingAccountId: string;
 };
-export const stylesList = {
+const stylesList = {
   padding: " p-[10px_12px] ",
   table: "m-2 w-full",
   head: "border-b-2 text-[.75rem]  text-[#9b9b9b]",
   body: "text-center text-[14px] text-[#444444]",
-  row: ["", "", "", "", "", "", " border-r ", ""],
+  row: { Price: " border-r " },
 };
+const headings = ["Time", "Type", "Instrument", "Quantity", "Price", "Status"];
 function Order() {
   const queryClient = useQueryClient(); // Initialize queryClient
-  const { data: orders, isLoading } = api.orders.getOrders.useQuery();
-  const [openOrders, setopenOrders] = useState<TOrder[]>([]);
-  const [executedOrders, setexecutedOrders] = useState<TOrder[]>([]);
+  const TradingAccountId = useSelector(
+    (state: RootState) => state.UserInfo.TradingAccountId,
+  );
+  const { data: orders, isLoading } =
+    api.orders.getOrders.useQuery(TradingAccountId);
   const { WSsendOrder } = useContext(BackndWSContext);
 
-  useEffect(() => {
-    console.log("orders updated ->", orders);
-    if (typeof orders !== "string" && orders !== undefined) {
-      setopenOrders(orders.filter((item) => item.status === "open"));
-      setexecutedOrders(orders.filter((item) => item.status !== "open"));
-    }
-  }, [orders]);
   if (typeof orders === "string") return <>{orders}</>;
   const cancelOrderApi = api.orders.cancelOrders.useMutation({
     onSuccess(data, variables, context) {
@@ -46,91 +45,81 @@ function Order() {
       WSsendOrder("deleteOrder", variables);
     },
   });
-  function selectedAction(orderids: string[]) {
-    cancelOrderApi.mutate(orderids);
-  }
+  const options = useRef({
+    open: {
+      selectedAction: (orderids: string[]) => {
+        cancelOrderApi.mutate({ Taccounts: TradingAccountId, orderids });
+      },
+    },
+    close: {
+      colorIndex: ["Status"],
+    },
+  });
 
+  const dataList = useMemo(() => {
+    if (orders !== undefined && typeof orders !== "string") {
+      const openOrders = orders.filter((item) => item.status === "open");
+      const executedOrders = orders.filter((item) => item.status !== "open");
+      return {
+        open: openOrders.map((item) => {
+          return {
+            id: item.id,
+            data: {
+              Time: item.createdAt.toTimeString().split(" ")[0] ?? "",
+              Type: item.type,
+              Instrument: item.name,
+              Quantity: `${0}/${item.quantity}`,
+              Price: item.price,
+              Status: item.status,
+            },
+          };
+        }),
+        close: executedOrders.map((item) => {
+          return {
+            id: item.id,
+            data: {
+              Time: item.createdAt.toTimeString().split(" ")[0] ?? "",
+              Type: item.type,
+              Instrument: item.name,
+              Product: "SPOT",
+              Quantity: `${item.quantity}/${item.quantity}`,
+              Price: item.price,
+              Status: item.status,
+            },
+          };
+        }),
+      };
+    } else return { open: [], close: [] };
+  }, [orders]);
   return (
-    <div className="flex  w-full flex-col bg-white">
-      {openOrders.length ? (
-        <div className="flex w-full flex-col ">
-          <div className="flex w-full p-2">
-            <span className="grow text-[1.125rem] text-[#444444]">
-              Open orders ({openOrders?.length})
-            </span>
-            <input className="w-[50px]" value={"search"}></input>
-          </div>
-          <Table
-            headings={[
-              "Time",
-              "Type",
-              "Instrument",
-              "Product",
-              "Quantity",
-              "LTP",
-              "Price",
-              "Status",
-            ]}
-            stylesList={stylesList}
-            dataList={openOrders.map((item) => {
-              return {
-                id: item.id,
-                data: {
-                  Time: item.createdAt.toTimeString().split(" ")[0] ?? "",
-                  Type: item.type,
-                  Instrument: item.name,
-                  Product: "SPOT",
-                  Quantity: `${0}/${item.quantity}`,
-                  LTP: "LTP",
-                  Price: item.price,
-                  Status: item.status,
-                },
-              };
-            })}
-            options={{ selectedAction }}
-          />
+    <div className="flex  h-full w-full flex-col">
+      <div className="flex w-full flex-col ">
+        <div className="flex w-full p-2">
+          <span className="grow text-[1.125rem] text-[#444444]">
+            Open orders ({dataList.open.length})
+          </span>
+          <input className="w-[50px]" value={"search"}></input>
         </div>
-      ) : null}
-      {executedOrders.length ? (
-        <div className="flex w-full flex-col">
-          <div className="flex w-full p-2">
-            <span className="grow text-[1.125rem] text-[#444444]">
-              Executed orders ({executedOrders?.length})
-            </span>
-          </div>
-          <Table
-            headings={[
-              "Time",
-              "Type",
-              "Instrument",
-              "Product",
-              "Quantity",
-              "LTP",
-              "Price",
-              "Status",
-            ]}
-            stylesList={stylesList}
-            dataList={executedOrders.map((item) => {
-              return {
-                id: item.id,
-                data: {
-                  Time: item.createdAt.toTimeString().split(" ")[0] ?? "",
-                  Type: item.type,
-                  Instrument: item.name,
-                  Product: "SPOT",
-                  Quantity: `${item.quantity}/${item.quantity}`,
-                  LTP: "LTP",
-                  Price: item.price,
-                  Status: item.status,
-                },
-              };
-            })}
-            options={{}}
-          />
+        <Table
+          headings={headings}
+          stylesList={stylesList}
+          dataList={dataList.open}
+          options={options.current.open}
+        />
+      </div>
+      <div className="flex w-full flex-col">
+        <div className="flex w-full p-2">
+          <span className="grow text-[1.125rem] text-[#444444]">
+            Executed orders ({dataList.close.length})
+          </span>
         </div>
-      ) : null}
-
-      {/* <div>{JSON.stringify(orders)}</div> */}
+        <Table
+          headings={headings}
+          stylesList={stylesList}
+          dataList={dataList.close}
+          options={options.current.close}
+        />
+      </div>
     </div>
   );
 }
