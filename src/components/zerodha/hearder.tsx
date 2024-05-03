@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
+import { updateRightSide } from "~/components/zerodha/_redux/Slices/rightSideData";
+import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import WifiIcon from "./savages/WifiIcon";
 import { shadowBox } from "./tcss";
-import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
-import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
-import { updateRightSide } from "~/components/zerodha/_redux/Slices/rightSideData";
 
 type RightSideType =
   | "Dashboard"

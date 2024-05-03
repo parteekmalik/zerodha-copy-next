@@ -1,19 +1,15 @@
+import { useQueryClient } from "@tanstack/react-query";
 import React, { PropsWithChildren, useState } from "react";
-import { shadowBox } from "../tcss";
-import { Watch, reduceEachTrailingCommentRange } from "typescript";
-import InputDiv from "../OrderForm/InputDiv";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { z } from "zod";
 import { api } from "~/trpc/react";
-import { useQueryClient } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
+import InputDiv from "../OrderForm/InputDiv";
+import { shadowBox } from "../tcss";
 
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { RootState } from "~/components/zerodha/_redux/store";
 import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
+import { RootState } from "~/components/zerodha/_redux/store";
 
 type Tlabel = "" | "Withdraw" | "Add funds";
 function Funds() {

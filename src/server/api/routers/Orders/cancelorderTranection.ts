@@ -1,10 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
-import { TicketX } from "lucide-react";
 import TsMap from "ts-map";
-import getLTP from "~/components/zerodha/OrderForm/getLTP";
-import { TOrder } from "~/components/zerodha/Rightside/Order";
-import { sumByKey } from "~/lib/zerodha/utils";
 
 // TODO: add logic for limit orders (add lockedBalance)
 export default async function cancelOrderTranection(
@@ -13,7 +9,6 @@ export default async function cancelOrderTranection(
   Taccounts: string,
 ) {
   const transection = await db.$transaction(async (tx) => {
-    const orders = await tx.orders.findMany({ where: { id: { in: input } } });
     const Assets = await tx.assets.findMany({
       where: { TradingAccountId: Taccounts },
       include: {
@@ -25,21 +20,19 @@ export default async function cancelOrderTranection(
 
     const data = new TsMap<string, number>();
     Assets.filter((i) => i.name !== "USDT").map((value) => {
-      orders
-        .filter((i) => i.status === "open")
-        .map((order) => {
-          if (order.type === "BUY") {
-            data.set(
-              "USDT",
-              (data.get("USDT") ?? 0) + order.quantity * order.price,
-            );
-            console.log(value.name, "BUY");
-          } else {
-            console.log(value.name, "SELL");
+      value.Orders.filter((i) => i.status === "open").map((order) => {
+        if (order.type === "BUY") {
+          data.set(
+            "USDT",
+            (data.get("USDT") ?? 0) + order.quantity * order.price,
+          );
+          console.log(value.name, "BUY", order);
+        } else {
+          console.log(value.name, "SELL", order);
 
-            data.set(value.name, (data.get(value.name) ?? 0) + order.quantity);
-          }
-        });
+          data.set(value.name, (data.get(value.name) ?? 0) + order.quantity);
+        }
+      });
     });
 
     //complete transection

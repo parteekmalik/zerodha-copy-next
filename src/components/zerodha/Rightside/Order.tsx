@@ -1,11 +1,11 @@
 import { $Enums } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useContext, useMemo, useRef } from "react";
+import { useSelector } from "react-redux";
 import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { api } from "~/trpc/react";
-import Table from "./Table/table";
-import { useSelector } from "react-redux";
 import { RootState } from "../_redux/store";
+import Table from "./Table/table";
 
 export type TOrder = {
   id: string;
@@ -37,7 +37,6 @@ function Order() {
     api.orders.getOrders.useQuery(TradingAccountId);
   const { WSsendOrder } = useContext(BackndWSContext);
 
-  if (typeof orders === "string") return <>{orders}</>;
   const cancelOrderApi = api.orders.cancelOrders.useMutation({
     onSuccess(data, variables, context) {
       console.log(data, variables, context);
@@ -45,11 +44,11 @@ function Order() {
       WSsendOrder("deleteOrder", variables);
     },
   });
+
   const options = useRef({
     open: {
-      selectedAction: (orderids: string[]) => {
-        cancelOrderApi.mutate({ Taccounts: TradingAccountId, orderids });
-      },
+      selectedAction: (orderids: string[]) =>
+        cancelOrderApi.mutate({ Taccounts: TradingAccountId, orderids }),
     },
     close: {
       colorIndex: ["Status"],
@@ -58,39 +57,43 @@ function Order() {
 
   const dataList = useMemo(() => {
     if (orders !== undefined && typeof orders !== "string") {
-      const openOrders = orders.filter((item) => item.status === "open");
-      const executedOrders = orders.filter((item) => item.status !== "open");
       return {
-        open: openOrders.map((item) => {
-          return {
-            id: item.id,
-            data: {
-              Time: item.createdAt.toTimeString().split(" ")[0] ?? "",
-              Type: item.type,
-              Instrument: item.name,
-              Quantity: `${0}/${item.quantity}`,
-              Price: item.price,
-              Status: item.status,
-            },
-          };
-        }),
-        close: executedOrders.map((item) => {
-          return {
-            id: item.id,
-            data: {
-              Time: item.createdAt.toTimeString().split(" ")[0] ?? "",
-              Type: item.type,
-              Instrument: item.name,
-              Product: "SPOT",
-              Quantity: `${item.quantity}/${item.quantity}`,
-              Price: item.price,
-              Status: item.status,
-            },
-          };
-        }),
+        open: orders
+          .filter((item) => item.status === "open")
+          .map((item) => {
+            return {
+              id: item.id,
+              data: {
+                Time: item.createdAt.toTimeString().split(" ")[0] ?? "",
+                Type: item.type,
+                Instrument: item.name,
+                Quantity: `${0}/${item.quantity}`,
+                Price: item.price,
+                Status: item.status,
+              },
+            };
+          }),
+        close: orders
+          .filter((item) => item.status !== "open")
+          .map((item) => {
+            return {
+              id: item.id,
+              data: {
+                Time: item.createdAt.toTimeString().split(" ")[0] ?? "",
+                Type: item.type,
+                Instrument: item.name,
+                Product: "SPOT",
+                Quantity: `${item.quantity}/${item.quantity}`,
+                Price: item.price,
+                Status: item.status,
+              },
+            };
+          }),
       };
     } else return { open: [], close: [] };
   }, [orders]);
+
+  if (typeof orders === "string" || orders === undefined) return <>{orders}</>;
   return (
     <div className="flex  h-full w-full flex-col">
       <div className="flex w-full flex-col ">

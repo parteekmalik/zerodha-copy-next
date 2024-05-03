@@ -30,7 +30,7 @@ export type TsymbolLive = {
 };
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
 
-const StoreComponent: React.FunctionComponent = (props) => {
+const StoreComponent: React.FunctionComponent = () => {
   const initData = api.getAccountInfo.getInitInfo.useQuery().data;
   const symbolList = api.symbolList.getSymbolList.useQuery().data;
 

@@ -56,7 +56,7 @@ export default async function createOrderTransection(
         include: { Orders: true },
       });
     };
-    let BaseAssetDetails = await getBaseAssetDetails(assets);
+    const BaseAssetDetails = await getBaseAssetDetails(assets);
     if (!BaseAssetDetails) return "server unexpected error";
     const requiredBalaceForOrder =
       input.orderType === "BUY"
