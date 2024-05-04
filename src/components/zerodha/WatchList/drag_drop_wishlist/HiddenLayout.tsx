@@ -115,12 +115,6 @@ export function HiddenLayout({ symbolName }: { symbolName: string }) {
       },
     },
     {
-      text_color: "text-black",
-      bgcolor: " bg-white",
-      text: "d",
-      payload: null,
-    },
-    {
       text_color: " text-black",
       bgcolor: " bg-white",
       text: "C",
@@ -183,7 +177,7 @@ export function HiddenLayout({ symbolName }: { symbolName: string }) {
           <div
             className={
               `h-full w-[35px] cursor-pointer rounded   p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color} ` +
-              ((text !== "B" && text !== "S")
+              (text !== "B" && text !== "S"
                 ? " border border-black "
                 : " border border-white ")
             }
