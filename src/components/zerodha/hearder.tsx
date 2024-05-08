@@ -5,6 +5,7 @@ import { updateRightSide } from "~/components/zerodha/_redux/Slices/rightSideDat
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import WifiIcon from "./savages/WifiIcon";
 import { shadowBox } from "./tcss";
+import Image from "next/image";
 
 type RightSideType =
   | "Dashboard"
@@ -72,10 +73,12 @@ function Header() {
         </div>
         <div className="flex h-full grow items-center ">
           <div className="flex  w-full border-r">
-            <img
-              className="ml-[30px] mr-[20px] h-[20px] w-auto"
+            <Image
+              className="ml-[30px] mr-[20px] "
               src="https://kite.zerodha.com/static/images/kite-logo.svg"
               alt=""
+              width={30}
+              height={20}
             />
 
             <div className=" h-[20px] w-[20px]">
@@ -105,20 +108,21 @@ function Header() {
           </div>
           <div className="flex h-full items-center  p-4">
             <div className="flex gap-4">
-              <img
+              <Image
                 className="cursor-pointer select-none"
-                width="14px"
-                height="14px"
+                width={14}
+                height={14}
                 src="https://img.icons8.com/material-outlined/24/filled-appointment-reminders.png"
                 alt="filled-appointment-reminders"
               />
               <div className="flex cursor-pointer text-center ">
-                <img
-                  src={UserInfo?.image ?? ""}
+                {(UserInfo.image && UserInfo.image !== "not_found") && <Image
+                  src={UserInfo.image ?? ""}
+                  alt="user-icon"
                   className="mr-1 cursor-pointer select-none rounded-full"
-                  width="14px"
-                  height="14px"
-                ></img>
+                  width={14}
+                  height={14}
+                />}
                 <div>#{UserInfo?.name}</div>
               </div>
             </div>
