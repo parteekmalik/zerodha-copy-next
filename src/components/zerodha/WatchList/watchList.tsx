@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "~/trpc/react";
 import { shadowBox } from "../tcss";
@@ -35,62 +35,37 @@ function WatchList() {
       }
     },
   });
-  function submitUpdate(index: number) {
-    console.log("UPDATING WATCHLIST -> ", search, index);
-    updateWatchListAPI.mutate({
-      name: [
-        ...(watchList.List[watchList.ListNo] ?? []),
-        search.matchingSymbol[index],
-      ].join(" "),
-      row: watchList.ListNo,
-    });
-  }
-
-  useEffect(() => {
-    const temp = searchAndSort(
-      search.data,
-      Object.keys(symbolsList),
-      watchList.List[watchList.ListNo] ?? [],
-    );
-    if (
-      search.focus &&
-      temp.length > 0 &&
-      temp.join("") !== search.matchingSymbol.join("")
-    )
-      setSearch((prev) => {
-        return { ...prev, matchingSymbol: temp };
+  const submitUpdate = useCallback(
+    (index: number) => {
+      console.log("UPDATING WATCHLIST -> ", search, index);
+      updateWatchListAPI.mutate({
+        name: [
+          ...(watchList.List[watchList.ListNo] ?? []),
+          search.matchingSymbol[index],
+        ].join(" "),
+        row: watchList.ListNo,
       });
-  }, [search]);
+    },
+    [search.matchingSymbol, watchList],
+  );
 
   return (
     <div
       className={
-        "flex h-full w-[430px] min-w-[430px] flex-col border bg-white " +
+        "flex h-full w-[430px] min-w-[430px] select-none flex-col border bg-white " +
         shadowBox
       }
     >
       <SearchInput
-        symbolCount={watchList.List[watchList.ListNo]?.length ?? 0}
+        watchList={watchList.List[watchList.ListNo] ?? []}
         search={search}
         submitUpdate={submitUpdate}
         setSearch={setSearch}
       />
       <div
-        className="relative flex h-full w-full flex-col"
+        className="relative z-10 flex h-full w-full flex-col"
         style={{ maxHeight: "calc(100% - 100px)" }}
       >
-        {search.focus ? (
-          <div
-            className="absolute z-10 h-[40vh]  w-full overflow-y-auto text-[.8125rem]    "
-            style={{ scrollbarWidth: "thin" }}
-          >
-            <SearchList
-              search={search}
-              updateWatchList={submitUpdate}
-              setSearch={setSearch}
-            />
-          </div>
-        ) : null}
         <div
           className=" flex  h-full  flex-col overflow-x-hidden overflow-y-scroll"
           style={{ scrollbarWidth: "none" }}

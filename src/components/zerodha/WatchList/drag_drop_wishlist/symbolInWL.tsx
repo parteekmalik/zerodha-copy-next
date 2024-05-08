@@ -1,5 +1,11 @@
 import { Reorder } from "framer-motion";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
@@ -25,16 +31,18 @@ interface ISymbolInWL {
     }>
   >;
 }
-function SymbolInWL({ list: DataList, setSearch }: ISymbolInWL) {
+function SymbolInWL({ list, setSearch }: ISymbolInWL) {
   // const { socketSend } = useContext(SymbolLiveContext);
   const Livestream = useSelector((state: RootState) => state.Livestream);
-  const headerPin = useSelector((state: RootState) => state.headerPin);
 
   const [LocalList, setLocalList] = useState<Tsymbol[]>([]);
 
   useEffect(() => {
-    setLocalList(DataList);
-  }, [DataList]);
+    if (LocalList[0] === "update") setLocalList(list);
+  }, [LocalList]);
+  useEffect(() => {
+    setLocalList(["update"]);
+  }, [list]);
 
   const dispatch = useDispatch<AppDispatch>();
   const listNo = useSelector((state: RootState) => state.watchList.ListNo);
@@ -44,12 +52,15 @@ function SymbolInWL({ list: DataList, setSearch }: ISymbolInWL) {
       if (data) dispatch(updateWatchList(data));
     },
   });
-  function submitUpdate() {
-    updateWatchListAPI.mutate({
-      name: LocalList.join(" "),
-      row: listNo,
-    });
-  }
+  const submitUpdate = useCallback(
+    () =>
+      updateWatchListAPI.mutate({
+        name: LocalList.join(" "),
+        row: listNo,
+      }),
+    [listNo, LocalList],
+  );
+
   if (!LocalList.length)
     return (
       <div className="flex w-full  flex-col items-center justify-center ">
@@ -86,6 +97,7 @@ function SymbolInWL({ list: DataList, setSearch }: ISymbolInWL) {
       values={LocalList}
       onReorder={(e) => setLocalList(e)}
       axis="y"
+      dragMomentum={false}
     >
       {LocalList.map((symbol) => {
         const symbolName = symbol.toUpperCase();
