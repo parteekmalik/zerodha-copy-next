@@ -102,27 +102,26 @@ export const TradesRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const orderids = Number(input.orderids);
-      
+
       console.log(orderids);
       const order = await ctx.db.trades.findUnique({
         where: { id: orderids },
       });
-      if (order) {
-        const price =
-          order.status === "PENDING"
-            ? order.openPrice
-            : await getLTP(order.name.slice(0, -4).toUpperCase());
-        if (input.type === "sl" && price <= input.value)
-          return "sl should be lower tan openprice" + price;
-        if (input.type === "tp" && price >= input.value)
-          return "tp should be higher tan openprice" + price;
-      } else return "cant find order";
+      if (!order) return "cant find order";
+
+      const price =
+        order.status === "PENDING" ? order.openPrice : await getLTP(order.name);
+      console.log(price);
+      if (input.type === "sl" && price <= input.value)
+        return "sl should be lower tan openprice" + price;
+      if (input.type === "tp" && price >= input.value)
+        return "tp should be higher tan openprice" + price;
 
       const result = await ctx.db.trades.update({
         where: { id: orderids },
         data: {
-          sl: input.type === "sl" ? input.value : 0,
-          tp: input.type !== "sl" ? input.value : 0,
+          sl: input.type === "sl" ? input.value : order.sl,
+          tp: input.type !== "sl" ? input.value : order.tp,
         },
       });
       return result;
