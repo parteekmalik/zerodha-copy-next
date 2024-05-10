@@ -21,15 +21,7 @@ export const getAccountInfoRouter = createTRPCRouter({
             User: { connect: { id: ctx.session.user.id } },
           },
         });
-        const result = await tx.assets.create({
-          data: {
-            TradingAccount: { connect: { id: res.id } },
-            freeAmount: 100000,
-            AvgPrice: 1,
-            name: "USDT",
-          },
-        });
-        console.log("created new trading account -> ", res, result);
+        console.log("created new trading account -> ", res);
         return res;
       });
     }
@@ -58,21 +50,10 @@ export const getAccountInfoRouter = createTRPCRouter({
   getBalance: protectedProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
-      return await ctx.db.assets.findFirst({
-        where: { name: "USDT", TradingAccountId: input },
-      });
-    }),
-  getAssets: protectedProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      const Orders = await ctx.db.tradingAccount.findFirst({
+      return await ctx.db.tradingAccount.findFirst({
         where: { id: input },
-        select: {
-          Assets: true,
-        },
+        select: { USDT_Free_balance: true, USDT_Locked_balance: true },
       });
-      if (!Orders) return "error getting orders";
-      else return Orders.Assets;
     }),
 });
 

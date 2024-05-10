@@ -2,10 +2,10 @@ import type { PropsWithChildren } from "react";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { env } from "~/env";
+import useSocket from "../../_hooks/useSocket";
 import { RootState } from "../../_redux/store";
 import { useToast } from "../Toast/toast-context";
 import { BackndWSContextProvider } from "./backendWS";
-import useSocket from "../../_hooks/useSocket";
 
 const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
   props,
@@ -20,7 +20,9 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
   const { socket, isConnected, lastMessage } = useSocket(
     env.NEXT_PUBLIC_BACKEND_WS,
     UserInfo.TradingAccountId,
-    {},
+    {
+      reconnectionDelay: 60000,
+    },
   );
   useEffect(() => {
     if (toast && lastMessage) {
@@ -29,9 +31,9 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
         toast.open({
           name: lastMessage.name,
           state:
-            lastMessage.status === "open"
+            lastMessage.status === "PENDING"
               ? "placed"
-              : lastMessage.status === "completed"
+              : lastMessage.status !== "CANCELLED"
                 ? "sucess"
                 : "error",
           quantity: lastMessage.quantity,

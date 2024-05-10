@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import React, { PropsWithChildren, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
@@ -58,10 +57,12 @@ function Funds() {
               data={[
                 {
                   name: "TOTAL bal",
-                  value: balance.freeAmount + balance.lockedAmount ?? 0,
+                  value:
+                    balance.USDT_Free_balance + balance.USDT_Locked_balance ??
+                    0,
                 },
-                { name: "FREE bal", value: balance.freeAmount },
-                { name: "LOCKED bal", value: balance.lockedAmount },
+                { name: "FREE bal", value: balance.USDT_Free_balance },
+                { name: "LOCKED bal", value: balance.USDT_Locked_balance },
               ]}
               isMain={true}
               Style={["  ", " text-[2em] "]}
@@ -123,12 +124,11 @@ function AddFunds({
     }>
   >;
 }) {
-  const queryClient = useQueryClient(); // Initialize queryClient
   const toast = useToast();
+  const APIutils = api.useUtils();
 
   const orderapi = api.upadteAccountInfo.addBalance.useMutation({
     onSuccess: (msg) => {
-      queryClient.refetchQueries().catch((err) => console.log(err));
       if (typeof msg !== "string") {
         setData({ isvisible: false, label: "" });
       } else if (toast) {
@@ -142,6 +142,9 @@ function AddFunds({
     onError: (msg) => {
       console.log("mutation error", msg);
       setData({ isvisible: false, label: "" });
+    },
+    onSettled() {
+      APIutils.getAccountInfo.getBalance.invalidate().catch(err=>console.log(err));
     },
   });
   const {

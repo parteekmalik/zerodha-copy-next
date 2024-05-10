@@ -1,6 +1,6 @@
 import axios from "axios";
 import { env } from "~/env";
-
+// TODO:do better error handling
 async function getLTP(symbol: string) {
   symbol = symbol.toUpperCase();
   const url = env.BINANCE_LTP_URL + symbol;

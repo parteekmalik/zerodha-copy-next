@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Orders } from "@prisma/client";
+import { Trades } from "@prisma/client";
 
-export type TordersType = Orders[][];
+export type TordersType = Trades[][];
 
 const initialState: TordersType = [];
 const ordersSlice = createSlice({

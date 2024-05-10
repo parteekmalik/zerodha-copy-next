@@ -16,7 +16,7 @@ export default function Table({
     padding: string;
   };
   dataList: {
-    id: string;
+    id: string | number;
     data: {
       [key in (typeof headings)[number]]:
         | string
@@ -25,17 +25,15 @@ export default function Table({
     };
   }[];
   options?: {
-    selectedAction?: (orderids: string[]) => void;
+    selectedAction?: (orderid: string | number) => void;
     colorIndex?: (typeof headings)[number][];
   };
 }) {
-  const [selected, setSelected] = useState<boolean[]>([]);
-  const [selectedCount, setselectedCount] = useState(0);
   const modifiedDataList = useMemo(() => {
     if (dataList.length) {
       return dataList.map((item) => {
         const data: {
-          id: string;
+          id: string | number;
           data: (string | number)[];
         } = {
           id: item.id,
@@ -53,21 +51,10 @@ export default function Table({
   }, [dataList]);
   // useEffect(() => console.log("checking"), [dataList]);
 
-  useEffect(() => {
-    console.log("selected table", selected);
-    setselectedCount(
-      selected.reduce((prev, curr, currIndex) => {
-        if (curr === true) prev++;
-        return prev;
-      }, 0),
-    );
-  }, [selected]);
-
   return (
     <table className={stylesList.table}>
       <thead className={stylesList.head}>
         <tr>
-          {options?.selectedAction && <th>checkbox</th>}
           {headings.map((item, i) => {
             return (
               <th
@@ -82,6 +69,7 @@ export default function Table({
               </th>
             );
           })}
+          {options?.selectedAction && <th>close</th>}
         </tr>
       </thead>
       <tbody className={stylesList.body}>
@@ -91,21 +79,6 @@ export default function Table({
               key={JSON.stringify(items) + i}
               className={"hover:bg-[#f9f9f9]"}
             >
-              {options?.selectedAction && (
-                <td className={stylesList.padding}>
-                  <input
-                    key={"checkbox" + items.id}
-                    type="checkbox"
-                    onChange={(e) => {
-                      console.log(e.target.checked);
-                      setSelected((prev) => {
-                        prev[i] = e.target.checked;
-                        return [...prev];
-                      });
-                    }}
-                  />
-                </td>
-              )}
               {items.data.map((value, i) => {
                 return (
                   <td
@@ -124,35 +97,26 @@ export default function Table({
                   </td>
                 );
               })}
+              {options?.selectedAction && (
+                <td className={stylesList.padding}>
+                  <button
+                    key={"checkbox" + items.id}
+                    onClick={() => {
+                      if (options?.selectedAction) {
+                        console.log("cancelled | closed Trade ->", items.id);
+                        options.selectedAction(items.id);
+                      }
+                    }}
+                  >
+                    x
+                  </button>
+                </td>
+              )}
             </tr>
           );
         })}
       </tbody>
-      <tfoot>
-        {selectedCount > 0 ? (
-          <tr className={" hover:bg-[#f9f9f9]"}>
-            <td colSpan={3} className={stylesList.padding + " text-[.75rem]"}>
-              <button
-                className="rounded bg-[#4184f3] p-[7px_12px] text-white"
-                onClick={() => {
-                  const list = selected.reduce((prev: string[], cur, i) => {
-                    if (cur) {
-                      const temp = dataList[i]?.id;
-                      if (temp) prev.push(temp);
-                    }
-                    return prev;
-                  }, []);
-                  if (options?.selectedAction) options.selectedAction(list);
-                  setSelected([]);
-                }}
-              >
-                Cancel {selectedCount} order
-              </button>
-            </td>
-            <td colSpan={6}></td>
-          </tr>
-        ) : null}
-      </tfoot>
+      <tfoot></tfoot>
     </table>
   );
 }

@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,6 +54,7 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
   const style = watch().orderType === "BUY" ? { bgcolor: "bg-[#4184f3]", textcolor: "text-[#4184f3]", bordercolor: "border-b-[#4184f3]" } : { bgcolor: "bg-[#ff5722]", textcolor: "text-[#ff5722]", bordercolor: "border-b-[#ff5722]" };
 
   const dispatch = useDispatch<AppDispatch>();
+  const APIutils = api.useUtils();
 
   const FormData = useSelector((state: RootState) => state.FormData);
   const Livestream = useSelector((state: RootState) => state.Livestream);
@@ -65,12 +65,10 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
   }, [symbol, type]);
 
   const toast = useToast();
-  const queryClient = useQueryClient(); // Initialize queryClient
   const { WSsendOrder } = useContext(BackndWSContext);
 
-  const orderapi = api.orders.create.useMutation({
+  const orderapi = api.Trades.create.useMutation({
     onSuccess: (msg) => {
-      queryClient.refetchQueries().catch((err) => console.log(err));
       if (msg && toast) {
         console.log("mutation nsucess -> ", msg);
         if (typeof msg === "string") {
@@ -82,20 +80,25 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
           toast.open({
             name: msg.name,
             state:
-              msg.status === "open"
+              msg.status === "PENDING"
                 ? "placed"
-                : msg.status === "completed"
+                : msg.status === "FILLED" || msg.status === "CLOSED"
                   ? "sucess"
                   : "error",
             quantity: msg.quantity,
             orderId: msg.id,
             type: msg.type,
           });
-          if (msg.status === "open") {
+          if (msg.status === "PENDING") {
             WSsendOrder("order", msg);
           }
         }
       }
+    },
+    onSettled() {
+      APIutils.Trades.getPendingTrades.invalidate().catch(err=>console.log(err));
+      APIutils.Trades.getFilledTrades.invalidate().catch(err=>console.log(err));
+      APIutils.getAccountInfo.getBalance.invalidate().catch(err=>console.log(err));
     },
   });
 

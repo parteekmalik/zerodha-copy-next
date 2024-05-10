@@ -10,23 +10,23 @@ export default async function USDTBalance(
   },
 ) {
   const transection = await db.$transaction(async (tx) => {
-    const account = await tx.assets.findFirst({
-      where: { TradingAccountId: input.account, name: "USDT" },
+    const account = await tx.tradingAccount.findFirst({
+      where: { id: input.account },
     });
 
     if (!account) {
       return "ACCount not found";
     }
 
-    const newBalance = account.freeAmount + input.amount;
+    const newBalance = account.USDT_Free_balance + input.amount;
 
     if (newBalance < 0) {
       return "Insufficient funds";
     }
 
-    const updatedAccount = await tx.assets.update({
+    const updatedAccount = await tx.tradingAccount.update({
       where: { id: account.id },
-      data: { freeAmount: newBalance },
+      data: { USDT_Free_balance: newBalance },
     });
     return updatedAccount;
   });

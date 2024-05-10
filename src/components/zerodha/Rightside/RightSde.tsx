@@ -2,8 +2,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "~/components/zerodha/_redux/store";
 import Dashboard from "./Dashboard";
 import Funds from "./Funds";
-import Order from "./Order";
-import Positions from "./Positions/Positions";
+import Order from "./newOrder";
+import Positions from "./Positions/newPosition";
 import Chart from "./chart";
 
 function RightSide() {

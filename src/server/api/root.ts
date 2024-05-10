@@ -1,7 +1,7 @@
 import { postRouter } from "~/server/api/routers/post";
 import { createTRPCRouter } from "~/server/api/trpc";
-import { orderRouter } from "./routers/Orders/orders";
 import { SymbolList } from "./routers/symbolList";
+import { TradesRouter } from "./routers/Trades/Trades";
 import { getAccountInfoRouter } from "./routers/TradingAccount/accountInfo";
 import { updateAccountInfoRouter } from "./routers/TradingAccount/UpdateaccountInfo";
 
@@ -14,7 +14,7 @@ export const appRouter = createTRPCRouter({
   post: postRouter,
   getAccountInfo: getAccountInfoRouter,
   upadteAccountInfo: updateAccountInfoRouter,
-  orders: orderRouter,
+  Trades: TradesRouter,
   symbolList: SymbolList,
 });
 

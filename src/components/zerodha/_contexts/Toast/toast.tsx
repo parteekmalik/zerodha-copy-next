@@ -14,14 +14,14 @@ function useTimeout(callbackFunction: () => void, duration: number) {
     return () => clearTimeout(functionId);
   }, []);
 }
-type stateType = "sucess" | "placed" | "cancelled";
+type stateType = "sucess" | "placed" | "cancelled" | "update";
 export type messageType =
   | { state: "error"; errorMessage?: string }
   | {
       name: string;
       state: stateType;
       quantity: number | string;
-      orderId: string;
+      orderId: string | number;
       type: $Enums.OrderType;
     };
 interface ToastProperties {
@@ -102,6 +102,10 @@ const ToastStaticData: Record<
     color: " border-[#4184f3] text-[#4184f3] ",
     heading: "Placed",
   },
+  update: {
+    color: " border-[#4184f3] text-[#4184f3] ",
+    heading: "Placed",
+  },
 };
 function Toast({ message, close }: ToastProperties) {
   useTimeout(close, 10000);
@@ -138,6 +142,15 @@ function Toast({ message, close }: ToastProperties) {
       {message.state === "placed" && (
         <div className="text-[14px]">
           {message.type} {message.name} is Placed.
+          <br />
+          Check the orderbook for status.
+          <br />
+          <span className="m-t-[10px] text-[.75rem]">#{message.orderId}</span>
+        </div>
+      )}
+      {message.state === "update" && (
+        <div className="text-[14px]">
+          {message.type} {message.name} is Updated.
           <br />
           Check the orderbook for status.
           <br />

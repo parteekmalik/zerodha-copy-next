@@ -52,7 +52,7 @@ function Item({
               "  absolute right-0 top-0 flex h-full gap-[2px] p-[8px_15px_8px_2px] text-white " +
               (isHover ? " visible opacity-100 " : " invisible opacity-0 ")
             }
-            style={{ transition: "all 0.15s ease" }}
+            // style={{ transition: "all 0.15s ease" }}
           >
             <HiddenLayout symbolName={symbolName} />
           </div>

@@ -77,25 +77,26 @@ model VerificationToken {
 // app schema
 
 model TradingAccount {
-    id        String   @id @default(cuid())
-    margin    Int      @default(100)
-    Assets    Assets[]
-    statemnet Orders[]
-    User      User     @relation(fields: [userId], references: [id])
-    userId    String
-    watchList String[] @default(["", "", "", "", "", "", ""])
-    Pin0      String   @default("ETHUSDT")
-    Pin1      String   @default("BTCUSDT")
+    id                  String        @id @default(cuid())
+    margin              Int           @default(100)
+    User                User          @relation(fields: [userId], references: [id])
+    userId              String
+    watchList           String[]      @default(["", "", "", "", "", "", ""])
+    Pin0                String        @default("ETHUSDT")
+    Pin1                String        @default("BTCUSDT")
+    Trades              Trades[]
+    USDT_Free_balance   Float         @default(100000)
+    USDT_Locked_balance Float         @default(0)
+    TradeAssets         TradeAssets[]
 }
 
-// TODO: update db and code acc to avgprice 
-model Assets {
-    id           String   @id @default(cuid())
+model TradeAssets {
+    id           String @id @default(cuid())
     name         String
-    lockedAmount Float    @default(0)
+    lockedAmount Float  @default(0)
     freeAmount   Float
-    AvgPrice     Float    @default(0)
-    Orders       Orders[]
+
+    Trades Trades[]
 
     TradingAccount   TradingAccount @relation(fields: [TradingAccountId], references: [id])
     TradingAccountId String
@@ -103,21 +104,30 @@ model Assets {
     @@unique([TradingAccountId, name], name: "unique_TradingAccountId_name")
 }
 
-model Orders {
-    id               String         @id @default(cuid())
-    createdAt        DateTime       @default(now())
+model Trades {
+    id               Int            @id @default(autoincrement())
+    openedAt         DateTime       @default(now())
+    closedAt         DateTime       @updatedAt
     name             String
-    type             OrderType
-    price            Float
     quantity         Float
-    status           OrderStatus    @default(open)
-    triggerType      EtriggerType // Corrected typo from "trigerType" to "triggerType"
-    sl               Int            @default(0)
-    tp               Int            @default(0)
-    Assets           Assets         @relation(fields: [AssetsId], references: [id])
-    AssetsId         String
+    openPrice        Float
+    closePrice       Float          @default(0)
+    type             OrderType
+    status           TradeStatus    @default(PENDING)
+    triggerType      EtriggerType
+    sl               Float          @default(0)
+    tp               Float          @default(0)
     TradingAccount   TradingAccount @relation(fields: [TradingAccountId], references: [id])
     TradingAccountId String
+    TradeAssets      TradeAssets    @relation(fields: [tradeAssetsId], references: [id])
+    tradeAssetsId    String
+}
+
+enum TradeStatus {
+    FILLED
+    PENDING
+    CLOSED
+    CANCELLED
 }
 
 enum EtriggerType {

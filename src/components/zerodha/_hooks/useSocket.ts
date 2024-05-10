@@ -1,25 +1,13 @@
-import { $Enums } from "@prisma/client";
+import { Trades } from "@prisma/client";
 import { SocketOptions } from "dgram";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import io, { ManagerOptions, Socket } from "socket.io-client";
 
 interface SocketHook {
   socket: Socket | null;
   isConnected: boolean;
 }
-export type orderType = {
-  id: string;
-  createdAt: Date;
-  name: string;
-  type: $Enums.OrderType;
-  price: number;
-  quantity: number;
-  status: $Enums.OrderStatus;
-  triggerType: $Enums.EtriggerType;
-  sl: number;
-  tp: number;
-  TradingAccountId: string;
-};
+export type orderType = Trades;
 const useSocket = (
   serverUrl: string,
   TradingAccountId: string,
