@@ -5,8 +5,7 @@ import BackndWSContext from "../../_contexts/backendWS/backendWS";
 import { RootState } from "../../_redux/store";
 import Pending, { Cell } from "./Pending";
 
-import { $Enums } from "@prisma/client";
-import { Edit } from "lucide-react";
+import { sumByKey } from "~/lib/zerodha/utils";
 import { useToast } from "../../_contexts/Toast/toast-context";
 import { getColor } from "../../WatchList/drag_drop_wishlist/Item";
 
@@ -175,7 +174,43 @@ function Positions() {
                   );
                 })}
               </tbody>
-              <tfoot></tfoot>
+              {dataList.length ? (
+                <tfoot className="text-center">
+                  <tr>
+                    <td colSpan={5}></td>
+                    <td>Total</td>
+                    <td
+                      className={getColor(
+                        sumByKey(
+                          dataList.map((i) => {
+                            return { ...i.data };
+                          }),
+                          "P&L",
+                        ),
+                      )}
+                    >
+                      {sumByKey(
+                        dataList.map((i) => {
+                          return { ...i.data };
+                        }),
+                        "P&L",
+                      ).toFixed(2)}
+                    </td>
+                    <td></td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          dataList.map((i) =>
+                            options.current.selectedAction(i.id),
+                          );
+                        }}
+                      >
+                        x
+                      </button>
+                    </td>
+                  </tr>
+                </tfoot>
+              ) : null}
             </table>
           </div>
         </div>
