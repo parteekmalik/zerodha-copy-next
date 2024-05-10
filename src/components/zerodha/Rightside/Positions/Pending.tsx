@@ -1,11 +1,9 @@
-import { useCallback, useContext, useMemo, useRef, useState } from "react";
+import { Edit } from "lucide-react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { api } from "~/trpc/react";
-import { RootState } from "../../_redux/store";
-import Table from "../Table/table";
 import BackndWSContext from "../../_contexts/backendWS/backendWS";
-import { Edit } from "lucide-react";
-import { $Enums } from "@prisma/client";
+import { RootState } from "../../_redux/store";
 
 const headings = [
   "Instrument",
@@ -137,26 +135,25 @@ function Pending({
     );
   } else return <>{JSON.stringify(ordersQuery.data)}</>;
 }
-export function Cell({
-  valueList,
-  Key,
-  updateTP_SL,
-}: {
-  valueList: {
-    id: number;
-    data: Record<string, string | number>;
-  };
-  updateTP_SL: (
-    orderid: string | number,
-    value: number,
-    type: "tp" | "sl",
-  ) => void;
-  Key: string;
-}) {
+export function Cell(
+  props: {
+    valueList: {
+      id: number;
+      data: Record<string, string | number>;
+    };
+    updateTP_SL: (
+      orderid: string | number,
+      value: number,
+      type: "tp" | "sl",
+    ) => void;
+    Key: string;
+  } & React.HTMLAttributes<HTMLTableCellElement>,
+) {
+  const { valueList, Key, updateTP_SL, ...rest } = props;
   const [isEdit, setisEdit] = useState(false);
   const [value, setvalue] = useState("");
   return !isEdit ? (
-    <td>
+    <td {...rest}>
       {valueList.data[Key]}
       {Key === "TP" || Key === "SL" ? (
         <button onClick={() => setisEdit(true)}>
@@ -200,3 +197,5 @@ export function Cell({
   );
 }
 export default Pending;
+
+

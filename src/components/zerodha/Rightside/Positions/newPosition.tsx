@@ -149,6 +149,12 @@ function Positions() {
                       {headings.map((key, index) => {
                         return (
                           <Cell
+                            className={
+                              " " +
+                              (options.current.colorIndex.includes(key)
+                                ? getColor(valueList.data[key] ?? 0)
+                                : " ")
+                            }
                             updateTP_SL={options.current.updateTP_SL}
                             Key={key}
                             valueList={valueList}
