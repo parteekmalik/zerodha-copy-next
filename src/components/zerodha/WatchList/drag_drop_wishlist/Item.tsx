@@ -1,7 +1,7 @@
 import { Reorder, useDragControls } from "framer-motion";
-import { TsymbolLive } from "~/components/zerodha/_redux/storeComponent";
 import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
 import { useState } from "react";
+import { TsymbolLive } from "../../_redux/Slices/Livestream";
 
 function Item({
   isup: diff,

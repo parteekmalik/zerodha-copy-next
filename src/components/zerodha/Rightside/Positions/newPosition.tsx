@@ -40,7 +40,7 @@ function Positions() {
     if (typeof ordersQuery.data !== "object") return ordersQuery.data;
     else {
       const res = ordersQuery.data.map((value) => {
-        const LTP = Livestream[value.name]?.curPrice ?? 0;
+        const LTP = Number(Livestream[value.name]?.curPrice) ?? 0;
         const PnL = LTP === 0 ? 0 : (LTP - value.openPrice) * value.quantity;
         const change = LTP === 0 ? 0 : (LTP / value.openPrice) * 100 - 100;
 
@@ -175,7 +175,7 @@ function Positions() {
                 })}
               </tbody>
               {dataList.length ? (
-                <tfoot className="text-center">
+                <tfoot className="bg-[#f9f9f9] text-center">
                   <tr>
                     <td colSpan={5}></td>
                     <td>Total</td>

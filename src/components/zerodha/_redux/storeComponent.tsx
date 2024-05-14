@@ -20,14 +20,7 @@ export type TsymbolTrade = {
   m: boolean;
   M: boolean;
 };
-export type TsymbolLive = {
-  symbol: string;
-  curPrice: number;
-  isup: boolean;
-  prevPrice?: number;
-  PriceChange?: string;
-  PriceChangePercent?: string;
-};
+
 // export interface IsymbolLiveContextComponentProps extends PropsWithChildren {}
 
 const StoreComponent: React.FunctionComponent = () => {
