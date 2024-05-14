@@ -4,8 +4,9 @@ import axios from "axios";
 export type TsymbolTrade = { curPrice: string; symbol: string };
 export type TsymbolLive = {
   symbol: string;
-  curPrice: number;
+  curPrice: string;
   isup: boolean;
+  decimal: number;
   prevPrice?: number;
   PriceChange?: string;
   PriceChangePercent?: string;
@@ -38,12 +39,18 @@ const LivestreamSlice = createSlice({
         if (!prev) return true;
         return parseFloat(curent) >= prev;
       };
+      const data = Livestream[payload.symbol];
+      const price = Number(payload.curPrice);
+      const decimal = Math.max(data?.decimal ?? 0, countDecimalPoints(price));
       let temp: TsymbolLive = {
         ...payload,
-        curPrice: Number(payload.curPrice),
-        isup: isup(payload.curPrice, Livestream[payload.symbol]?.curPrice),
+        curPrice: price.toFixed(decimal),
+        decimal,
+        isup: isup(
+          payload.curPrice,
+          Number(Livestream[payload.symbol]?.curPrice),
+        ),
       };
-      const data = Livestream[payload.symbol];
       if (data?.prevPrice)
         temp = { ...temp, ...getChange(data.prevPrice, data.curPrice) };
 
@@ -58,11 +65,14 @@ const LivestreamSlice = createSlice({
 
       action.payload.forEach((x: Tsymbol24hr) => {
         const data = LiveData[x.symbol];
+        const price = Number(x.curPrice);
+        const decimal = Math.max(data?.decimal ?? 0, countDecimalPoints(price));
         LiveData[x.symbol] = {
           ...(data ?? {
             symbol: x.symbol,
             isup: true,
-            curPrice: Number(x.curPrice),
+            decimal,
+            curPrice: price.toFixed(decimal),
           }),
           ...getChange(Number(x.prevPrice), Number(x.curPrice)),
         };
@@ -146,3 +156,20 @@ export const getLast24hrData = async (subscriptions: string[]) => {
       return [] as Tsymbol24hr[];
     });
 };
+function countDecimalPoints(number: number) {
+  // Convert the number to a string
+  const numberString = number.toString();
+
+  // Find the position of the decimal point
+  const decimalIndex = numberString.indexOf(".");
+
+  // If there's no decimal point, return 0
+  if (decimalIndex === -1) {
+    return 0;
+  }
+
+  // Calculate the count of decimal points
+  const decimalCount = numberString.length - decimalIndex - 1;
+
+  return decimalCount;
+}
