@@ -67,7 +67,7 @@ function Positions() {
   const closeOrderApi = api.Trades.closeOrders.useMutation({
     onSuccess(data, variables, context) {
       console.log(data, variables, context);
-      WSsendOrder("deleteOrder", variables);
+      WSsendOrder("order", data);
     },
     onSettled() {
       APIutils.Trades.getFilledTrades

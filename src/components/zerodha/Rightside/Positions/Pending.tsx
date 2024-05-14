@@ -70,7 +70,7 @@ function Pending({
   const cancelOrderApi = api.Trades.cancelTrade.useMutation({
     onSuccess(data, variables, context) {
       console.log(data, variables, context);
-      WSsendOrder("deleteOrder", variables);
+      WSsendOrder("order", data);
     },
     onSettled() {
       APIutils.Trades.getPendingTrades
