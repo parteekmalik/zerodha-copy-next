@@ -11,8 +11,8 @@ import {
 } from "~/components/zerodha/_redux/Slices/rightSideData";
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
-import { TsymbolLive } from "~/components/zerodha/_redux/storeComponent";
 import { api } from "~/trpc/react";
+import { TsymbolLive } from "../../_redux/Slices/Livestream";
 type IdataContextActions =
   | {
       type: "update_rightHandSide";

@@ -51,11 +51,15 @@ export const TradesRouter = createTRPCRouter({
       const Orders = await ctx.db.tradingAccount.findFirst({
         where: { id: input },
         select: {
-          Trades: { where: { status: { in: ["CLOSED", "CANCELLED"] } } },
+          Trades: {
+            where: { status: { in: ["CLOSED", "CANCELLED"] } },
+            orderBy: { openedAt: "asc" }, // Sort Trades in ascending order by openedAt date
+          },
         },
       });
+
       if (!Orders) return "error getting orders";
-      else return Orders.Trades.reverse();
+      else return Orders.Trades;
     }),
 
   cancelTrade: protectedProcedure
@@ -74,21 +78,24 @@ export const TradesRouter = createTRPCRouter({
       );
       return result;
     }),
+  // TODO: add option to recieve list of tradeids
   closeOrders: protectedProcedure
     .input(
       z.object({
-        orderids: z.union([z.number(), z.string()]),
+        orderids: z.array(z.union([z.number(), z.string()])),
         Taccounts: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const orderids = Number(input.orderids);
-      console.log(orderids);
-      const result = await closeOrderTranection(
-        ctx.db,
-        orderids,
-        input.Taccounts,
-      );
+      const result = [];
+      for (const orderid of input.orderids) {
+        const parsedOrderId = Number(orderid);
+        console.log(parsedOrderId);
+        result.push(
+          await closeOrderTranection(ctx.db, parsedOrderId, input.Taccounts),
+        );
+      }
+
       return result;
     }),
   updateTP_SL: protectedProcedure

@@ -165,7 +165,7 @@ export function Cell(
     <td>
       <div className="flex justify-center">
         <input
-          className="max-w-[50px] grow"
+          className="max-w-[50px] grow border border-black"
           type="number"
           value={value}
           onChange={(e) => setvalue(e.target.value)}
@@ -197,5 +197,3 @@ export function Cell(
   );
 }
 export default Pending;
-
-

@@ -6,6 +6,7 @@ import useSocket from "../../_hooks/useSocket";
 import { RootState } from "../../_redux/store";
 import { useToast } from "../Toast/toast-context";
 import { BackndWSContextProvider } from "./backendWS";
+import { api } from "~/trpc/react";
 
 const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
   props,
@@ -24,6 +25,8 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
       reconnectionDelay: 60000,
     },
   );
+  const APIutils = api.useUtils();
+
   useEffect(() => {
     if (toast && lastMessage) {
       console.log("lastMessage -> ", typeof lastMessage, lastMessage);
@@ -40,6 +43,15 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
           orderId: lastMessage.id,
           type: lastMessage.type,
         });
+        APIutils.Trades.getPendingTrades
+          .invalidate()
+          .catch((err) => console.log(err));
+        APIutils.Trades.getFilledTrades
+          .invalidate()
+          .catch((err) => console.log(err));
+        APIutils.getAccountInfo.getBalance
+          .invalidate()
+          .catch((err) => console.log(err));
       } else if (typeof lastMessage === "string") {
         setbackendServerConnection(lastMessage);
       }

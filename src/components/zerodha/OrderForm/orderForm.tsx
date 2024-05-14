@@ -89,16 +89,20 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
             orderId: msg.id,
             type: msg.type,
           });
-          if (msg.status === "PENDING") {
-            WSsendOrder("order", msg);
-          }
+          WSsendOrder("order", msg);
         }
       }
     },
     onSettled() {
-      APIutils.Trades.getPendingTrades.invalidate().catch(err=>console.log(err));
-      APIutils.Trades.getFilledTrades.invalidate().catch(err=>console.log(err));
-      APIutils.getAccountInfo.getBalance.invalidate().catch(err=>console.log(err));
+      APIutils.Trades.getPendingTrades
+        .invalidate()
+        .catch((err) => console.log(err));
+      APIutils.Trades.getFilledTrades
+        .invalidate()
+        .catch((err) => console.log(err));
+      APIutils.getAccountInfo.getBalance
+        .invalidate()
+        .catch((err) => console.log(err));
     },
   });
 
@@ -112,7 +116,7 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
       tp: Number(data.tp),
       // trigerType: isAvl.orderType,
       trigerType:
-        data.price >= (Livestream[data.symbolName]?.curPrice ?? 0)
+        data.price >= Number(Livestream[data.symbolName]?.curPrice ?? 0)
           ? "STOP"
           : data.price === 0
             ? "MARKET"
@@ -197,7 +201,7 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
                 if (!isSelected)
                   setValue(
                     "price",
-                    Livestream[watch().symbolName]?.curPrice ?? 0,
+                    Number(Livestream[watch().symbolName]?.curPrice) ?? 0,
                   );
                 else setValue("price", 0);
               }}

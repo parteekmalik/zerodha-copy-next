@@ -5,6 +5,7 @@ import { RootState } from "../_redux/store";
 
 import { $Enums } from "@prisma/client";
 import { getColor } from "../WatchList/drag_drop_wishlist/Item";
+import { sumByKey } from "~/lib/zerodha/utils";
 
 const stylesList = {
   padding: " p-[10px_12px] ",
@@ -43,13 +44,16 @@ function Order() {
         return {
           id: item.id,
           data: {
-            Time: item.openedAt.toTimeString().split(" ")[0] ?? "",
+            Time:
+              item.openedAt.toDateString().split(" ").slice(1).join(" ") +
+              item.openedAt.toTimeString().split(" ")[0],
             Type: item.type,
             Instrument: item.name,
             Quantity:
               (item.status === "CANCELLED" ? 0 : item.quantity) +
               `/${item.quantity}`,
             Price: item.openPrice,
+            closePrice: item.closePrice,
             Status: item.status,
             SL: item.sl,
             TP: item.tp,
@@ -88,7 +92,11 @@ function Order() {
                     <td
                       className={
                         " " +
-                        (colorIndex.current.includes(key)
+                        (colorIndex.current.includes(key) ||
+                        (key === "SL" &&
+                          valueList.data.closePrice === valueList.data.SL) ||
+                        (key === "TP" &&
+                          valueList.data.closePrice === valueList.data.TP)
                           ? getColor(valueList.data[key] ?? 0)
                           : " ")
                       }
@@ -102,7 +110,31 @@ function Order() {
             );
           })}
         </tbody>
-        <tfoot></tfoot>
+        <tfoot className="text-center bg-[#f9f9f9]">
+          <tr>
+            <td colSpan={6}></td>
+            <td>Total</td>
+            <td
+              className={getColor(
+                sumByKey(
+                  dataList.map((i) => {
+                    return { ...i.data };
+                  }),
+                  "P&L",
+                ),
+              )}
+            >
+              {sumByKey(
+                dataList.map((i) => {
+                  return { ...i.data };
+                }),
+                "P&L",
+              ).toFixed(2)}
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   );

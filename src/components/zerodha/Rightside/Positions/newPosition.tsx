@@ -50,7 +50,7 @@ function Positions() {
             Instrument: value.name,
             Quantity: value.quantity,
             Price: value.openPrice,
-            LTP,
+            LTP: Livestream[value.name]?.curPrice,
             SL: value.sl,
             TP: value.tp,
             "P&L": PnL.toFixed(2),
@@ -77,7 +77,7 @@ function Positions() {
   });
   const options = useRef({
     colorIndex: ["P&L", "change", "Quantity"],
-    selectedAction: (orderid: string | number) => {
+    selectedAction: (orderid: (string | number)[]) => {
       closeOrderApi.mutate({
         Taccounts: TradingAccountId,
         orderids: orderid,
@@ -104,7 +104,7 @@ function Positions() {
 
       if (typeof data === "string")
         toast?.open({ state: "error", errorMessage: data });
-      else
+      else {
         toast?.open({
           name: data.name,
           state: "update",
@@ -112,6 +112,8 @@ function Positions() {
           type: "BUY",
           quantity: data.quantity,
         });
+        WSsendOrder("order", data);
+      }
     },
     onSettled() {
       APIutils.Trades.getPendingTrades
@@ -164,7 +166,7 @@ function Positions() {
                       <td>
                         <button
                           onClick={() =>
-                            options.current.selectedAction(valueList.id)
+                            options.current.selectedAction([valueList.id])
                           }
                         >
                           x
@@ -200,8 +202,8 @@ function Positions() {
                     <td>
                       <button
                         onClick={() => {
-                          dataList.map((i) =>
-                            options.current.selectedAction(i.id),
+                          options.current.selectedAction(
+                            dataList.map((i) => i.id),
                           );
                         }}
                       >
