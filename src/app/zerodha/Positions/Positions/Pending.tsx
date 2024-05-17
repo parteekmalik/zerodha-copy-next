@@ -1,9 +1,9 @@
 import { Edit } from "lucide-react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
+import { RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
-import BackndWSContext from "../../_contexts/backendWS/backendWS";
-import { RootState } from "../../_redux/store";
 
 const headings = [
   "Instrument",

@@ -1,13 +1,15 @@
+"use client"
+
 import { useContext, useMemo, useRef } from "react";
 import { useSelector } from "react-redux";
 import { api } from "~/trpc/react";
-import BackndWSContext from "../../_contexts/backendWS/backendWS";
-import { RootState } from "../../_redux/store";
-import Pending, { Cell } from "./Pending";
+import Pending, { Cell } from "./Positions/Pending";
 
 import { sumByKey } from "~/lib/zerodha/utils";
-import { useToast } from "../../_contexts/Toast/toast-context";
-import { getColor } from "../../WatchList/drag_drop_wishlist/Item";
+import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
+import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
+import { RootState } from "~/components/zerodha/_redux/store";
+import { getColor } from "~/components/zerodha/WatchList/drag_drop_wishlist/Item";
 
 const headings = [
   "Instrument",

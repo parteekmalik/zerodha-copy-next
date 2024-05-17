@@ -1,10 +1,12 @@
+"use client"
+
 import React, { PropsWithChildren, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { z } from "zod";
 import { api } from "~/trpc/react";
-import InputDiv from "../OrderForm/InputDiv";
-import { shadowBox } from "../tcss";
+import InputDiv from "../../../components/zerodha/OrderForm/InputDiv";
+import { shadowBox } from "../../../components/zerodha/tcss";
 
 import Modal from "@mui/material/Modal";
 import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
@@ -144,7 +146,9 @@ function AddFunds({
       setData({ isvisible: false, label: "" });
     },
     onSettled() {
-      APIutils.getAccountInfo.getBalance.invalidate().catch(err=>console.log(err));
+      APIutils.getAccountInfo.getBalance
+        .invalidate()
+        .catch((err) => console.log(err));
     },
   });
   const {

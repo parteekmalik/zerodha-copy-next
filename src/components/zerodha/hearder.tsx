@@ -6,6 +6,7 @@ import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import WifiIcon from "./savages/WifiIcon";
 import { shadowBox } from "./tcss";
 import Image from "next/image";
+import Link from "next/link";
 
 type RightSideType =
   | "Dashboard"
@@ -91,7 +92,8 @@ function Header() {
             </div>
             <div className="flex grow justify-end gap-4">
               {rightSideItems.map((x: RightSideType) => (
-                <div
+                <Link
+                  href={"/zerodha/" + x}
                   className={
                     "cursor-pointer select-none px-[15px] text-center hover:text-[#ff5722] " +
                     (rightSide.type === x ? "text-[#ff5722]" : "")
@@ -102,7 +104,7 @@ function Header() {
                   key={x}
                 >
                   {x}
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -116,13 +118,15 @@ function Header() {
                 alt="filled-appointment-reminders"
               />
               <div className="flex cursor-pointer text-center ">
-                {(UserInfo.image && UserInfo.image !== "not_found") && <Image
-                  src={UserInfo.image ?? ""}
-                  alt="user-icon"
-                  className="mr-1 cursor-pointer select-none rounded-full"
-                  width={14}
-                  height={14}
-                />}
+                {UserInfo.image && UserInfo.image !== "not_found" && (
+                  <Image
+                    src={UserInfo.image ?? ""}
+                    alt="user-icon"
+                    className="mr-1 cursor-pointer select-none rounded-full"
+                    width={14}
+                    height={14}
+                  />
+                )}
                 <div>#{UserInfo?.name}</div>
               </div>
             </div>

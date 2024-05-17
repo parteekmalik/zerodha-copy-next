@@ -23,16 +23,13 @@ export type TorderForm = {
   tp: { isselected: boolean; price: number };
 };
 type TmarketType = "SPOT" | "MARGIN";
-interface ITempOrderForm {
-  symbol: string;
-  type: "BUY" | "SELL";
-}
-function TempOrderForm({ symbol, type }: ITempOrderForm) {
+
+function TempOrderForm() {
   // prettier-ignore
   const {
     register,
     handleSubmit,
-    setValue,
+    setValue, 
     watch,
     formState: { errors },
   } = useForm<{isMarketOrder: boolean; isSl: boolean; isTp: boolean;} & z.output<TFormSchema>>({
@@ -60,9 +57,9 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
   const Livestream = useSelector((state: RootState) => state.Livestream);
 
   useEffect(() => {
-    setValue("symbolName", symbol);
-    setValue("orderType", type);
-  }, [symbol, type]);
+    setValue("symbolName", FormData.symbol);
+    setValue("orderType", FormData.type);
+  }, [FormData]);
 
   const toast = useToast();
   const { WSsendOrder } = useContext(BackndWSContext);
@@ -130,7 +127,7 @@ function TempOrderForm({ symbol, type }: ITempOrderForm) {
       }),
     );
   };
-
+  if (!FormData.isvisible) return null;
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}

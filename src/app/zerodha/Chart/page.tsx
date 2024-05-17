@@ -1,17 +1,13 @@
 // TradingViewWidget.jsx
+"use client";
+
 import { memo, useEffect, useRef } from "react";
 
-function TradingViewWidget({
-  symbolName,
-  charteheight,
-}: {
-  symbolName: string;
-  charteheight: string;
-  chartewidth: string;
-}) {
+function TradingViewWidget() {
   // fix any type
+  const symbolName = "BTCUSDT",
+    charteheight = "";
   const container = useRef<HTMLDivElement | null>(null);
-
 
   useEffect(() => {
     if (container.current) {
@@ -27,8 +23,8 @@ function TradingViewWidget({
     script.async = true;
     script.innerHTML = `
         {
-          "height": "${charteheight}",
-          "width": "${charteheight}",
+          "height": "100%",
+          "width": "100%",
           "symbol": "${symbolName}",
           "interval": "5",
           "timezone": "Etc/UTC",
@@ -51,4 +47,4 @@ function TradingViewWidget({
   );
 }
 
-export default memo(TradingViewWidget);
+export default TradingViewWidget;

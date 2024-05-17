@@ -1,10 +1,11 @@
+"use client"
 import { useEffect, useMemo, useRef } from "react";
 import { useSelector } from "react-redux";
 import { api } from "~/trpc/react";
-import { RootState } from "../_redux/store";
+import { RootState } from "../../../components/zerodha/_redux/store";
 
 import { $Enums } from "@prisma/client";
-import { getColor } from "../WatchList/drag_drop_wishlist/Item";
+import { getColor } from "../../../components/zerodha/WatchList/drag_drop_wishlist/Item";
 import { sumByKey } from "~/lib/zerodha/utils";
 
 const stylesList = {
@@ -110,7 +111,7 @@ function Order() {
             );
           })}
         </tbody>
-        <tfoot className="text-center bg-[#f9f9f9]">
+        <tfoot className="bg-[#f9f9f9] text-center">
           <tr>
             <td colSpan={6}></td>
             <td>Total</td>
