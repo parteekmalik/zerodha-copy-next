@@ -1,12 +1,12 @@
-"use client"
+"use client";
 import { useEffect, useMemo, useRef } from "react";
 import { useSelector } from "react-redux";
 import { api } from "~/trpc/react";
-import { RootState } from "../../../components/zerodha/_redux/store";
 
 import { $Enums } from "@prisma/client";
-import { getColor } from "../../../components/zerodha/WatchList/drag_drop_wishlist/Item";
 import { sumByKey } from "~/lib/zerodha/utils";
+import { RootState } from "~/components/zerodha/_redux/store";
+import { getColor } from "~/components/zerodha/WatchList/drag_drop_wishlist/Item";
 
 const stylesList = {
   padding: " p-[10px_12px] ",

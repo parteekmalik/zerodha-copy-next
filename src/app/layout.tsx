@@ -3,7 +3,10 @@ import "~/styles/globals.css";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 
+import { redirect } from "next/navigation";
+import { getServerAuthSession } from "~/server/auth";
 import { TRPCReactProvider } from "~/trpc/react";
+import ContextLayer from "./page";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,16 +19,20 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerAuthSession();
+  if (!session) redirect("/login");
+  console.log(session);
+
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider cookies={cookies().toString()}>
-          {children}
+          <ContextLayer>{children}</ContextLayer>
         </TRPCReactProvider>
       </body>
     </html>

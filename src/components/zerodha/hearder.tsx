@@ -93,7 +93,7 @@ function Header() {
             <div className="flex grow justify-end gap-4">
               {rightSideItems.map((x: RightSideType) => (
                 <Link
-                  href={"/zerodha/" + x}
+                  href={"/" + x}
                   className={
                     "cursor-pointer select-none px-[15px] text-center hover:text-[#ff5722] " +
                     (rightSide.type === x ? "text-[#ff5722]" : "")

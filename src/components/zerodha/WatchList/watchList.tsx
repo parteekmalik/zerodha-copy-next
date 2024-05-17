@@ -1,14 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
+import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
 import { shadowBox } from "../tcss";
 import SymbolInWL from "./drag_drop_wishlist/symbolInWL";
 import SearchInput from "./search/searchInput";
-import SearchList from "./search/searchList";
 import WatchlistBittom from "./watchlistBittom";
-import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
-import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
-import { searchAndSort } from "~/app/zerodha/utils";
 
 export type Tsymbol = string;
 

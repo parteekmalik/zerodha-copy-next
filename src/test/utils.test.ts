@@ -1,6 +1,6 @@
 // math.test.ts
 
-import { parsePrice } from "../app/zerodha/utils";
+import { parsePrice } from "../app/utils";
 // const sample: TcalculateTradesSummaryFIFO[] = [
 //   {
 //     type: "BUY",

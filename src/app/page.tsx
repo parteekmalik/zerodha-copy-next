@@ -1,62 +1,60 @@
-import Link from "next/link";
-import { getServerAuthSession } from "~/server/auth";
-import { api } from "~/trpc/server";
-import { CreatePost } from "./create-post";
+"use client";
+import BackendWSContextComponent from "../components/zerodha/_contexts/backendWS/backendWSContextComponent";
+import { ToastProvider } from "../components/zerodha/_contexts/Toast/toast";
 
-export default async function BasePage() {
-  const hello = await api.post.hello.query({ text: "from tRPC" });
-  const session = await getServerAuthSession();
-  // const list = await api.accountInfo.watchList.query();
+import { redirect, usePathname } from "next/navigation";
+import { useMemo } from "react";
+import { Provider } from "react-redux";
+import Header from "~/components/zerodha/hearder";
+import TempOrderForm from "~/components/zerodha/OrderForm/orderForm";
+import WatchList from "~/components/zerodha/WatchList/watchList";
+import { store } from "../components/zerodha/_redux/store";
+import StoreComponent from "../components/zerodha/_redux/storeComponent";
 
+export default function ContextLayer({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const temp = usePathname();
+  const route = useMemo(() => {
+    const data = temp.split("/");
+
+    return data[data.length - 1];
+  }, [temp]);
+  if (route === "zerodha") {
+    redirect("/login");
+  }
   return (
-    <main className="flex h-screen flex-col items-center justify-center bg-blue-400">
-      <div className="flex flex-col items-center gap-2">
-        <p className="text-2xl text-white">
-          {hello ? hello.greeting : "Loading tRPC query..."}
-        </p>
-
-        <div className="flex flex-col items-center justify-center gap-4">
-          <p className="text-center text-2xl text-white">
-            {session && <span>Logged in as {session.user?.name}</span>}
-          </p>
-          <Link
-            href={session ? "/api/auth/signout" : "/api/auth/signin"}
-            className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-          >
-            {session ? "Sign out" : "Sign in"}
-          </Link>
-        </div>
-      </div>
-      <CrudShowcase />
-      <Link
-        href={"/zerodha"}
-        className="mt-2 rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-      >
-        zerodha
-      </Link>
-      <div className=" flex flex-col">
-        <div>{JSON.stringify(session)}</div>
-        {/* <div>{JSON.stringify(list)}</div> */}
-      </div>
-    </main>
-  );
-}
-
-async function CrudShowcase() {
-  const session = await getServerAuthSession();
-  if (!session?.user) return null;
-
-  const latestPost = await api.post.getLatest.query();
-
-  return (
-    <div className="w-full max-w-xs">
-      {latestPost ? (
-        <p className="truncate">Your most recent post: {latestPost.name}</p>
-      ) : (
-        <p>You have no posts yet.</p>
-      )}
-
-      <CreatePost />
-    </div>
+    <ToastProvider>
+      <Provider store={store}>
+        <BackendWSContextComponent>
+          <StoreComponent />
+          {route === "login" ? (
+            <>{children}</>
+          ) : (
+            <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center  justify-center overflow-hidden  bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
+              <Header />
+              <div className="text-red flex w-full max-w-[1536px] grow overflow-hidden ">
+                <WatchList />
+                <div className={" flex max-w-[1110px] grow "}>
+                  <div
+                    className="w-full overflow-y-auto overflow-x-hidden bg-white"
+                    style={{ scrollbarWidth: "none" }}
+                  >
+                    {children}
+                  </div>
+                </div>
+              </div>
+              <div className="w-full " style={{ wordWrap: "break-word" }}>
+                {/* {JSON.stringify({ ...dataState, loading })} */}
+                {/* {JSON.stringify(status)} */}
+              </div>
+              <TempOrderForm />
+            </main>
+          )}
+        </BackendWSContextComponent>
+      </Provider>
+    </ToastProvider>
   );
 }
