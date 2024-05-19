@@ -17,14 +17,14 @@ export const getAccountInfoRouter = createTRPCRouter({
       };
     }
   }),
-  getBalance: protectedProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      return await ctx.db.tradingAccount.findFirst({
-        where: { id: input },
-        select: { USDT_Free_balance: true, USDT_Locked_balance: true },
-      });
-    }),
+  getBalance: protectedProcedure.query(async ({ ctx }) => {
+    const TradingAccountId = await getTradingAccount(ctx);
+
+    return await ctx.db.tradingAccount.findFirst({
+      where: { id: TradingAccountId.id },
+      select: { USDT_Free_balance: true, USDT_Locked_balance: true },
+    });
+  }),
 });
 
 export function convert1D_2D(input: string[]): string[][] {

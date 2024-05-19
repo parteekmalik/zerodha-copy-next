@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { convert1D_2D } from "./accountInfo";
 import USDTBalance from "./USDTBalance";
+import { getTradingAccount } from "../Trades/utils/getTradingAccount";
 
 export const updateAccountInfoRouter = createTRPCRouter({
   updatePins: protectedProcedure
@@ -60,11 +61,20 @@ export const updateAccountInfoRouter = createTRPCRouter({
   addBalance: protectedProcedure
     .input(
       z.object({
-        account: z.string().min(1),
+        account: z.string().min(1).optional(),
         amount: z.number().min(-5000).max(5000),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return await USDTBalance(ctx.db, input);
+      if (input.account)
+        return await USDTBalance(ctx.db, {
+          account: input.account,
+          amount: input.amount,
+        });
+      const TradingAccountId = await getTradingAccount(ctx);
+      return await USDTBalance(ctx.db, {
+        account: TradingAccountId.id,
+        amount: input.amount,
+      });
     }),
 });
