@@ -6,6 +6,7 @@ import cancelOrderTranection from "./cancelTrade";
 import createOrderTransection from "./createTrade";
 import closeOrderTranection from "./closeTrade";
 import getLTP from "~/components/zerodha/OrderForm/getLTP";
+import { getTradingAccount } from "./utils/getTradingAccount";
 
 export const TradesRouter = createTRPCRouter({
   create: protectedProcedure
@@ -45,22 +46,21 @@ export const TradesRouter = createTRPCRouter({
       if (!Orders) return "error getting orders";
       else return Orders.Trades.reverse();
     }),
-  getCancel_ClosedTrades: protectedProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      const Orders = await ctx.db.tradingAccount.findFirst({
-        where: { id: input },
-        select: {
-          Trades: {
-            where: { status: { in: ["CLOSED", "CANCELLED"] } },
-            orderBy: { openedAt: "asc" }, // Sort Trades in ascending order by openedAt date
-          },
+  getCancel_ClosedTrades: protectedProcedure.query(async ({ ctx }) => {
+    const tradingAccount = await getTradingAccount(ctx);
+    const Orders = await ctx.db.tradingAccount.findFirst({
+      where: { id: tradingAccount.id },
+      select: {
+        Trades: {
+          where: { status: { in: ["CLOSED", "CANCELLED"] } },
+          orderBy: { openedAt: "asc" }, // Sort Trades in ascending order by openedAt date
         },
-      });
+      },
+    });
 
-      if (!Orders) return "error getting orders";
-      else return Orders.Trades;
-    }),
+    if (!Orders) return "error getting orders";
+    else return Orders.Trades;
+  }),
 
   cancelTrade: protectedProcedure
     .input(

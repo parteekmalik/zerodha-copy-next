@@ -1,12 +1,6 @@
-"use client";
-import { useEffect, useMemo, useRef } from "react";
-import { useSelector } from "react-redux";
-import { api } from "~/trpc/react";
-
-import { $Enums } from "@prisma/client";
 import { sumByKey } from "~/lib/zerodha/utils";
-import { RootState } from "~/components/zerodha/_redux/store";
-import { getColor } from "~/components/zerodha/WatchList/drag_drop_wishlist/Item";
+import { api } from "~/trpc/server";
+import { getColor } from "../utils";
 
 const stylesList = {
   padding: " p-[10px_12px] ",
@@ -27,18 +21,12 @@ const headings = [
   "Chenge",
   "Status",
 ];
-function Order() {
-  const TradingAccountId = useSelector(
-    (state: RootState) => state.UserInfo.TradingAccountId,
-  );
-  const { data: orders, isLoading } =
-    api.Trades.getCancel_ClosedTrades.useQuery(TradingAccountId);
+async function Order() {
+  const orders = await api.Trades.getCancel_ClosedTrades.query();
+  const colorIndex = ["P&L", "Chenge"];
 
-  const colorIndex = useRef(["P&L", "Chenge"]);
-
-  const dataList = useMemo(() => {
-    if (orders !== undefined && typeof orders !== "string")
-      return orders.map((item) => {
+  const dataList = Array.isArray(orders)
+    ? orders.map((item) => {
         const LTP = item.closePrice;
         const PnL = LTP === 0 ? 0 : (LTP - item.openPrice) * item.quantity;
         const change = LTP === 0 ? 0 : (LTP / item.openPrice) * 100 - 100;
@@ -62,12 +50,9 @@ function Order() {
             Chenge: change.toFixed(2) + "%",
           } as Record<string, string | number>,
         };
-      });
-    else return [];
-  }, [orders]);
-  useEffect(() => console.log(dataList), [dataList]);
+      })
+    : [];
 
-  if (isLoading) return <>loading...</>;
   if (typeof orders === "string" || orders === undefined) return <>{orders}</>;
   return (
     <div className="flex  h-full w-full flex-col">
@@ -93,7 +78,7 @@ function Order() {
                     <td
                       className={
                         " " +
-                        (colorIndex.current.includes(key) ||
+                        (colorIndex.includes(key) ||
                         (key === "SL" &&
                           valueList.data.closePrice === valueList.data.SL) ||
                         (key === "TP" &&

@@ -9,7 +9,7 @@ import { sumByKey } from "~/lib/zerodha/utils";
 import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
 import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { RootState } from "~/components/zerodha/_redux/store";
-import { getColor } from "~/components/zerodha/WatchList/drag_drop_wishlist/Item";
+import { getColor } from "../utils";
 
 const headings = [
   "Instrument",

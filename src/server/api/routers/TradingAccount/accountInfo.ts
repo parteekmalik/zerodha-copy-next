@@ -1,42 +1,12 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { getTradingAccount } from "../Trades/utils/getTradingAccount";
 
 export const getAccountInfoRouter = createTRPCRouter({
   getInitInfo: protectedProcedure.query(async ({ ctx }) => {
-    const Taccounts = (
-      await ctx.db.user.findFirst({
-        where: { name: ctx.session.user.name },
-        select: {
-          Taccounts: true,
-        },
-      })
-    )?.Taccounts[0];
-    console.log("checking trading account -> ", Taccounts);
-
-    if (!Taccounts) {
-      await ctx.db.$transaction(async (tx) => {
-        const res = await tx.tradingAccount.create({
-          data: {
-            User: { connect: { id: ctx.session.user.id } },
-          },
-        });
-        console.log("created new trading account -> ", res);
-        return res;
-      });
-    }
+    const data = await getTradingAccount(ctx);
     // return Taccounts;
-
-    const data = (
-      await ctx.db.user.findFirst({
-        where: { name: ctx.session.user.name },
-        select: {
-          Taccounts: {
-            select: { watchList: true, Pin0: true, Pin1: true, id: true },
-          },
-        },
-      })
-    )?.Taccounts[0];
 
     if (data) {
       const { watchList, Pin0, Pin1, id } = data;

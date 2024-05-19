@@ -4,7 +4,6 @@ import FormDataReducer from "./Slices/FormData";
 import LivestreamReducer from "./Slices/Livestream";
 import headerPinReducer from "./Slices/headerPin";
 import ordersReducer from "./Slices/orders";
-import rightSideReducer from "./Slices/rightSideData";
 import symbolsListReducer from "./Slices/symbolsList";
 import userInfoReducer from "./Slices/userInfo";
 import watchListReducer from "./Slices/watchList";
@@ -18,7 +17,6 @@ const middleware = [
 export const store = configureStore({
   reducer: {
     UserInfo: userInfoReducer,
-    rightSide: rightSideReducer,
     FormData: FormDataReducer,
     headerPin: headerPinReducer,
     orders: ordersReducer,

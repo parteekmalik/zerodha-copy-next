@@ -5,18 +5,20 @@ import {
   updateFormData,
 } from "~/components/zerodha/_redux/Slices/FormData";
 import { updateHeaderPin } from "~/components/zerodha/_redux/Slices/headerPin";
-import {
-  TrightSideType,
-  updateRightSide,
-} from "~/components/zerodha/_redux/Slices/rightSideData";
+
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
 import { TsymbolLive } from "../../_redux/Slices/Livestream";
+import { redirect, RedirectType } from "next/navigation";
 type IdataContextActions =
   | {
       type: "update_rightHandSide";
-      payload: TrightSideType;
+      payload: {
+        type: string;
+        symbol: string;
+        TimeFrame: string;
+      };
     }
   | {
       type: "update_watchList";
@@ -70,7 +72,6 @@ export function BaseSymbolLayout({
   );
 }
 export function HiddenLayout({ symbolName }: { symbolName: string }) {
-  const rightSide = useSelector((state: RootState) => state.rightSide);
   const FormData = useSelector((state: RootState) => state.FormData);
   const watchList = useSelector((state: RootState) => state.watchList);
   const dispatch = useDispatch<AppDispatch>();
@@ -121,7 +122,7 @@ export function HiddenLayout({ symbolName }: { symbolName: string }) {
       payload: {
         type: "update_rightHandSide",
         payload: {
-          type: "chart",
+          type: "Chart",
           symbol: symbolName,
           TimeFrame: "5",
         },
@@ -187,7 +188,12 @@ export function HiddenLayout({ symbolName }: { symbolName: string }) {
               if (payload) {
                 if ("type" in payload) {
                   if (payload.type === "update_rightHandSide")
-                    dispatch(updateRightSide(payload.payload));
+                    redirect(
+                      `Chart?symbol=${payload.payload.symbol.toUpperCase()}&TimeFrame=${
+                        payload.payload.TimeFrame
+                      }`,
+                      RedirectType.push,
+                    );
                   else if (payload.type === "update_FormData")
                     dispatch(updateFormData(payload.payload));
                 } else if ("Type" in payload) {

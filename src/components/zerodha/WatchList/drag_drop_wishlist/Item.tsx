@@ -2,6 +2,7 @@ import { Reorder, useDragControls } from "framer-motion";
 import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
 import { useState } from "react";
 import { TsymbolLive } from "../../_redux/Slices/Livestream";
+import { getColor } from "~/app/utils";
 
 function Item({
   isup: diff,
@@ -62,22 +63,6 @@ function Item({
   );
 }
 
-export const getColor = (diff: number | string | boolean) => {
-  if (typeof diff === "string") {
-    if (diff === "completed") {
-      diff = 1;
-    } else if (diff === "cancelled") {
-      diff = -1;
-    } else if (diff.endsWith("%")) diff = diff.split("%")[0] ?? "";
-  } else if (typeof diff === "boolean") diff = diff ? 1 : -1;
-  diff = Number(diff);
-  if (diff > 0) {
-    return "text-[#4caf50]";
-  } else if (diff < 0) {
-    return "text-[#df514c]";
-  } else {
-    return "";
-  }
-};
+
 
 export default Item;

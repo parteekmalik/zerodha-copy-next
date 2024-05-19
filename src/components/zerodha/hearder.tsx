@@ -1,12 +1,12 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
-import { updateRightSide } from "~/components/zerodha/_redux/Slices/rightSideData";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import WifiIcon from "./savages/WifiIcon";
 import { shadowBox } from "./tcss";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect, usePathname } from "next/navigation";
 
 type RightSideType =
   | "Dashboard"
@@ -28,11 +28,15 @@ function Header() {
   const headerPin = useSelector((state: RootState) => state.headerPin);
   const Livestream = useSelector((state: RootState) => state.Livestream);
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
-  const rightSide = useSelector((state: RootState) => state.rightSide);
   const dispatch = useDispatch<AppDispatch>();
 
   // ff5722
+  const temp = usePathname();
+  const route = useMemo(() => {
+    const data = temp.split("/");
 
+    return data[data.length - 1];
+  }, [temp]);
   return (
     <header
       className={" flex w-full justify-center bg-white text-xs " + shadowBox}
@@ -40,35 +44,19 @@ function Header() {
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
         <div className="flex h-full min-w-[430px] items-center justify-center gap-5 border-r">
           <div className="flex cursor-pointer gap-1 ">
-            <div
-              onClick={() => {
-                dispatch(
-                  updateRightSide({
-                    type: "chart",
-                    symbol: headerPin.Pin0.toUpperCase(),
-                    TimeFrame: "5",
-                  }),
-                );
-              }}
+            <Link
+              href={`Chart?symbol=${headerPin.Pin0.toUpperCase()}&TimeFrame=${5}`}
             >
               {headerPin.Pin0.toUpperCase()}
-            </div>
+            </Link>
             <div>{Livestream[headerPin.Pin0]?.curPrice}</div>
           </div>
           <div className="flex cursor-pointer gap-1">
-            <div
-              onClick={() => {
-                dispatch(
-                  updateRightSide({
-                    type: "chart",
-                    symbol: headerPin.Pin1.toUpperCase(),
-                    TimeFrame: "5",
-                  }),
-                );
-              }}
+            <Link
+              href={`Chart?symbol=${headerPin.Pin1.toUpperCase()}&TimeFrame=${5}`}
             >
               {headerPin.Pin1.toUpperCase()}
-            </div>
+            </Link>
             <div>{Livestream[headerPin.Pin1]?.curPrice}</div>
           </div>
         </div>
@@ -96,11 +84,8 @@ function Header() {
                   href={"/" + x}
                   className={
                     "cursor-pointer select-none px-[15px] text-center hover:text-[#ff5722] " +
-                    (rightSide.type === x ? "text-[#ff5722]" : "")
+                    (route === x ? "text-[#ff5722]" : "")
                   }
-                  onClick={() => {
-                    dispatch(updateRightSide({ type: x }));
-                  }}
                   key={x}
                 >
                   {x}

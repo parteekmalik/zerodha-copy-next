@@ -22,39 +22,41 @@ export default function ContextLayer({
 
     return data[data.length - 1];
   }, [temp]);
-  if (route === "zerodha") {
-    redirect("/login");
+  if (route === "") {
+    redirect("/Dashboard");
   }
   return (
-    <ToastProvider>
-      <Provider store={store}>
-        <BackendWSContextComponent>
-          <StoreComponent />
-          {route === "login" ? (
-            <>{children}</>
-          ) : (
-            <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center  justify-center overflow-hidden  bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
-              <Header />
-              <div className="text-red flex w-full max-w-[1536px] grow overflow-hidden ">
-                <WatchList />
-                <div className={" flex max-w-[1110px] grow "}>
-                  <div
-                    className="w-full overflow-y-auto overflow-x-hidden bg-white"
-                    style={{ scrollbarWidth: "none" }}
-                  >
-                    {children}
+    <>
+      {route === "login" ? (
+        <>{children}</>
+      ) : (
+        <ToastProvider>
+          <Provider store={store}>
+            <BackendWSContextComponent>
+              <StoreComponent />
+              <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center  justify-center overflow-hidden  bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
+                <Header />
+                <div className="text-red flex w-full max-w-[1536px] grow overflow-hidden ">
+                  <WatchList />
+                  <div className={" flex max-w-[1110px] grow "}>
+                    <div
+                      className="w-full overflow-y-auto overflow-x-hidden bg-white"
+                      style={{ scrollbarWidth: "none" }}
+                    >
+                      {children}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="w-full " style={{ wordWrap: "break-word" }}>
-                {/* {JSON.stringify({ ...dataState, loading })} */}
-                {/* {JSON.stringify(status)} */}
-              </div>
-              <TempOrderForm />
-            </main>
-          )}
-        </BackendWSContextComponent>
-      </Provider>
-    </ToastProvider>
+                <div className="w-full " style={{ wordWrap: "break-word" }}>
+                  {/* {JSON.stringify({ ...dataState, loading })} */}
+                  {/* {JSON.stringify(status)} */}
+                </div>
+                <TempOrderForm />
+              </main>
+            </BackendWSContextComponent>
+          </Provider>
+        </ToastProvider>
+      )}
+    </>
   );
 }
