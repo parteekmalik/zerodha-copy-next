@@ -60,8 +60,8 @@ function Header() {
             <div>{Livestream[headerPin.Pin1]?.curPrice}</div>
           </div>
         </div>
-        <div className="flex h-full grow items-center ">
-          <div className="flex  w-full border-r">
+        <div className="flex h-full grow items-center justify-between ">
+          <div className="flex  w-full ">
             <Image
               className="ml-[30px] mr-[20px] "
               src="https://kite.zerodha.com/static/images/kite-logo.svg"
@@ -78,23 +78,23 @@ function Header() {
                 size={"20px"}
               />
             </div>
-            <div className="flex grow justify-end gap-4">
-              {rightSideItems.map((x: RightSideType) => (
-                <Link
-                  href={"/" + x}
-                  className={
-                    "cursor-pointer select-none px-[15px] text-center hover:text-[#ff5722] " +
-                    (route === x ? "text-[#ff5722]" : "")
-                  }
-                  key={x}
-                >
-                  {x}
-                </Link>
-              ))}
-            </div>
           </div>
           <div className="flex h-full items-center  p-4">
             <div className="flex gap-4">
+              <div className=" border-r ">
+                {rightSideItems.map((x: RightSideType) => (
+                  <Link
+                    href={"/" + x}
+                    className={
+                      "cursor-pointer select-none px-[15px] text-center hover:text-[#ff5722] " +
+                      (route === x ? "text-[#ff5722]" : "")
+                    }
+                    key={x}
+                  >
+                    {x}
+                  </Link>
+                ))}
+              </div>
               <Image
                 className="cursor-pointer select-none"
                 width={14}
