@@ -81,7 +81,7 @@ function Header() {
           </div>
           <div className="flex h-full items-center  p-4">
             <div className="flex gap-4">
-              <div className=" border-r ">
+              <nav className=" border-r ">
                 {rightSideItems.map((x: RightSideType) => (
                   <Link
                     href={"/" + x}
@@ -94,7 +94,7 @@ function Header() {
                     {x}
                   </Link>
                 ))}
-              </div>
+              </nav>
               <Image
                 className="cursor-pointer select-none"
                 width={14}
