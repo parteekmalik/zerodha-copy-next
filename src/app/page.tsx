@@ -2,7 +2,7 @@
 import BackendWSContextComponent from "../components/zerodha/_contexts/backendWS/backendWSContextComponent";
 import { ToastProvider } from "../components/zerodha/_contexts/Toast/toast";
 
-import { redirect, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { Provider } from "react-redux";
 import Header from "~/components/zerodha/hearder";
@@ -16,6 +16,7 @@ export default function ContextLayer({
 }: {
   children: React.ReactNode;
 }) {
+  const reouter = useRouter();
   const temp = usePathname();
   const route = useMemo(() => {
     const data = temp.split("/");
@@ -23,7 +24,7 @@ export default function ContextLayer({
     return data[data.length - 1];
   }, [temp]);
   if (route === "") {
-    redirect("/Dashboard");
+    reouter.push("/Dashboard");
   }
   return (
     <>

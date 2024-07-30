@@ -11,7 +11,6 @@ import WatchlistBittom from "./watchlistBittom";
 export type Tsymbol = string;
 
 function WatchList() {
-  const symbolsList = useSelector((state: RootState) => state.symbolsList);
 
   const [search, setSearch] = useState({
     focus: false,
