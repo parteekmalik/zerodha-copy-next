@@ -23,9 +23,9 @@ export default function ContextLayer({
 
     return data[data.length - 1];
   }, [temp]);
-  if (route === "") {
-    reouter.push("/Dashboard");
-  }
+  // if (route === "") {
+  //   reouter.push("/Dashboard");
+  // }
   return (
     <>
       {route === "login" ? (
@@ -49,6 +49,7 @@ export default function ContextLayer({
                   </div>
                 </div>
                 <div className="w-full " style={{ wordWrap: "break-word" }}>
+                  {route}
                   {/* {JSON.stringify({ ...dataState, loading })} */}
                   {/* {JSON.stringify(status)} */}
                 </div>
