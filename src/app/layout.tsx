@@ -1,7 +1,7 @@
 import "~/styles/globals.css";
 
 import { Inter } from "next/font/google";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "~/server/auth";
@@ -26,7 +26,18 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerAuthSession();
-  console.log(session);
+  // console.log(getServerSideProps());
+  const headersList = headers();
+  const data = (headersList.get("x-current-path") || "not_loaded").split("/");
+  const route = () => {
+    return data[data.length - 1];
+  };
+  console.log(data, headersList);
+  console.log("session", session);
+  console.log(route());
+  if (!session && route() !== "not_loaded" && route() !== "login") {
+    redirect("/login");
+  }
 
   return (
     <html lang="en">

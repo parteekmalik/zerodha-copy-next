@@ -23,6 +23,9 @@ export default function ContextLayer({
 
     return data[data.length - 1];
   }, [temp]);
+
+  
+
   if (route === "") {
     reouter.push("/Dashboard");
   }
