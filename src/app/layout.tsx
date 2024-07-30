@@ -28,7 +28,7 @@ export default async function RootLayout({
   const session = await getServerAuthSession();
   // console.log(getServerSideProps());
   const headersList = headers();
-  const data = (headersList.get("x-current-path") || "not_loaded").split("/");
+  const data = (headersList.get("x-current-path") ?? "not_loaded").split("/");
   const route = () => {
     return data[data.length - 1];
   };
