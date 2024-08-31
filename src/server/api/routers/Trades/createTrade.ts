@@ -22,7 +22,7 @@ export default async function createOrderTransection({
   Taccount,
 }: createOrderInterface) {
   const BaseAssetName = input.symbolName.slice(0, -4).toUpperCase();
-  let baseAsset =
+  const baseAsset =
     (await db.assets.findUnique({
       where: {
         unique_TradingAccountId_name: {

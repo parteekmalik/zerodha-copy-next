@@ -34,26 +34,19 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
       if (typeof lastMessage === "object") {
         toast.open({
           name: lastMessage.name,
-          state:
-            lastMessage.status === "PENDING"
-              ? "placed"
-              : lastMessage.status !== "CANCELLED"
-                ? "sucess"
-                : "error",
+          state: lastMessage.status === "OPEN" ? "placed" : "sucess",
           quantity: lastMessage.quantity,
           orderId: lastMessage.id,
           type: lastMessage.type,
         });
-        APIutils.Order.getPendingTrades
+        APIutils.Order.getOrders.invalidate().catch((err) => console.log(err));
+        APIutils.Order.getRemainingFilledOrders
           .invalidate()
           .catch((err) => console.log(err));
-        APIutils.Order.getFilledTrades
-          .invalidate()
-          .catch((err) => console.log(err));
-        APIutils.getAccountInfo.getBalance
-          .invalidate()
-          .catch((err) => console.log(err));
-      } else if (typeof lastMessage === "string") {
+        // APIutils.getAccountInfo.getBalance
+        //   .invalidate()
+        //   .catch((err) => console.log(err));
+      } else if (lastMessage === "connected" || lastMessage === "disconneted") {
         setbackendServerConnection(lastMessage);
       }
     }

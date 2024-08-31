@@ -1,4 +1,4 @@
-import { Trades } from "@prisma/client";
+import { Order } from "@prisma/client";
 import { SocketOptions } from "dgram";
 import { useEffect, useState } from "react";
 import io, { ManagerOptions, Socket } from "socket.io-client";
@@ -7,7 +7,7 @@ interface SocketHook {
   socket: Socket | null;
   isConnected: boolean;
 }
-export type orderType = Trades;
+export type orderType = Order;
 const useSocket = (
   serverUrl: string,
   TradingAccountId: string,
@@ -16,8 +16,8 @@ const useSocket = (
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [lastMessage, setLastmessage] = useState<
-    orderType | "connected" | "disconneted" | null
-  >();
+    orderType | "connected" | "disconneted"
+  >("disconneted");
 
   useEffect(() => {
     const socketInstance = io(serverUrl, { ...opts });
