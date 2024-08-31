@@ -1,26 +1,16 @@
-"use client"
+"use client";
 
 import { useContext, useMemo, useRef } from "react";
 import { useSelector } from "react-redux";
 import { api } from "~/trpc/react";
-import Pending, { Cell } from "./Positions/Pending";
 
-import { sumByKey } from "~/lib/zerodha/utils";
 import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
 import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { RootState } from "~/components/zerodha/_redux/store";
+import { sumByKey } from "~/lib/zerodha/utils";
 import { getColor } from "../utils";
 
-const headings = [
-  "Instrument",
-  "Quantity",
-  "Price",
-  "SL",
-  "TP",
-  "LTP",
-  "P&L",
-  "change",
-];
+const headings = ["Instrument", "Quantity", "Price", "LTP", "P&L", "change"];
 const position_stylesList = {
   padding: " p-[10px_12px] ",
   table: " m-2 w-full ",
@@ -33,28 +23,32 @@ function Positions() {
   const TradingAccountId = useSelector(
     (state: RootState) => state.UserInfo.TradingAccountId,
   );
-  const ordersQuery = api.Trades.getFilledTrades.useQuery(TradingAccountId);
+  const ordersQuery = api.Order.getRemainingFilledOrders.useQuery().data;
   const APIutils = api.useUtils();
 
   const Livestream = useSelector((state: RootState) => state.Livestream);
 
   const dataList = useMemo(() => {
-    if (typeof ordersQuery.data !== "object") return ordersQuery.data;
+    if (typeof ordersQuery !== "object") return ordersQuery;
     else {
-      const res = ordersQuery.data.map((value) => {
-        const LTP = Number(Livestream[value.name]?.curPrice) ?? 0;
-        const PnL = LTP === 0 ? 0 : (LTP - value.openPrice) * value.quantity;
-        const change = LTP === 0 ? 0 : (LTP / value.openPrice) * 100 - 100;
+      const res = ordersQuery.map((asset) => {
+        const LTP =
+          Number(Livestream[asset.Orders[0]?.name ?? ""]?.curPrice) ?? 0;
+        const PnL =
+          LTP === 0
+            ? 0
+            : (LTP - asset.PositionDetails.avgPrice) *
+              asset.PositionDetails.quantity;
+        const change =
+          LTP === 0 ? 0 : (LTP / asset.PositionDetails.avgPrice) * 100 - 100;
 
         return {
-          id: value.id,
+          id: asset.id,
           data: {
-            Instrument: value.name,
-            Quantity: value.quantity,
-            Price: value.openPrice,
-            LTP: Livestream[value.name]?.curPrice,
-            SL: value.sl,
-            TP: value.tp,
+            Instrument: asset.name,
+            Quantity: asset.PositionDetails.quantity,
+            Price: asset.PositionDetails.avgPrice,
+            LTP,
             "P&L": PnL.toFixed(2),
             change: change.toFixed(2) + "%",
           } as Record<string, string | number>,
@@ -62,70 +56,33 @@ function Positions() {
       });
       return res;
     }
-  }, [ordersQuery.data, Livestream]);
+  }, [ordersQuery, Livestream]);
+  // useEffect(() => console.log(dataList), [dataList]);
 
   const { WSsendOrder } = useContext(BackndWSContext);
 
-  const closeOrderApi = api.Trades.closeOrders.useMutation({
+  const closeOrderApi = api.Order.cancelTrade.useMutation({
     onSuccess(data, variables, context) {
       console.log(data, variables, context);
       WSsendOrder("order", data);
     },
     onSettled() {
-      APIutils.Trades.getFilledTrades
+      APIutils.Order.getRemainingFilledOrders
         .invalidate()
         .catch((err) => console.log(err));
+      APIutils.Order.getOrders.invalidate().catch((err) => console.log(err));
     },
   });
   const options = useRef({
     colorIndex: ["P&L", "change", "Quantity"],
-    selectedAction: (orderid: (string | number)[]) => {
+    selectedAction: (orderid: number[]) => {
       closeOrderApi.mutate({
-        Taccounts: TradingAccountId,
         orderids: orderid,
-      });
-    },
-    updateTP_SL: (
-      orderid: string | number,
-      value: number,
-      type: "tp" | "sl",
-    ) => {
-      updateTP_SL_Api.mutate({
-        Taccounts: TradingAccountId,
-        orderids: orderid,
-        value,
-        type,
       });
     },
   });
   const toast = useToast();
 
-  const updateTP_SL_Api = api.Trades.updateTP_SL.useMutation({
-    onSuccess(data, variables, context) {
-      console.log(data, variables, context);
-
-      if (typeof data === "string")
-        toast?.open({ state: "error", errorMessage: data });
-      else {
-        toast?.open({
-          name: data.name,
-          state: "update",
-          orderId: data.id,
-          type: "BUY",
-          quantity: data.quantity,
-        });
-        WSsendOrder("order", data);
-      }
-    },
-    onSettled() {
-      APIutils.Trades.getPendingTrades
-        .invalidate()
-        .catch((err) => console.log(err));
-      APIutils.Trades.getFilledTrades
-        .invalidate()
-        .catch((err) => console.log(err));
-    },
-  });
   if (Array.isArray(dataList)) {
     return (
       <div className="flex h-full w-full flex-col bg-white">
@@ -142,7 +99,6 @@ function Positions() {
                   {headings.map((value) => {
                     return <th key={"heading" + value}>{value}</th>;
                   })}
-                  <th>close</th>
                 </tr>
               </thead>
               <tbody className={position_stylesList.body}>
@@ -151,29 +107,19 @@ function Positions() {
                     <tr className="hover:bg-[#f9f9f9]" key={valueList.id}>
                       {headings.map((key, index) => {
                         return (
-                          <Cell
+                          <td
                             className={
                               " " +
                               (options.current.colorIndex.includes(key)
                                 ? getColor(valueList.data[key] ?? 0)
                                 : " ")
                             }
-                            updateTP_SL={options.current.updateTP_SL}
-                            Key={key}
-                            valueList={valueList}
                             key={valueList.id + key}
-                          />
+                          >
+                            {valueList.data[key]}
+                          </td>
                         );
                       })}
-                      <td>
-                        <button
-                          onClick={() =>
-                            options.current.selectedAction([valueList.id])
-                          }
-                        >
-                          x
-                        </button>
-                      </td>
                     </tr>
                   );
                 })}
@@ -181,7 +127,7 @@ function Positions() {
               {dataList.length ? (
                 <tfoot className="bg-[#f9f9f9] text-center">
                   <tr>
-                    <td colSpan={5}></td>
+                    <td colSpan={3}></td>
                     <td>Total</td>
                     <td
                       className={getColor(
@@ -201,28 +147,15 @@ function Positions() {
                       ).toFixed(2)}
                     </td>
                     <td></td>
-                    <td>
-                      <button
-                        onClick={() => {
-                          options.current.selectedAction(
-                            dataList.map((i) => i.id),
-                          );
-                        }}
-                      >
-                        x
-                      </button>
-                    </td>
                   </tr>
                 </tfoot>
               ) : null}
             </table>
           </div>
         </div>
-        <Pending updateTP_SL={options.current.updateTP_SL} />
-        <div className="grow"></div>
       </div>
     );
-  } else return <>{JSON.stringify(ordersQuery.data)} Loading...</>;
+  } else return <>{JSON.stringify(ordersQuery)} Loading...</>;
 }
 
 export default Positions;

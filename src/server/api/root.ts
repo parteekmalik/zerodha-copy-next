@@ -1,7 +1,6 @@
-import { postRouter } from "~/server/api/routers/post";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { SymbolList } from "./routers/symbolList";
-import { TradesRouter } from "./routers/Trades/Trades";
+import { OrderRouter } from "./routers/Trades/Order";
 import { getAccountInfoRouter } from "./routers/TradingAccount/accountInfo";
 import { updateAccountInfoRouter } from "./routers/TradingAccount/UpdateaccountInfo";
 
@@ -11,10 +10,9 @@ import { updateAccountInfoRouter } from "./routers/TradingAccount/UpdateaccountI
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
   getAccountInfo: getAccountInfoRouter,
   upadteAccountInfo: updateAccountInfoRouter,
-  Trades: TradesRouter,
+  Order: OrderRouter,
   symbolList: SymbolList,
 });
 

@@ -11,7 +11,6 @@ import WatchlistBittom from "./watchlistBittom";
 export type Tsymbol = string;
 
 function WatchList() {
-
   const [search, setSearch] = useState({
     focus: false,
     matchingSymbol: [""],
@@ -73,9 +72,7 @@ function WatchList() {
           />
         </div>
       </div>
-      <div className="min-h-[50px]">
-        <WatchlistBittom />
-      </div>
+      <WatchlistBittom />
     </div>
   );
 }

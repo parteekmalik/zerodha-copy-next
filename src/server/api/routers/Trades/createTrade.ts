@@ -1,108 +1,100 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import getLTP from "~/components/zerodha/OrderForm/getLTP";
-import getBaseAssetDetails from "./utils/getBaseAssetDetails";
+import createAsset from "./utils/createAsset";
 
 // TODO: add logic for limit orders (add lockedBalance)
-export default async function createOrderTransection(
-  db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+type createOrderInterface = {
+  db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>;
   input: {
     orderType: "BUY" | "SELL";
     trigerType: "LIMIT" | "STOP" | "MARKET";
     quantity: number;
     price: number;
-    sl: number;
-    tp: number;
     symbolName: string;
     marketType: "SPOT" | "MARGIN";
-  },
-  Taccounts: {
-    id: string;
-  },
-) {
-  const transection = await db.$transaction(async (tx) => {
-    const BaseAssetName = input.symbolName.slice(0, -4).toUpperCase();
-
-    const assets = (
-      await tx.tradingAccount.findUnique({
-        where: { id: Taccounts.id },
-        select: { TradeAssets: { include: { Trades: true } } },
-      })
-    )?.TradeAssets;
-
-    const USDT_Free_balance = (
-      await tx.tradingAccount.findUnique({
-        where: { id: Taccounts.id },
-        select: { USDT_Free_balance: true },
-      })
-    )?.USDT_Free_balance;
-    if (!USDT_Free_balance || !assets) {
-      return "order creation transection failed";
-    }
-
-    const BaseAssetDetails = await getBaseAssetDetails(
-      tx,
-      assets,
-      Taccounts.id,
-      BaseAssetName,
-    );
-    if (!BaseAssetDetails) return "server unexpected error";
-
-    const curPrice = await getLTP(input.symbolName);
-    const requiredBalaceForOrder =
-      (input.trigerType === "MARKET" ? curPrice : input.price) * input.quantity;
-
-    if (USDT_Free_balance < requiredBalaceForOrder) {
-      return "INsuffficient balance";
-    }
-
-    const CreatedTrade = await tx.trades.create({
-      data: {
-        name: input.symbolName,
-        type: input.orderType,
-        status: input.trigerType === "MARKET" ? "FILLED" : "PENDING",
-        triggerType: input.trigerType,
-        openPrice: input.trigerType === "MARKET" ? curPrice : input.price,
-        quantity: input.quantity,
-        TradingAccountId: Taccounts.id,
-        tradeAssetsId: BaseAssetDetails.id,
+  };
+  Taccount: string;
+};
+export default async function createOrderTransection({
+  db,
+  input,
+  Taccount,
+}: createOrderInterface) {
+  const BaseAssetName = input.symbolName.slice(0, -4).toUpperCase();
+  let baseAsset =
+    (await db.assets.findUnique({
+      where: {
+        unique_TradingAccountId_name: {
+          TradingAccountId: Taccount,
+          name: BaseAssetName,
+        },
       },
-    });
-    
-    if (input.trigerType === "MARKET") {
-      await tx.tradeAssets.update({
-        where: { id: BaseAssetDetails.id },
+    })) ?? (await createAsset(db, Taccount, 0, BaseAssetName));
+
+  const usdtAsset =
+    (await db.assets.findUnique({
+      where: {
+        unique_TradingAccountId_name: {
+          TradingAccountId: Taccount,
+          name: "USDT",
+        },
+      },
+    })) ?? (await createAsset(db, Taccount, 100000, "USDT"));
+
+  const price =
+    input.trigerType === "MARKET"
+      ? await getLTP(input.symbolName)
+      : input.price;
+  if (!price || !usdtAsset) return "server error";
+  const requiredBalaceForOrder =
+    input.orderType === "SELL" ? input.quantity : price * input.quantity;
+  const BalsnceAvailable =
+    input.orderType === "SELL" ? baseAsset.freeAmount : usdtAsset.freeAmount;
+  console.log(BalsnceAvailable, requiredBalaceForOrder);
+  if (BalsnceAvailable < requiredBalaceForOrder)
+    return "insufficent asset" + BalsnceAvailable + requiredBalaceForOrder;
+
+  return db.$transaction(async (tx) => {
+    if (input.trigerType !== "MARKET")
+      await tx.assets.update({
+        where: {
+          unique_TradingAccountId_name: {
+            TradingAccountId: Taccount,
+            name: input.orderType === "BUY" ? usdtAsset.name : BaseAssetName,
+          },
+        },
         data: {
           freeAmount: {
-            increment: input.quantity,
+            decrement: requiredBalaceForOrder,
+          },
+          lockedAmount: {
+            increment: requiredBalaceForOrder,
           },
         },
       });
-
-      await tx.tradingAccount.update({
-        where: { id: Taccounts.id },
-        data: {
-          USDT_Free_balance: {
-            decrement: input.quantity * curPrice,
-          },
-        },
-      });
-    } else {
-      await tx.tradingAccount.update({
-        where: { id: Taccounts.id },
-        data: {
-          USDT_Locked_balance: {
-            increment: input.quantity * input.price,
-          },
-          USDT_Free_balance: {
-            decrement: input.quantity * input.price,
-          },
-        },
-      });
-    }
-    //complete transection
-
-    return CreatedTrade;
+    // console.log({
+    //   price,
+    //   type: input.orderType,
+    //   triggerType: input.trigerType,
+    //   name: input.symbolName,
+    //   quantity: input.quantity,
+    //   status: input.trigerType === "MARKET" ? "COMPLETED" : "OPEN",
+    //   TradingAccountId: Taccount,
+    //   AssetsId: baseAsset.id,
+    // });
+    // console.log(tx.order.create);
+    return await tx.order.create({
+      data: {
+        price,
+        type: input.orderType,
+        triggerType: input.trigerType,
+        name: input.symbolName,
+        quantity: input.quantity,
+        status: input.trigerType === "MARKET" ? "COMPLETED" : "OPEN",
+        TradingAccountId: Taccount,
+        AssetsId: baseAsset.id,
+      },
+    });
   });
-  return transection;
 }

@@ -6,24 +6,19 @@ import { getTradingAccount } from "../Trades/utils/getTradingAccount";
 export const getAccountInfoRouter = createTRPCRouter({
   getInitInfo: protectedProcedure.query(async ({ ctx }) => {
     const data = await getTradingAccount(ctx);
-    // return Taccounts;
 
     if (data) {
       const { watchList, Pin0, Pin1, id } = data;
       return {
         userInfo: { ...ctx.session.user, TradingAccountId: id },
-        watchList: convert1D_2D(watchList ?? []),
-        Pins: { Pin0: Pin0 ?? "BTCUSDT", Pin1: Pin1 ?? "ETHUSDT" },
+        watchList: convert1D_2D(watchList),
+        Pins: { Pin0: Pin0, Pin1: Pin1 },
+        WalletBalances: data.Assets,
       };
     }
   }),
-  getBalance: protectedProcedure.query(async ({ ctx }) => {
-    const TradingAccountId = await getTradingAccount(ctx);
-
-    return await ctx.db.tradingAccount.findFirst({
-      where: { id: TradingAccountId.id },
-      select: { USDT_Free_balance: true, USDT_Locked_balance: true },
-    });
+  getAllBalance: protectedProcedure.query(async ({ ctx }) => {
+    return (await getTradingAccount(ctx)).Assets;
   }),
 });
 

@@ -22,6 +22,7 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
     env.NEXT_PUBLIC_BACKEND_WS,
     UserInfo.TradingAccountId,
     {
+      reconnection: false,
       reconnectionDelay: 60000,
     },
   );
@@ -43,10 +44,10 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
           orderId: lastMessage.id,
           type: lastMessage.type,
         });
-        APIutils.Trades.getPendingTrades
+        APIutils.Order.getPendingTrades
           .invalidate()
           .catch((err) => console.log(err));
-        APIutils.Trades.getFilledTrades
+        APIutils.Order.getFilledTrades
           .invalidate()
           .catch((err) => console.log(err));
         APIutils.getAccountInfo.getBalance

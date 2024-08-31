@@ -19,8 +19,6 @@ export type TorderForm = {
   orderType: "BUY" | "SELL";
   quantity: number;
   price: number;
-  sl: { isselected: boolean; price: number };
-  tp: { isselected: boolean; price: number };
 };
 type TmarketType = "SPOT" | "MARGIN";
 
@@ -34,8 +32,6 @@ function TempOrderForm() {
     formState: { errors },
   } = useForm<{isMarketOrder: boolean; isSl: boolean; isTp: boolean;} & z.output<TFormSchema>>({
     defaultValues: {
-      sl: 0,
-      tp: 0,
       price: 0,
       quantity: 1,
       symbolName: "symbol",
@@ -64,7 +60,7 @@ function TempOrderForm() {
   const toast = useToast();
   const { WSsendOrder } = useContext(BackndWSContext);
 
-  const orderapi = api.Trades.create.useMutation({
+  const orderapi = api.Order.createOrder.useMutation({
     onSuccess: (msg) => {
       if (msg && toast) {
         console.log("mutation nsucess -> ", msg);
@@ -77,9 +73,9 @@ function TempOrderForm() {
           toast.open({
             name: msg.name,
             state:
-              msg.status === "PENDING"
+              msg.status === "OPEN"
                 ? "placed"
-                : msg.status === "FILLED" || msg.status === "CLOSED"
+                : msg.status === "COMPLETED" || msg.status === "CANCELLED"
                   ? "sucess"
                   : "error",
             quantity: msg.quantity,
@@ -91,13 +87,8 @@ function TempOrderForm() {
       }
     },
     onSettled() {
-      APIutils.Trades.getPendingTrades
-        .invalidate()
-        .catch((err) => console.log(err));
-      APIutils.Trades.getFilledTrades
-        .invalidate()
-        .catch((err) => console.log(err));
-      APIutils.getAccountInfo.getBalance
+      APIutils.Order.getOrders.invalidate().catch((err) => console.log(err));
+      APIutils.getAccountInfo.getAllBalance
         .invalidate()
         .catch((err) => console.log(err));
     },
@@ -109,8 +100,8 @@ function TempOrderForm() {
       ...data,
       price: Number(data.price),
       quantity: Number(data.quantity),
-      sl: Number(data.sl),
-      tp: Number(data.tp),
+      // sl: Number(data.sl),
+      // tp: Number(data.tp),
       // trigerType: isAvl.orderType,
       trigerType:
         data.price >= Number(Livestream[data.symbolName]?.curPrice ?? 0)
@@ -205,8 +196,8 @@ function TempOrderForm() {
             />
           </div>
         </div>
-        <div className="flex ">
-          <div className="flex flex-col items-end ">
+        {/* <div className="flex "> */}
+        {/* <div className="flex flex-col items-end ">
             <InputDiv
               Type="float"
               data={{
@@ -226,8 +217,8 @@ function TempOrderForm() {
                 }}
               />
             </div>
-          </div>
-          <div className="flex flex-col items-end ">
+          </div> */}
+        {/* <div className="flex flex-col items-end ">
             <InputDiv
               Type="float"
               data={{
@@ -247,8 +238,8 @@ function TempOrderForm() {
                 }}
               />
             </div>
-          </div>
-        </div>
+          </div> */}
+        {/* </div> */}
       </div>
 
       <div className="relative flex w-full gap-2 bg-[rgb(249,249,249)] p-[15px_20px] text-[#444444] ">

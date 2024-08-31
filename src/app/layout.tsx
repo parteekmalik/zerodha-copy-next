@@ -32,11 +32,11 @@ export default async function RootLayout({
   const route = () => {
     return data[data.length - 1];
   };
-  console.log(data, headersList);
+  // console.log(data, headersList);
   console.log("session", session);
   console.log(route());
-  if (!session && route() !== "not_loaded" && route() !== "login") {
-    redirect("/login");
+  if (!session && route() !== "not_loaded" && route() !== "login" && route() !== "logout") {
+    redirect("/api/auth/signin");
   }
 
   return (

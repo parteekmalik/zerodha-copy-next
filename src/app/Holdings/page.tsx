@@ -9,22 +9,8 @@ export default function DefaultComonent() {
   const subsciptions = useSelector(
     (state: RootState) => state.BinanceWSStats.subsciptions,
   );
+  const orders = 0;
+  return <div className="">
 
-  return (
-    <div className="text-">
-      <div>
-        {Object.keys(Livestream).map((key) => {
-          const item = Livestream[key];
-          return (
-            <div className="" key={key}>
-              {JSON.stringify(item)}
-            </div>
-          );
-        })}
-      </div>
-      {/* <div>{symbolLiveState.Livestream}</div> */}
-      <div>{JSON.stringify(Object.keys(symbolsList))}</div>
-      <div>{JSON.stringify(Object.keys(subsciptions))}</div>
-    </div>
-  );
+  </div>;
 }

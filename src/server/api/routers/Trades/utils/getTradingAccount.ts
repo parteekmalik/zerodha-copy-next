@@ -1,6 +1,8 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import { JWT } from "next-auth/jwt";
+import { db } from "~/server/db";
+import createTradingAccount from "./createTradingAccount";
 
 export async function getTradingAccount(ctx: {
   session: {
@@ -17,21 +19,18 @@ export async function getTradingAccount(ctx: {
   headers: Headers;
   db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>;
 }) {
-  const Taccounts = (
-    await ctx.db.user.findFirst({
-      where: { name: ctx.session.user.name },
+  let Taccounts = (
+    await ctx.db.user.findUnique({
+      where: { id: ctx.session.user.id },
       select: {
-        Taccounts: true,
+        Taccounts: { include: { Assets: true } },
       },
     })
-  )?.Taccounts[0];
+  )?.Taccounts;
   console.log("checking trading account -> ", Taccounts);
 
   if (!Taccounts) {
-    return await ctx.db.tradingAccount.create({
-      data: {
-        User: { connect: { id: ctx.session.user.id } },
-      },
-    });
-  } else return Taccounts;
+    Taccounts = await createTradingAccount(db, ctx.session.user.id);
+  }
+  return Taccounts;
 }
