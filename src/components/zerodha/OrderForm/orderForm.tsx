@@ -242,7 +242,7 @@ function TempOrderForm() {
         {/* </div> */}
       </div>
 
-      <div className="relative flex w-full gap-2 bg-[rgb(249,249,249)] p-[15px_20px] text-[#444444] ">
+      <div className="text-textDark relative flex w-full gap-2 bg-[rgb(249,249,249)] p-[15px_20px] ">
         <div className="flex grow gap-1">
           <div className="flex gap-1">
             <p>Total </p> <div className={"" + style.textcolor}>${10}</div>
@@ -261,7 +261,7 @@ function TempOrderForm() {
             value={watch().orderType}
           />
           <div
-            className="cursor-pointer border border-[#444444] bg-white p-[8px_12px] text-[#444444] hover:bg-[#444444] hover:text-white"
+            className="text-textDark cursor-pointer border border-[#444444] bg-white p-[8px_12px] hover:bg-[#444444] hover:text-white"
             onClick={() =>
               dispatch(
                 updateFormData({

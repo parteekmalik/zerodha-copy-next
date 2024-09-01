@@ -7,7 +7,7 @@ const stylesList = {
   padding: " p-[10px_12px] ",
   table: "m-2 w-full",
   head: "border-b-2 text-[.75rem]  text-[#9b9b9b]",
-  body: "text-center text-[14px] text-[#444444]",
+  body: "text-center text-[14px] text-textDark",
   row: { Price: " border-r " },
 };
 const headings: Array<keyof TOrder> = [
@@ -37,7 +37,7 @@ function Order() {
   return (
     <div className="flex  h-full w-full flex-col">
       <div className="flex w-full p-2">
-        <span className="grow text-[1.125rem] text-[#444444]">
+        <span className="text-textDark grow text-[1.125rem]">
           Pending Trades ({openOrders.length})
         </span>
       </div>
@@ -78,7 +78,7 @@ function Order() {
         </tbody>
       </table>
       <div className="flex w-full p-2">
-        <span className="grow text-[1.125rem] text-[#444444]">
+        <span className="text-textDark grow text-[1.125rem]">
           Executed Trades ({closedOrders.length})
         </span>
       </div>

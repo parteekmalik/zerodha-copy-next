@@ -15,7 +15,7 @@ const position_stylesList = {
   padding: " p-[10px_12px] ",
   table: " m-2 w-full ",
   head: " border-b-2 text-[.75rem]  text-[#9b9b9b] ",
-  body: " text-center text-[14px] text-[#444444] ",
+  body: " text-center text-[14px] text-textDark ",
   row: { LTP: " border-r " },
 };
 
@@ -88,7 +88,7 @@ function Positions() {
       <div className="flex h-full w-full flex-col bg-white">
         <div className="w-full ">
           <div className="flex w-full p-2">
-            <span className="grow text-[1.125rem] text-[#444444]">
+            <span className="text-textDark grow text-[1.125rem]">
               Open Trades ({dataList.length})
             </span>
           </div>
