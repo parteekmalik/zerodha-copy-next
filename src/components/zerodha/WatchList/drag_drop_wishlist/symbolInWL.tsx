@@ -70,7 +70,7 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
           alt="Market Watch"
         />
         <div className=" mb-[20px]">
-          <h2 className="text-center text-[1.225rem] text-[#444444]">
+          <h2 className="text-textDark text-center text-[1.225rem]">
             Nothing here
           </h2>
           <p className="text-center text-[.8125rem] text-[#9b9b9b]">
