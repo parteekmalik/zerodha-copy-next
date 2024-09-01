@@ -19,6 +19,12 @@ const config = {
     },
     extend: {
       colors: {
+        lightGrayApp: "#f9f9f9",
+        darkGrayApp: "#9b9b9b",
+        borderGrayApp: "#eeeeee",
+        borderDarkGrayApp: "#444444",
+        orangeApp: "#ff5722",
+        blueApp: "#4184f3",
         textDark: "#444444",
         greenApp: "#4caf50",
         redApp: "#df514c",

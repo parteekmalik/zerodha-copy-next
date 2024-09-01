@@ -8,7 +8,7 @@ async function Funds() {
   return (
     <div className="h-full w-full bg-white p-[30px_20px]">
       <div className="mb-3 flex justify-end gap-5">
-        <span className=" flex items-center text-[.75rem] text-[#9b9b9b]">
+        <span className=" flex items-center text-xs text-darkGrayApp">
           Instant, zerro-cost fund transfers with fake money
         </span>
         <div className="test-[.925rem] flex gap-1 text-white">
@@ -19,7 +19,7 @@ async function Funds() {
         <div className="w-[48%] ">
           <h3 className="mx-1 my-3 flex">
             <div className="grow text-[1.17em]">Equity</div>
-            <div className="flex gap-2 text-[.625rem] text-[#4184f3]">
+            <div className="flex gap-2 text-[.625rem] text-blueApp">
               <div>View Statement</div>
               <div>Help</div>
             </div>
@@ -79,7 +79,7 @@ function MainBox(props: {
               className={
                 " p-[10px_12px] " +
                 Style[1] +
-                (i === 0 && isMain ? " text-[#4184f3] " : "")
+                (i === 0 && isMain ? " text-blueApp " : "")
               }
             >
               {Number(item.value).toFixed(2)}
@@ -100,7 +100,7 @@ const ListBox = (props: IListBox) => {
   return (
     <div
       className={
-        "w-full border border-[#eeeeee] bg-white p-[20px] text-[.875rem] " +
+        "w-full border border-borderGrayApp bg-white p-[20px] text-[.875rem] " +
         Style.textColor +
         " " +
         shadowBox

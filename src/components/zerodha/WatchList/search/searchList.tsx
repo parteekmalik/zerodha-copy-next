@@ -58,7 +58,7 @@ function SearchList({
           <div
             className={
               "flex w-full  p-[6px_15px] " +
-              (i === search.Selected ? " bg-[#f9f9f9]" : " bg-white")
+              (i === search.Selected ? " bg-lightGrayApp" : " bg-white")
             }
             onMouseDown={(e) => {
               // console.log("mouse click")

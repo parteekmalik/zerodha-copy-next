@@ -13,13 +13,13 @@ function Update_balance() {
   return (
     <>
       <div
-        className="rounded bg-[#4caf50] p-[8px_20px] hover:cursor-pointer "
+        className="rounded bg-greenApp p-[8px_20px] hover:cursor-pointer "
         onClick={(e) => setData({ isvisible: true, label: "Add funds" })}
       >
         Add funds
       </div>
       <div
-        className="rounded bg-[#4184f3] p-[8px_20px] hover:cursor-pointer "
+        className="rounded bg-blueApp p-[8px_20px] hover:cursor-pointer "
         onClick={(e) => setData({ isvisible: true, label: "Withdraw" })}
       >
         Withdraw
@@ -82,7 +82,7 @@ function AddFunds({
           amount: value * (label === "Withdraw" ? -1 : 1),
         });
       }}
-      className=" fixed left-[50vw] top-[50vh] z-20   rounded bg-[#f9f9f9] p-[10px_12px]"
+      className=" fixed left-[50vw] top-[50vh] z-20   rounded bg-lightGrayApp p-[10px_12px]"
     >
       <div className="flex flex-col gap-2">
         <input
@@ -91,7 +91,7 @@ function AddFunds({
           type="number"
         />
         <input
-          className=" rounded bg-[#4caf50] p-[8px_20px] hover:cursor-pointer "
+          className=" rounded bg-greenApp p-[8px_20px] hover:cursor-pointer "
           type="submit"
           value={label}
         />

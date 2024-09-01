@@ -87,7 +87,7 @@ export function HiddenLayout({ symbolName }: { symbolName: string }) {
       | { Type: "Supdate_Pins"; pos: number };
   }[] = [
     {
-      bgcolor: "bg-[#4184f3]",
+      bgcolor: "bg-blueApp",
       text_color: "text-white",
       text: "B",
       payload: {
@@ -102,7 +102,7 @@ export function HiddenLayout({ symbolName }: { symbolName: string }) {
     },
     {
       text_color: "text-white",
-      bgcolor: "bg-[#ff5722]",
+      bgcolor: "bg-orangeApp",
 
       text: "S",
       payload: {

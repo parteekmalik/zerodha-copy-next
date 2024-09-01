@@ -37,7 +37,7 @@ export default function ContextLayer({
           <Provider store={store}>
             {/* <BackendWSContextComponent> */}
             <StoreComponent />
-            <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center  justify-center overflow-hidden  bg-[#f9f9f9] font-['Open_Sans','sans-serif']  ">
+            <main className=" max-w-screen bg-lightGrayApp flex h-screen max-h-screen w-screen flex-col  items-center justify-center  overflow-hidden font-['Open_Sans','sans-serif']  ">
               <Header />
               <div className="text-red flex w-full max-w-[1536px] grow overflow-hidden ">
                 <WatchList />

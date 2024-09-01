@@ -18,8 +18,8 @@ const headings = [
 const position_stylesList = {
   padding: " p-[10px_12px] ",
   table: " m-2 w-full ",
-  head: " border-b-2 text-[.75rem]  text-[#9b9b9b] ",
-  body: " text-center text-[14px] text-textDark ",
+  head: " border-b-2 text-xs  text-darkGrayApp ",
+  body: " text-center text-sm text-textDark ",
   row: { LTP: " border-r " },
 };
 
@@ -89,7 +89,7 @@ function Pending({
       <div className="flex h-full w-full flex-col bg-white">
         <div className="w-full ">
           <div className="flex w-full p-2">
-            <span className="grow text-[1.125rem] text-textDark">
+            <span className="grow text-lg text-textDark">
               Pending Trades ({dataList.length})
             </span>
           </div>
@@ -106,7 +106,7 @@ function Pending({
               <tbody className={position_stylesList.body}>
                 {dataList.map((valueList, index) => {
                   return (
-                    <tr className="hover:bg-[#f9f9f9]" key={valueList.id}>
+                    <tr className="hover:bg-lightGrayApp" key={valueList.id}>
                       {headings.map((key, index) => {
                         return (
                           <Cell

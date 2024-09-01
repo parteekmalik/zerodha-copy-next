@@ -14,10 +14,10 @@ function Dashboard() {
               <div className="text-textDark text-[2.625rem] font-light ">
                 19.0
               </div>
-              <div className="text-[.75rem] text-[#9b9b9b]">USDT available</div>
+              <div className="text-darkGrayApp text-xs">USDT available</div>
             </div>
             <div className="flex grow items-center justify-center ">
-              <div className="text-[.75rem] text-[#4184f3]">view statement</div>
+              <div className="text-blueApp text-xs">view statement</div>
             </div>
           </div>
         </div>
@@ -28,10 +28,10 @@ function Dashboard() {
               <div className="text-textDark text-[2.625rem] font-light">
                 0.8
               </div>
-              <div className="text-[.75rem] text-[#9b9b9b]">USDT available</div>
+              <div className="text-darkGrayApp text-xs">USDT available</div>
             </div>
             <div className="flex grow items-center justify-center ">
-              <div className="text-[.75rem] text-[#4184f3]">view statement</div>
+              <div className="text-blueApp text-xs">view statement</div>
             </div>
           </div>
         </div>
@@ -46,11 +46,11 @@ function Dashboard() {
               <div className="text-greenApp text-[2.625rem] font-light">
                 20.02k
               </div>
-              <div className="text-greenApp mt-auto text-[.75rem] ">
+              <div className="text-greenApp mt-auto text-xs ">
                 <div>+19.01%</div>
               </div>
             </div>
-            <div className="text-[.75rem] text-[#9b9b9b]">P&L</div>
+            <div className="text-darkGrayApp text-xs">P&L</div>
           </div>
           <div className="flex grow flex-col">
             <div className="flex">

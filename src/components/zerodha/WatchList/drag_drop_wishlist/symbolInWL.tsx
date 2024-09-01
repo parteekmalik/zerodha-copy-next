@@ -73,12 +73,12 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
           <h2 className="text-textDark text-center text-[1.225rem]">
             Nothing here
           </h2>
-          <p className="text-center text-[.8125rem] text-[#9b9b9b]">
+          <p className="text-darkGrayApp text-center text-[.8125rem]">
             Use the search bar to add instruments.
           </p>
         </div>
         <button
-          className="cursor-pointer rounded bg-[#4183f3] p-[10px_20px] text-[.925rem] text-white"
+          className="bg-blueApp cursor-pointer rounded p-[10px_20px] text-[.925rem] text-white opacity-90"
           onClick={() =>
             setSearch({
               focus: true,

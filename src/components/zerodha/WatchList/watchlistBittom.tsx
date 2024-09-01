@@ -6,13 +6,13 @@ function WatchlistBittom() {
   const watchListNo = useSelector((state: RootState) => state.watchList.ListNo);
   const dispatch = useDispatch();
   return (
-    <div className="flex  w-full cursor-pointer mt-auto border-y-[1px] ">
+    <div className="mt-auto  flex w-full cursor-pointer border-y-[1px] ">
       {[0, 1, 2, 3, 4, 5, 6, 7].map((_, i) => {
         return (
           <div
             className={
-              " grow  border-r-[1px] px-3 py-2 text-center hover:bg-[#f9f9f9] hover:text-[#fd9522] " +
-              (watchListNo === i && "bg-[#f9f9f9] text-[#fd9522]")
+              " hover:bg-lightGrayApp  grow border-r-[1px] px-3 py-2 text-center hover:text-orangeApp " +
+              (watchListNo === i && "bg-lightGrayApp text-orangeApp")
             }
             key={"watchlist" + i}
             onClick={() => dispatch(updateWatchListNo(i))}

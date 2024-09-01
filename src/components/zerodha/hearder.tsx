@@ -107,8 +107,8 @@ function Header() {
                   <Link
                     href={"/" + x}
                     className={
-                      "cursor-pointer select-none px-[15px] text-center hover:text-[#ff5722] " +
-                      (route === x ? "text-[#ff5722]" : "")
+                      "hover:text-orangeApp cursor-pointer select-none px-[15px] text-center " +
+                      (route === x ? "text-orangeApp" : "")
                     }
                     key={x}
                   >

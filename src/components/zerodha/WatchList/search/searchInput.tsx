@@ -92,7 +92,7 @@ function SearchInput({
             })
           }
         />
-        <div className="text-[#cccccc]">{watchList.length} / 50</div>
+        <div className="text-darkGrayApp">{watchList.length} / 50</div>
       </div>
       {search.focus ? (
         <div

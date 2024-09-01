@@ -30,7 +30,7 @@ function Item({
     >
       <div
         className={
-          " relative flex border-b p-[12px_15px]   hover:bg-[#f9f9f9] " +
+          " hover:bg-lightGrayApp relative flex border-b   p-[12px_15px] " +
           getColor(diff)
         }
         style={{ fontSize: ".8125rem" }}
@@ -62,7 +62,5 @@ function Item({
     </Reorder.Item>
   );
 }
-
-
 
 export default Item;

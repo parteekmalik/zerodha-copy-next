@@ -6,8 +6,8 @@ import { api } from "~/trpc/react";
 const stylesList = {
   padding: " p-[10px_12px] ",
   table: "m-2 w-full",
-  head: "border-b-2 text-[.75rem]  text-[#9b9b9b]",
-  body: "text-center text-[14px] text-textDark",
+  head: "border-b-2 text-xs  text-darkGrayApp",
+  body: "text-center text-sm text-textDark",
   row: { Price: " border-r " },
 };
 const headings: Array<keyof TOrder> = [
@@ -37,7 +37,7 @@ function Order() {
   return (
     <div className="flex  h-full w-full flex-col">
       <div className="flex w-full p-2">
-        <span className="text-textDark grow text-[1.125rem]">
+        <span className="text-textDark grow text-lg">
           Pending Trades ({openOrders.length})
         </span>
       </div>
@@ -52,7 +52,7 @@ function Order() {
         <tbody className={stylesList.body}>
           {openOrders.map((valueList, index) => {
             return (
-              <tr className="hover:bg-[#f9f9f9]" key={valueList.id}>
+              <tr className="hover:bg-lightGrayApp" key={valueList.id}>
                 {headings.map((key, index) => {
                   return (
                     <td
@@ -78,7 +78,7 @@ function Order() {
         </tbody>
       </table>
       <div className="flex w-full p-2">
-        <span className="text-textDark grow text-[1.125rem]">
+        <span className="text-textDark grow text-lg">
           Executed Trades ({closedOrders.length})
         </span>
       </div>
@@ -93,7 +93,7 @@ function Order() {
         <tbody className={stylesList.body}>
           {closedOrders.map((valueList, index) => {
             return (
-              <tr className="hover:bg-[#f9f9f9]" key={valueList.id}>
+              <tr className="hover:bg-lightGrayApp" key={valueList.id}>
                 {headings.map((key, index) => {
                   return (
                     <td
@@ -152,7 +152,7 @@ export default Order;
 //     })
 //   : [];
 {
-  /* <tfoot className="bg-[#f9f9f9] text-center">
+  /* <tfoot className="bg-lightGrayApp text-center">
           <tr>
             <td colSpan={6}></td>
             <td>Total</td>

@@ -44,7 +44,7 @@ function TempOrderForm() {
   });
 
   // prettier-ignore
-  const style = watch().orderType === "BUY" ? { bgcolor: "bg-[#4184f3]", textcolor: "text-[#4184f3]", bordercolor: "border-b-[#4184f3]" } : { bgcolor: "bg-[#ff5722]", textcolor: "text-[#ff5722]", bordercolor: "border-b-[#ff5722]" };
+  const style = watch().orderType === "BUY" ? { bgcolor: "bg-blueApp", textcolor: "text-blueApp", bordercolor: "border-b-blueApp" } : { bgcolor: "bg-orangeApp", textcolor: "text-orangeApp", bordercolor: "border-b-orangeApp" };
 
   const dispatch = useDispatch<AppDispatch>();
   const APIutils = api.useUtils();
@@ -122,20 +122,20 @@ function TempOrderForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className={` absolute z-50 w-[600px] bg-white text-[.75rem] `}
+      className={` absolute z-50 w-[600px] bg-white text-xs `}
       style={{ top: 0, right: 0 }}
     >
       <header
         className={`rounded-[3px_3px_0px_0px]  p-[15px_20px] text-white ${style.bgcolor}`}
       >
-        <div className="text-[14px] font-semibold">
+        <div className="text-sm font-semibold">
           {`${watch().orderType} ${watch().symbolName.toUpperCase()}  x ${
             watch().quantity
           } Qty`}
         </div>
         <div></div>
       </header>
-      <div className={"flex w-full bg-[#f9f9f9]  "}>
+      <div className={"bg-lightGrayApp flex w-full  "}>
         {(["SPOT", "MARGIN"] as TmarketType[]).map((x) => {
           return (
             <div
@@ -148,7 +148,7 @@ function TempOrderForm() {
                 ` ${
                   x === watch().marketType
                     ? `${style.textcolor} ${style.bordercolor}`
-                    : "text-[#9b9b9b]"
+                    : "text-darkGrayApp"
                 } `
               }
             >
@@ -156,9 +156,7 @@ function TempOrderForm() {
             </div>
           );
         })}
-        <div className=" grow p-[10px_20px] text-right text-[#4184f3]">
-          Tags
-        </div>
+        <div className=" text-blueApp grow p-[10px_20px] text-right">Tags</div>
       </div>
 
       <div className="m-2 ">
@@ -261,7 +259,7 @@ function TempOrderForm() {
             value={watch().orderType}
           />
           <div
-            className="text-textDark cursor-pointer border border-[#444444] bg-white p-[8px_12px] hover:bg-[#444444] hover:text-white"
+            className="text-textDark border-borderDarkGrayApp hover:bg-borderDarkGrayApp cursor-pointer border bg-white p-[8px_12px] hover:text-white"
             onClick={() =>
               dispatch(
                 updateFormData({
