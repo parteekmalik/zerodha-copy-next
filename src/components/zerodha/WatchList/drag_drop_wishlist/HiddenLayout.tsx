@@ -11,6 +11,7 @@ import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
 import { TsymbolLive } from "../../_redux/Slices/Livestream";
 import { redirect, RedirectType } from "next/navigation";
+import Link from "next/link";
 type IdataContextActions =
   | {
       type: "update_rightHandSide";
@@ -174,46 +175,57 @@ export function HiddenLayout({ symbolName }: { symbolName: string }) {
   return (
     <>
       {hiddendata.map(({ payload, text_color, bgcolor, text }) => {
-        return (
-          <div
-            className={
-              `h-full w-[35px] cursor-pointer rounded   p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color} ` +
-              (text !== "B" && text !== "S"
-                ? " border border-black "
-                : " border border-white ")
-            }
-            key={"hiddenitems" + text}
-            onClick={() => {
-              console.log("clicked hidden elements payload ->", payload);
-              if (payload) {
-                if ("type" in payload) {
-                  if (payload.type === "update_rightHandSide")
-                    redirect(
-                      `Chart?symbol=${payload.payload.symbol.toUpperCase()}&TimeFrame=${
-                        payload.payload.TimeFrame
-                      }`,
-                      RedirectType.push,
-                    );
-                  else if (payload.type === "update_FormData")
-                    dispatch(updateFormData(payload.payload));
-                } else if ("Type" in payload) {
-                  if (payload.Type === "Supdate_Pins") {
-                    console.log("updatePin->");
-                    updatePinApi.mutate({
-                      name: symbolName,
-                      pos: payload.pos,
-                    });
-                  } else if (payload.Type === "delete_watchListItem") {
-                    console.log("updatewatchliast->");
-                    deleteFunc(symbolName);
-                  }
-                }
+        const className =
+          `h-full w-[35px] cursor-pointer rounded   p-[4px_10px] text-center hover:opacity-[.85] ${bgcolor} ${text_color} ` +
+          (text !== "B" && text !== "S"
+            ? " border border-black "
+            : " border border-white ");
+        const onClick = () => {
+          console.log("clicked hidden elements payload ->", payload);
+          if (payload) {
+            if ("type" in payload) {
+              if (payload.type === "update_FormData")
+                dispatch(updateFormData(payload.payload));
+            } else if ("Type" in payload) {
+              if (payload.Type === "Supdate_Pins") {
+                console.log("updatePin->");
+                updatePinApi.mutate({
+                  name: symbolName,
+                  pos: payload.pos,
+                });
+              } else if (payload.Type === "delete_watchListItem") {
+                console.log("updatewatchliast->");
+                deleteFunc(symbolName);
               }
-            }}
-          >
-            {text}
-          </div>
-        );
+            }
+          }
+        };
+        if (
+          payload &&
+          "type" in payload &&
+          payload.type === "update_rightHandSide"
+        ) {
+          return (
+            <Link
+              href={`Chart?symbol=${payload.payload.symbol.toUpperCase()}&TimeFrame=${
+                payload.payload.TimeFrame
+              }`}
+              key={"hiddenitems" + text}
+              className={className}
+            >
+              {text}
+            </Link>
+          );
+        } else
+          return (
+            <div
+              className={className}
+              key={"hiddenitems" + text}
+              onClick={onClick}
+            >
+              {text}
+            </div>
+          );
       })}
     </>
   );

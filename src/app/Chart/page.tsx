@@ -1,12 +1,21 @@
 // TradingViewWidget.jsx
 "use client";
 
-import { memo, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import { memo, useEffect, useMemo, useRef } from "react";
 
 function TradingViewWidget() {
   // fix any type
-  const symbolName = "BTCUSDT",
-    charteheight = "";
+  const searchParams = useSearchParams();
+  useEffect(() => console.log(searchParams.get("symbol")), [searchParams]);
+  const [symbolName, TimeFrame] = useMemo(
+    () => [
+      searchParams.get("symbol") ?? "BTCUSDT",
+      searchParams.get("TimeFrame") ?? "5",
+    ],
+    [searchParams],
+  );
+  const charteheight = "";
   const container = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -26,7 +35,7 @@ function TradingViewWidget() {
           "height": "100%",
           "width": "100%",
           "symbol": "${symbolName}",
-          "interval": "5",
+          "interval": "${TimeFrame}",
           "timezone": "Etc/UTC",
           "theme": "light",
           "style": "1",
