@@ -1,4 +1,3 @@
-
 export const parsePrice = (price: string | undefined) => {
   if (price === undefined) return 0;
   // const Fprice = parseFloat(price);
@@ -65,9 +64,9 @@ export const getColor = (diff: number | string | boolean) => {
   } else if (typeof diff === "boolean") diff = diff ? 1 : -1;
   diff = Number(diff);
   if (diff > 0) {
-    return "text-[#4caf50]";
+    return "text-greenApp";
   } else if (diff < 0) {
-    return "text-[#df514c]";
+    return "text-redApp";
   } else {
     return "";
   }
