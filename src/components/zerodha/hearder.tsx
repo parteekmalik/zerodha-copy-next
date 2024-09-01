@@ -117,24 +117,22 @@ function Header() {
                 ))}
               </nav>
               <Image
-                className="cursor-pointer select-none"
-                width={14}
-                height={14}
+                className="h-fit cursor-pointer select-none"
+                width={24}
+                height={24}
                 src="https://img.icons8.com/material-outlined/24/filled-appointment-reminders.png"
                 alt="filled-appointment-reminders"
               />
-              <div className="flex cursor-pointer text-center ">
-                {UserInfo.image && UserInfo.image !== "not_found" && (
-                  <Image
-                    src={UserInfo.image ?? ""}
-                    alt="user-icon"
-                    className="mr-1 cursor-pointer select-none rounded-full"
-                    width={14}
-                    height={14}
-                  />
-                )}
-                <div>#{UserInfo?.name}</div>
-              </div>
+              {UserInfo.image && UserInfo.image !== "not_found" && (
+                <Image
+                  src={UserInfo.image ?? ""}
+                  alt="user-icon"
+                  className="mr-1 h-fit cursor-pointer select-none rounded-full"
+                  width={24}
+                  height={24}
+                />
+              )}
+              <div>#{UserInfo.TradingAccountId}</div>
             </div>
           </div>
         </div>
