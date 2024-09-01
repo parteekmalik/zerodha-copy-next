@@ -24,7 +24,7 @@ async function Funds() {
               <div>Help</div>
             </div>
           </h3>
-          <ListBox Style={{ textColor: " text-[#444444] " }}>
+          <ListBox Style={{ textColor: " text-textDark " }}>
             <MainBox
               data={[
                 {
@@ -40,7 +40,7 @@ async function Funds() {
               Style={["  ", " text-[2em] "]}
             />
           </ListBox>
-          <ListBox Style={{ textColor: " text-[#444444] " }}>
+          <ListBox Style={{ textColor: " text-textDark " }}>
             <MainBox
               data={[
                 { name: "Avl bal", value: 40 },
