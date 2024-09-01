@@ -30,6 +30,21 @@ function Header() {
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
   const dispatch = useDispatch<AppDispatch>();
 
+  const PinData = useMemo(
+    () => ({
+      first: {
+        name: headerPin.Pin0.toUpperCase(),
+        isgreen: Livestream[headerPin.Pin0]?.isup,
+        price: Livestream[headerPin.Pin0]?.curPrice,
+      },
+      second: {
+        name: headerPin.Pin1.toUpperCase(),
+        isgreen: Livestream[headerPin.Pin1]?.isup,
+        price: Livestream[headerPin.Pin1]?.curPrice,
+      },
+    }),
+    [Livestream, headerPin],
+  );
   // ff5722
   const temp = usePathname();
   const route = useMemo(() => {
@@ -42,22 +57,30 @@ function Header() {
       className={" flex w-full justify-center bg-white text-xs " + shadowBox}
     >
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
-        <div className="flex h-full min-w-[430px] items-center justify-center gap-5 border-r">
-          <div className="flex cursor-pointer gap-1 ">
-            <Link
-              href={`Chart?symbol=${headerPin.Pin0.toUpperCase()}&TimeFrame=${5}`}
-            >
-              {headerPin.Pin0.toUpperCase()}
+        <div className="flex h-full min-w-[430px] items-center justify-around  gap-5 border-r text-base uppercase">
+          <div className="flex cursor-pointer gap-2 ">
+            <Link href={`Chart?symbol=${PinData.first.name}&TimeFrame=${5}`}>
+              {headerPin.Pin0}
             </Link>
-            <div>{Livestream[headerPin.Pin0]?.curPrice}</div>
+            <div
+              className={`${
+                PinData.first.isgreen ? "text-greenApp" : "text-redApp"
+              }`}
+            >
+              {PinData.first.price}
+            </div>
           </div>
-          <div className="flex cursor-pointer gap-1">
-            <Link
-              href={`Chart?symbol=${headerPin.Pin1.toUpperCase()}&TimeFrame=${5}`}
-            >
-              {headerPin.Pin1.toUpperCase()}
+          <div className="flex cursor-pointer gap-2">
+            <Link href={`Chart?symbol=${PinData.second.name}&TimeFrame=${5}`}>
+              {headerPin.Pin1}
             </Link>
-            <div>{Livestream[headerPin.Pin1]?.curPrice}</div>
+            <div
+              className={`${
+                PinData.second.isgreen ? "text-greenApp" : "text-redApp"
+              }`}
+            >
+              {PinData.second.price}
+            </div>
           </div>
         </div>
         <div className="flex h-full grow items-center justify-between ">
