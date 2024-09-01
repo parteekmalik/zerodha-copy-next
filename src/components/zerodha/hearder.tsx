@@ -53,9 +53,7 @@ function Header() {
     return data[data.length - 1];
   }, [temp]);
   return (
-    <header
-      className={" flex w-full justify-center bg-white text-xs " + shadowBox}
-    >
+    <header className={"  flex w-full justify-center bg-white " + shadowBox}>
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
         <div className="flex h-full min-w-[430px] items-center justify-around  gap-5 border-r text-base uppercase">
           <div className="flex cursor-pointer gap-2 ">
