@@ -1,65 +1,20 @@
 import * as React from "react";
-import { getColor } from "~/app/utils";
-
-// Correct type definition for GridColDef using keyof
-export type GridColDef<T> = {
-  headerName: string;
-  field: keyof T;
-  width: number;
-};
-export type Row = {
-  id: string;
-  name: string;
-  quantity: number;
-  avgPrice: number;
-  totalPrice: number;
-  LTP: string | undefined;
-  "P&L": string;
-  change: string;
-};
-
-export interface DataGridStyles {
-  table?: { className?: string };
-  head?: {
-    className?: string;
-    row?: string;
-    cell?: string;
-  };
-  body?: {
-    className?: string;
-    row?: string;
-    cell?: string;
-  };
-  footer?: {
-    className?: string;
-    button?: string;
-  };
-  checkbox?: string;
-}
-
-// Define the props for the DataGrid component
-export interface DataGridProps<T> {
-  rows: T[];
-  styles?: DataGridStyles;
-  columns: GridColDef<T>[];
-  fotter: {
-    "P&L": number;
-    LTP: string;
-    skip: number;
-  };
-  coloredCols?: (keyof T)[];
-  selected?: (selectedIds: (string | number)[]) => void; // Update the type of selected to accept an array of IDs
-}
+import { addPositiveSign, getColor } from "~/app/utils";
+import {
+  DataGridProps,
+  RowType,
+  TableDefaultstyles,
+} from "./defaultStylexAndTypes";
 
 // Custom DataGrid component
-const DataGrid = ({
+const DataGrid = <T extends RowType>({
   rows,
   columns,
   selected,
-  fotter,
+  footer,
   coloredCols = [],
-  styles, // Default to empty object if not provided
-}: DataGridProps<Row>) => {
+  styles = TableDefaultstyles,
+}: DataGridProps<T>) => {
   const [selectedIds, setSelectedIds] = React.useState<(string | number)[]>([]);
 
   const onChange = (
@@ -78,11 +33,11 @@ const DataGrid = ({
   };
 
   // Apply styles or fallback to default styles
-  const headStyles = styles?.head;
-  const bodyStyles = styles?.body;
-  const footerStyles = styles?.footer;
-  const tableStyles = styles?.table;
-  const checkboxStyles = styles?.checkbox;
+  const headStyles = styles.head;
+  const bodyStyles = styles.body;
+  const footerStyles = styles.footer;
+  const tableStyles = styles.table;
+  const checkboxStyles = styles.checkbox;
 
   return (
     <table className={tableStyles?.className}>
@@ -107,7 +62,7 @@ const DataGrid = ({
       </thead>
       <tbody className={bodyStyles?.className}>
         {rows.map((row) => (
-          <tr key={JSON.stringify(row)} className={bodyStyles?.row}>
+          <tr key={row.id} className={bodyStyles?.row}>
             {selected && (
               <td className={checkboxStyles}>
                 <input
@@ -117,30 +72,28 @@ const DataGrid = ({
                 />
               </td>
             )}
-            {columns.map((col, i) => (
-              <td
-                className={
-                  bodyStyles?.cell +
-                  ` ${
-                    coloredCols.includes(col.field)
-                      ? getColor(Number(row[col.field]))
-                      : " "
-                  }`
-                }
-                key={i}
-              >
-                {coloredCols.includes(col.field)
-                  ? addPositiveSign(row[col.field])
-                  : row[col.field]}
-              </td>
-            ))}
+            {columns.map((col, i) => {
+              // Declare variables correctly inside map
+              const coloredColsItem = coloredCols.find(
+                (it) => it.name === col.field,
+              );
+              const [cellContent, cellAdditionalStyles] = coloredColsItem
+                ? coloredColsItem.fn(row[col.field], bodyStyles?.cell ?? "")
+                : [String(row[col.field]), bodyStyles?.cell];
+
+              return (
+                <td key={i} className={cellAdditionalStyles}>
+                  {cellContent}
+                </td>
+              );
+            })}
           </tr>
         ))}
       </tbody>
-      {
+      {footer && (
         <tfoot className={footerStyles?.className}>
           <tr>
-            <td colSpan={fotter.skip + Number(selected !== undefined)}>
+            <td colSpan={(footer.skip ?? 1) + Number(selected !== undefined)}>
               {selectedIds.length && selected ? (
                 <button
                   className={footerStyles?.button}
@@ -152,26 +105,19 @@ const DataGrid = ({
                 </button>
               ) : null}
             </td>
-            <td className={bodyStyles?.cell}>{fotter.LTP}</td>
+            <td className={bodyStyles?.cell}>{footer.LTP}</td>
             <td
               className={
-                bodyStyles?.cell + ` ${getColor(Number(fotter["P&L"]))}`
+                bodyStyles?.cell + ` ${getColor(Number(footer["P&L"]))}`
               }
             >
-              {addPositiveSign(fotter["P&L"])}
+              {addPositiveSign(footer["P&L"])}
             </td>
           </tr>
         </tfoot>
-      }
+      )}
     </table>
   );
 };
 
 export default DataGrid;
-
-const addPositiveSign = (s: string | number | undefined) => {
-  if (typeof s === "string") s = Number(s);
-  if (!s) s = 0;
-  if (s > 0) s = "+" + s;
-  return String(s);
-};

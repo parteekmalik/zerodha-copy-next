@@ -2,29 +2,17 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "~/components/zerodha/_redux/store";
-import DataGrid, {
-  DataGridStyles,
+import {
   GridColDef,
-} from "~/components/zerodha/Table/table";
+  PositionRow,
+  TableDefaultstyles,
+} from "~/components/zerodha/Table/defaultStylexAndTypes";
+import DataGrid from "~/components/zerodha/Table/table";
 import { sumByKey } from "~/lib/zerodha/utils";
 import { api } from "~/trpc/react";
+import { addPositiveSign, getColor } from "../utils";
+import { twMerge } from "tailwind-merge";
 
-const styles: DataGridStyles = {
-  table: {
-    className: "w-full  ",
-  },
-  head: {
-    className: "opacity-50 text-sm  ",
-    row: "border-y-[1px] border-gray-300 ",
-    cell: "py-2 px-4 font-thin",
-  },
-  body: {
-    className: "text-textDark",
-    row: "border-b-[1px] border-gray-300",
-    cell: "text-center uppercase  font-thin py-2 px-4",
-  },
-  checkbox: "text-center",
-};
 export default function DefaultComonent() {
   const Livestream = useSelector((state: RootState) => state.Livestream);
   const symbolsList = useSelector((state: RootState) => state.symbolsList);
@@ -61,19 +49,32 @@ export default function DefaultComonent() {
     // Placeholder function for handling selection
     console.log("submitted: ", ids);
   };
+
+  const positiveAndColor = (value: unknown, styles: string) => {
+    const newValue = Number(value);
+    const result: [string, string] = [
+      addPositiveSign(newValue, 2),
+      twMerge(styles, getColor(newValue)),
+    ];
+    return result;
+  };
   if (!PositionsList) return null;
   return (
     <div className="dark p-4">
       <div className="flex py-2">
         <h1 className="text-xl opacity-80">Positions({Positions.length})</h1>
       </div>
-      <DataGrid
+      <DataGrid<PositionRow>
         rows={PositionsList}
         columns={PositionsGridColumn}
-        coloredCols={["P&L", "quantity", "change"]}
+        coloredCols={[
+          { name: "P&L", fn: positiveAndColor },
+          { name: "quantity", fn: positiveAndColor },
+          { name: "change", fn: positiveAndColor },
+        ]}
         selected={handleFn}
-        fotter={PositionsTotal}
-        styles={styles}
+        footer={PositionsTotal}
+        styles={TableDefaultstyles}
       />
     </div>
   );

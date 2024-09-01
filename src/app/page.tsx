@@ -1,16 +1,14 @@
 "use client";
-import BackendWSContextComponent from "../components/zerodha/_contexts/backendWS/backendWSContextComponent";
 import { ToastProvider } from "../components/zerodha/_contexts/Toast/toast";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { Provider } from "react-redux";
 import Header from "~/components/zerodha/hearder";
 import TempOrderForm from "~/components/zerodha/OrderForm/orderForm";
 import WatchList from "~/components/zerodha/WatchList/watchList";
 import { store } from "../components/zerodha/_redux/store";
 import StoreComponent from "../components/zerodha/_redux/storeComponent";
-import { api } from "~/trpc/react";
 
 export default function ContextLayer({
   children,

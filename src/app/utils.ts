@@ -71,3 +71,25 @@ export const getColor = (diff: number | string | boolean) => {
     return "";
   }
 };
+
+export function formatDate(date: Date): string {
+  const pad = (num: number) => (num < 10 ? "0" : "") + num;
+
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1); // Months are zero-based
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+export const addPositiveSign = (
+  s: string | number | undefined,
+  toFixed?: number,
+) => {
+  if (typeof s === "string") s = Number(s);
+  if (!s) s = 0;
+  if (s > 0) s = "+" + toFixed ? s.toFixed(toFixed) : s;
+  return String(s);
+};

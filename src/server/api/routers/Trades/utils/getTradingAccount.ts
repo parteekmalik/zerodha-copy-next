@@ -27,10 +27,10 @@ export async function getTradingAccount(ctx: {
       },
     })
   )?.Taccounts;
-  console.log("checking trading account -> ", Taccounts);
 
   if (!Taccounts) {
     Taccounts = await createTradingAccount(db, ctx.session.user.id);
+    console.log("creating trading account -> ", Taccounts);
   }
   return Taccounts;
 }
