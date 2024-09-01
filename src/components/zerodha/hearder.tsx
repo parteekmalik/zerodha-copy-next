@@ -61,7 +61,7 @@ function Header() {
           </div>
         </div>
         <div className="flex h-full grow items-center justify-between ">
-          <div className="flex  w-full ">
+          <div className="flex   ">
             <Image
               className="ml-[30px] mr-[20px] "
               src="https://kite.zerodha.com/static/images/kite-logo.svg"
