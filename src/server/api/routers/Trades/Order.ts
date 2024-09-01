@@ -7,6 +7,7 @@ import createOrderTransection from "./createTrade";
 import { getTradingAccount } from "./utils/getTradingAccount";
 import { experimental_standaloneMiddleware } from "@trpc/server";
 import { Order } from "@prisma/client";
+import { sumByKey } from "~/lib/zerodha/utils";
 
 export const OrderRouter = createTRPCRouter({
   getOrders: protectedProcedure.query(async ({ ctx }) => {
@@ -73,12 +74,7 @@ export const OrderRouter = createTRPCRouter({
         const sellOrdrers = Asset.Orders.filter(
           (i) => i.status === "COMPLETED" && i.type === "SELL",
         );
-        const sellOrdrersTotalQuantity = sellOrdrers.reduce(
-          (accumulator, currentValue, index) => {
-            return accumulator + currentValue.quantity;
-          },
-          0,
-        );
+        const sellOrdrersTotalQuantity = sumByKey(sellOrdrers, "quantity");
         let buyOrdrersTotalQuantity = 0;
 
         while (
