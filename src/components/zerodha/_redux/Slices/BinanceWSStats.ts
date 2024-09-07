@@ -3,11 +3,13 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 export type TBinanceWSStatsType = {
   isConnected: boolean;
   subsciptions: string[];
+  seprateSubscriptions: { [key: string]: string[] };
 };
 
 const initialState: TBinanceWSStatsType = {
   isConnected: false,
   subsciptions: [],
+  seprateSubscriptions: {},
 };
 const BinanceWSStatsSlice = createSlice({
   name: "BinanceWSStatsType",
@@ -19,10 +21,21 @@ const BinanceWSStatsSlice = createSlice({
     updateBinanceWSSubsriptions: (state, action: PayloadAction<string[]>) => {
       state.subsciptions = action.payload;
     },
+    updateSeprateSubscriptions: (
+      state,
+      action: PayloadAction<{ name: string; subsription: string[] }>,
+    ) => {
+      state.seprateSubscriptions[action.payload.name] =
+        action.payload.subsription;
+      return state;
+    },
   },
 });
 
-export const { updateBinanceWSStats, updateBinanceWSSubsriptions } =
-  BinanceWSStatsSlice.actions;
+export const {
+  updateBinanceWSStats,
+  updateBinanceWSSubsriptions,
+  updateSeprateSubscriptions,
+} = BinanceWSStatsSlice.actions;
 
 export default BinanceWSStatsSlice.reducer;

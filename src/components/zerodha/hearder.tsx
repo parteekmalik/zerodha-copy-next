@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import InfoHover from "../ui/infoHover";
 import { useBinanceLiveData } from "./_contexts/LiveData/useBinanceLiveData";
+import { updateSeprateSubscriptions } from "./_redux/Slices/BinanceWSStats";
 import WifiIcon from "./savages/WifiIcon";
 import { shadowBox } from "./tcss";
 
@@ -31,6 +32,14 @@ function Header() {
   const { Livestream } = useBinanceLiveData();
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
   const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(
+      updateSeprateSubscriptions({
+        name: "headers",
+        subsription: [headerPin.Pin0, headerPin.Pin1],
+      }),
+    );
+  }, [headerPin]);
 
   const PinData = useMemo(
     () => ({

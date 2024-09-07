@@ -13,6 +13,7 @@ import { api } from "~/trpc/react";
 import { useBinanceLiveData } from "../../_contexts/LiveData/useBinanceLiveData";
 import type { Tsymbol } from "../watchList";
 import Item from "./Item";
+import { updateSeprateSubscriptions } from "../../_redux/Slices/BinanceWSStats";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
 export type Twsbinance = {
@@ -39,10 +40,10 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
   const [LocalList, setLocalList] = useState<Tsymbol[]>([]);
 
   useEffect(() => {
-    if (LocalList[0] === "update") setLocalList(list);
-  }, [LocalList]);
-  useEffect(() => {
-    setLocalList(["update"]);
+    setLocalList(list);
+    dispatch(
+      updateSeprateSubscriptions({ name: "watchList", subsription: list }),
+    );
   }, [list]);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -71,15 +72,15 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
           alt="Market Watch"
         />
         <div className=" mb-[20px]">
-          <h2 className="text-textDark text-center text-[1.225rem]">
+          <h2 className="text-center text-[1.225rem] text-textDark">
             Nothing here
           </h2>
-          <p className="text-darkGrayApp text-center text-[.8125rem]">
+          <p className="text-center text-[.8125rem] text-darkGrayApp">
             Use the search bar to add instruments.
           </p>
         </div>
         <button
-          className="bg-blueApp cursor-pointer rounded p-[10px_20px] text-[.925rem] text-white opacity-90"
+          className="cursor-pointer rounded bg-blueApp p-[10px_20px] text-[.925rem] text-white opacity-90"
           onClick={() =>
             setSearch({
               focus: true,

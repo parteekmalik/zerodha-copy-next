@@ -29,31 +29,19 @@ export type Twsbinance = {
 function sendWSBinanceMessage(socket: WebSocket, message: Twsbinance | string) {
   function waitForSocketConnection(callback: () => void) {
     setTimeout(() => {
-      if (socket.readyState === socket.OPEN) {
-        callback();
-      } else {
-        waitForSocketConnection(callback);
-      }
+      if (socket.readyState === socket.OPEN) callback();
+      else waitForSocketConnection(callback);
     }, 1000);
   }
 
   waitForSocketConnection(() => {
     console.log("Socket sending message:", message);
-    if (typeof message === "string") {
-      socket.send(message);
-    } else {
-      socket.send(JSON.stringify(message));
-    }
+    if (typeof message === "string") socket.send(message);
+    else socket.send(JSON.stringify(message));
   });
 }
 function socketSend(socket: WebSocket, payload: Twsbinance) {
-  payload.params = payload.params
-    .map((item) => {
-      const [first, second] = item.split("@");
-      return first?.toLowerCase() + "@" + second;
-    })
-    .filter((i) => i !== "@trade");
-
+  payload.params = Array.from(new Set(payload.params));
   if (payload.params.length) sendWSBinanceMessage(socket, payload);
 }
 
@@ -76,11 +64,8 @@ const setupSocket = (url: string) => {
         | TsymbolTrade
         | { result: string[]; id: number };
       if ("result" in data) {
-        // console.log("redux-saga recieved message", data);
-        if (data.result) {
-          // console.log(typeof data.result, data.result);
+        if (data.result)
           store.dispatch(updateBinanceWSSubsriptions(data.result));
-        }
       } else {
         websocketService.reducer({
           action: "updateData",
@@ -88,10 +73,15 @@ const setupSocket = (url: string) => {
         });
       }
     };
-
+  let subAndUnsubTimeOut = {
+    sub: setTimeout(() => {}, 1000),
+    unsub: setTimeout(() => {}, 1000),
+    list: setTimeout(() => {}, 1000),
+  };
   const subUnsubMddleware: Middleware = (store) => (next) => (action) => {
-    const { type } = JSON.parse(JSON.stringify(action)) as {
+    const { type, payload } = JSON.parse(JSON.stringify(action)) as {
       type: string;
+      payload: unknown;
     };
     if (!attachActions) {
       // websocket handlers
@@ -100,56 +90,57 @@ const setupSocket = (url: string) => {
       socket.onopen = onOpen(store);
       attachActions = true;
     }
-    let unsubparams: string[] = [];
-    if (
-      (type === "watchListType/updateWatchListNo" ||
-        type === "watchListType/updateWatchList" ||
-        type === "headerPinType/updateHeaderPin") &&
-      socket
-    ) {
-      const oldState = store.getState() as RootState;
-      unsubparams = [
-        ...(oldState.watchList.List[oldState.watchList.ListNo] ?? []),
-        oldState.headerPin.Pin0,
-        oldState.headerPin.Pin1,
-      ].map((i) => i + "@trade");
-    }
     next(action);
-
-    if (
-      (type === "watchListType/updateWatchListNo" ||
-        type === "watchListType/updateWatchList" ||
-        type === "headerPinType/updateHeaderPin") &&
-      socket
-    ) {
+    if (type === "BinanceWSStatsType/updateSeprateSubscriptions") {
       const newState = store.getState() as RootState;
-      const subparams = [
-        ...(newState.watchList.List[newState.watchList.ListNo] ?? []),
-        newState.headerPin.Pin0,
-        newState.headerPin.Pin1,
-      ].map((i) => i + "@trade");
+      const prevSubs = newState.BinanceWSStats.subsciptions;
+      const newSubs = Object.values(
+        newState.BinanceWSStats.seprateSubscriptions,
+      )
+        .flat()
+        .map((i) => SymbolsConvertor(i));
 
-      const common = subparams.filter((x) => unsubparams.includes(x));
+      const common = prevSubs.filter((x) => newSubs.includes(x));
       const subMsg: Twsbinance = {
         method: "SUBSCRIBE",
-        params: subparams.filter((i) => !common.includes(i)),
+        params: newSubs.filter((i) => !common.includes(i)),
         id: 1,
       };
-      socketSend(socket, subMsg);
+      if (subAndUnsubTimeOut.sub) clearTimeout(subAndUnsubTimeOut.sub);
+      subAndUnsubTimeOut.sub = setTimeout(
+        () => socketSend(socket, subMsg),
+        1000,
+      );
       const unsubMsg: Twsbinance = {
         method: "UNSUBSCRIBE",
-        params: unsubparams.filter((i) => !common.includes(i)),
+        params: prevSubs.filter((i) => !common.includes(i)),
         id: 2,
       };
-      socketSend(socket, unsubMsg);
-      if (unsubMsg.params.length || subMsg.params.length)
-        sendWSBinanceMessage(
-          socket,
-          JSON.stringify({ method: "LIST_SUBSCRIPTIONS", id: 3 }),
-        );
+      if (subAndUnsubTimeOut.unsub) clearTimeout(subAndUnsubTimeOut.unsub);
+      subAndUnsubTimeOut.unsub = setTimeout(
+        () => socketSend(socket, unsubMsg),
+        1500,
+      );
+
+      if (unsubMsg.params.length || subMsg.params.length) {
+        if (subAndUnsubTimeOut.list) clearTimeout(subAndUnsubTimeOut.list);
+        subAndUnsubTimeOut.list = setTimeout(() => {
+          sendWSBinanceMessage(
+            socket,
+            JSON.stringify({ method: "LIST_SUBSCRIPTIONS", id: 3 }),
+          );
+        }, 2000);
+      }
     }
   };
   return subUnsubMddleware;
 };
+
+function SymbolsConvertor(symbol: string) {
+  symbol = symbol.toLowerCase();
+  let [first, second] = symbol.split("@");
+  if (first && !first.endsWith("usdt")) first += "usdt";
+  return (first ?? "") + (second ?? "@trade");
+}
 
 export default setupSocket;

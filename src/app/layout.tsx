@@ -35,7 +35,7 @@ export default async function RootLayout({
   // console.log(data, headersList);
   console.log("session", session);
   console.log(route());
-  if (!session && route() !== "not_loaded" && route() !== "login" && route() !== "logout") {
+  if (!session && route() !== "not_loaded" && route() !== "signin" && route() !== "login" && route() !== "logout") {
     redirect("/api/auth/signin");
   }
 

@@ -1,9 +1,9 @@
 "use client";
-import { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
-import { RootState } from "~/components/zerodha/_redux/store";
+import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import {
   GridColDef,
   PositionRow,
@@ -13,23 +13,40 @@ import DataGrid from "~/components/zerodha/Table/table";
 import { sumByKey } from "~/lib/zerodha/utils";
 import { api } from "~/trpc/react";
 import { modifyNumber, getColor } from "../utils";
+import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
 
 export default function DefaultComonent() {
   const { Livestream } = useBinanceLiveData();
 
-  const symbolsList = useSelector((state: RootState) => state.symbolsList);
-  const subsciptions = useSelector(
-    (state: RootState) => state.BinanceWSStats.subsciptions,
-  );
-  const Positions = api.Order.getRemainingFilledOrders.useQuery().data ?? [];
-  const PositionsList = Positions.map((item) => {
+  const Positions = api.Order.getRemainingFilledOrders.useQuery().data;
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    if (Positions)
+      dispatch(
+        updateSeprateSubscriptions({
+          name: "positions",
+          subsription: Positions.map((i) => i.name).filter(
+            (i) => i.toLowerCase() !== "usdt",
+          ),
+        }),
+      );
+    return () => {
+      dispatch(
+        updateSeprateSubscriptions({
+          name: "positions",
+          subsription: [],
+        }),
+      );
+    };
+  }, [Positions]);
+  const PositionsList = (Positions ?? []).map((item) => {
     const {
       id,
       PositionDetails: { quantity, avgPrice, totalPrice },
     } = item;
     const name = item.Orders[0]?.name ?? "error";
     const LTP = Livestream[name]?.curPrice;
-    const PL = modifyNumber((Number(LTP) - avgPrice) * quantity, 2,true);
+    const PL = modifyNumber((Number(LTP) - avgPrice) * quantity, 2, true);
     const change = modifyNumber(Number(LTP) / avgPrice - 1, 2);
     return { id, name, quantity, avgPrice, totalPrice, LTP, "P&L": PL, change };
   });
@@ -64,7 +81,9 @@ export default function DefaultComonent() {
   return (
     <div className="dark p-4">
       <div className="flex py-2">
-        <h1 className="text-xl opacity-80">Positions({Positions.length})</h1>
+        <h1 className="text-xl opacity-80">
+          Positions({Positions ? Positions.length : 0})
+        </h1>
       </div>
       <DataGrid<PositionRow>
         rows={PositionsList}

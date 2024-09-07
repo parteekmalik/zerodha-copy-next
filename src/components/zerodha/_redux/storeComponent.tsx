@@ -32,7 +32,7 @@ const StoreComponent: React.FunctionComponent = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    console.log(initData);
+    // console.log(initData);
     if (initData && userDetails?.name === "not_found" && symbolList) {
       dispatch(updateWatchList(initData.watchList));
       dispatch(updateHeaderPin(initData.Pins));
