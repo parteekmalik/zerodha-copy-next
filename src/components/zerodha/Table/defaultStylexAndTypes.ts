@@ -54,6 +54,14 @@ export type PositionRow = {
   "P&L": string;
   change: string;
 };
+export type FundsRow = {
+  id: string;
+  name: string;
+  freeAmount: number;
+  lockedAmount: number;
+  widrawal: string;
+  deposit: string ;
+};
 
 export type OrderClosedRow = {
   name: string;
@@ -69,7 +77,7 @@ export interface OrderOpenRow extends OrderClosedRow {
   LTP: string | undefined;
 }
 
-export type RowType = PositionRow | OrderOpenRow | OrderClosedRow;
+export type RowType = PositionRow | OrderOpenRow | OrderClosedRow | FundsRow;
 
 // Define the props for the DataGrid component
 export interface DataGridProps<T extends RowType> {
