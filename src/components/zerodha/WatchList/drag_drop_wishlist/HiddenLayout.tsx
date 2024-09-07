@@ -124,7 +124,7 @@ export function HiddenLayout({ symbolName }: { symbolName: string }) {
         payload: {
           type: "Chart",
           symbol: symbolName,
-          TimeFrame: "5",
+          TimeFrame: "1D",
         },
       },
     },
