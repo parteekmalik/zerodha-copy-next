@@ -1,8 +1,8 @@
 import { Reorder, useDragControls } from "framer-motion";
 import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
 import { useState } from "react";
-import { TsymbolLive } from "../../_redux/Slices/Livestream";
 import { getColor } from "~/app/utils";
+import { TsymbolLive } from "../../_contexts/LiveData/BinanceWS";
 
 function Item({
   isup: diff,
