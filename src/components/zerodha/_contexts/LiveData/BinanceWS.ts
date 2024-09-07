@@ -1,7 +1,6 @@
 import { createContext } from "react";
 interface IWSContext {
   LiveStreanData: TLivestreamType;
-  binanceServerConnection: "connected" | "disconneted";
 }
 export type TsymbolTrade = { curPrice: string; symbol: string };
 export type TsymbolLive = {
@@ -21,7 +20,6 @@ export type Tsymbol24hr = {
 export type TLivestreamType = Record<string, TsymbolLive>;
 
 const BinanceWSContext = createContext<IWSContext>({
-  binanceServerConnection: "disconneted",
   LiveStreanData: {},
 });
 

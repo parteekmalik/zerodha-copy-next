@@ -52,14 +52,10 @@ const BinanceWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
   props,
 ) => {
   const { children } = props;
-  const [binanceServerConnection, setbinanceServerConnection] = useState<
-    "connected" | "disconneted"
-  >("disconneted");
 
   const [LiveStreanData, setLiveStreanData] = useState(initialState);
 
   useEffect(() => {
-    websocketService.updateStatusfunction(setbinanceServerConnection);
     websocketService.updateDatafunction(setLiveStreanData);
   }, []);
 
@@ -67,7 +63,6 @@ const BinanceWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
     <BackndWSContextProvider
       value={{
         LiveStreanData,
-        binanceServerConnection,
       }}
     >
       {children}
@@ -78,27 +73,18 @@ export default BinanceWSContextComponent;
 
 export type actionBinanceData =
   | { action: "updateData"; payload: TsymbolTrade }
-  | { action: "updateStatus"; payload: "connected" | "disconneted" }
   | { action: "update24hrData"; payload: Tsymbol24hr[] };
 
 type updateDatafunctionType = React.Dispatch<
   React.SetStateAction<TLivestreamType>
 >;
-type updateStatusfunctionType = React.Dispatch<
-  React.SetStateAction<"connected" | "disconneted">
->;
 
 let updateDatafunction: updateDatafunctionType;
-let updateStatusfunction: updateStatusfunctionType;
 
 export const websocketService = {
   // Register updateDatafunction
   updateDatafunction: (fn: updateDatafunctionType) => {
     updateDatafunction = fn;
-  },
-  // Register updateStatusfunction
-  updateStatusfunction: (fn: updateStatusfunctionType) => {
-    updateStatusfunction = fn;
   },
   // Handle action dispatching
   reducer: (data: actionBinanceData) => {
@@ -132,10 +118,6 @@ export const websocketService = {
 
           return { ...Livestream };
         });
-        break;
-      }
-      case "updateStatus": {
-        updateStatusfunction(data.payload);
         break;
       }
       case "update24hrData": {
