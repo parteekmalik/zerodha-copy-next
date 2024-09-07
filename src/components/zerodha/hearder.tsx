@@ -7,6 +7,8 @@ import { shadowBox } from "./tcss";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
+import { InfoIcon } from "lucide-react";
+import InfoHover from "../ui/infoHover";
 
 type RightSideType =
   | "Dashboard"
@@ -92,12 +94,21 @@ function Header() {
             />
 
             <div className=" h-[20px] w-[20px]">
-              <WifiIcon
-                color={
-                  backendServerConnection === "connected" ? "green" : "red"
+              <InfoHover
+                info={
+                  backendServerConnection === "connected"
+                    ? "backend server is up"
+                    : "backend server is down"
                 }
-                size={"20px"}
-              />
+              >
+                {/* TODO: ( pending order will execute while page is open ) */}
+                <WifiIcon
+                  color={
+                    backendServerConnection === "connected" ? "green" : "red"
+                  }
+                  size={"20px"}
+                />
+              </InfoHover>
             </div>
           </div>
           <div className="flex h-full items-center  p-4">
@@ -107,7 +118,7 @@ function Header() {
                   <Link
                     href={"/" + x}
                     className={
-                      "hover:text-orangeApp cursor-pointer select-none px-[15px] text-center " +
+                      "cursor-pointer select-none px-[15px] text-center hover:text-orangeApp " +
                       (route === x ? "text-orangeApp" : "")
                     }
                     key={x}
