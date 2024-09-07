@@ -1,9 +1,9 @@
 import { Dispatch, Middleware, MiddlewareAPI, UnknownAction } from "redux";
+import { websocketService } from "~/components/zerodha/_contexts/LiveData/BinanceWSContextComponent";
 import {
   updateBinanceWSStats,
   updateBinanceWSSubsriptions,
 } from "../../Slices/BinanceWSStats";
-import { updateLivestream } from "../../Slices/Livestream";
 import { RootState } from "../../store";
 
 export type TsymbolTrade = {
@@ -82,7 +82,10 @@ const setupSocket = (url: string) => {
           store.dispatch(updateBinanceWSSubsriptions(data.result));
         }
       } else {
-        store.dispatch(updateLivestream({ curPrice: data.p, symbol: data.s }));
+        websocketService.reducer({
+          action: "updateData",
+          payload: { curPrice: data.p, symbol: data.s },
+        });
       }
     };
 

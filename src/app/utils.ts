@@ -84,12 +84,19 @@ export function formatDate(date: Date): string {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
-export const addPositiveSign = (
+export const modifyNumber = (
   s: string | number | undefined,
   toFixed?: number,
+  isPositiveSign?: boolean,
 ) => {
   if (typeof s === "string") s = Number(s);
-  if (!s) s = 0;
-  if (s > 0) s = "+" + toFixed ? s.toFixed(toFixed) : s;
-  return String(s);
+  else if (!s) s = 0;
+
+  // Format with toFixed to ensure decimal places
+  let formattedNumber = s.toFixed(toFixed ?? 2);
+
+  // If the number is positive, add a "+" sign in front
+  if (Number(s) > 0 && isPositiveSign) formattedNumber = "+" + formattedNumber;
+
+  return formattedNumber;
 };

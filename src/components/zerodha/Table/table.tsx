@@ -1,5 +1,5 @@
 import * as React from "react";
-import { addPositiveSign, getColor } from "~/app/utils";
+import { modifyNumber, getColor } from "~/app/utils";
 import {
   DataGridProps,
   RowType,
@@ -111,7 +111,7 @@ const DataGrid = <T extends RowType>({
                 bodyStyles?.cell + ` ${getColor(Number(footer["P&L"]))}`
               }
             >
-              {addPositiveSign(footer["P&L"])}
+              {modifyNumber(footer["P&L"])}
             </td>
           </tr>
         </tfoot>

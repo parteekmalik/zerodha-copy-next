@@ -1,7 +1,8 @@
 "use client";
+import { $Enums } from "@prisma/client";
 import { ReactNode, useMemo } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "~/components/zerodha/_redux/store";
+import { twMerge } from "tailwind-merge";
+import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
 import {
   coloredColsType,
   GridColDef,
@@ -12,11 +13,10 @@ import {
 import DataGrid from "~/components/zerodha/Table/table";
 import { api } from "~/trpc/react";
 import { formatDate } from "../utils";
-import { $Enums } from "@prisma/client";
-import { twMerge } from "tailwind-merge";
 
 function Order() {
-  const Livestream = useSelector((state: RootState) => state.Livestream);
+  const { Livestream } = useBinanceLiveData();
+
 
   const orders = api.Order.getOrders.useQuery().data;
   const closedOrders = useMemo(

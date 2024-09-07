@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
+import { useBinanceLiveData } from "../../_contexts/LiveData/useBinanceLiveData";
 import type { Tsymbol } from "../watchList";
 import Item from "./Item";
 
@@ -33,7 +34,7 @@ interface ISymbolInWL {
 }
 function SymbolInWL({ list, setSearch }: ISymbolInWL) {
   // const { socketSend } = useContext(SymbolLiveContext);
-  const Livestream = useSelector((state: RootState) => state.Livestream);
+  const { Livestream } = useBinanceLiveData();
 
   const [LocalList, setLocalList] = useState<Tsymbol[]>([]);
 

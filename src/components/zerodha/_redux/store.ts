@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import BinanceWSStatsReducer from "./Slices/BinanceWSStats";
 import FormDataReducer from "./Slices/FormData";
-import LivestreamReducer from "./Slices/Livestream";
 import headerPinReducer from "./Slices/headerPin";
 import ordersReducer from "./Slices/orders";
 import symbolsListReducer from "./Slices/symbolsList";
@@ -9,9 +8,10 @@ import userInfoReducer from "./Slices/userInfo";
 import watchListReducer from "./Slices/watchList";
 import setupSocket from "./middlewares/Bnance/socket";
 import subsciptionsMddleware from "./middlewares/subsciptions";
+import { env } from "~/env";
 
 const middleware = [
-  setupSocket("wss://stream.binance.com:9443/ws"),
+  setupSocket(env.NEXT_PUBLIC_BINANCE_WS),
   subsciptionsMddleware,
 ];
 export const store = configureStore({
@@ -22,7 +22,6 @@ export const store = configureStore({
     orders: ordersReducer,
     watchList: watchListReducer,
     symbolsList: symbolsListReducer,
-    Livestream: LivestreamReducer,
     BinanceWSStats: BinanceWSStatsReducer,
   },
   middleware(getDefaultMiddleware) {

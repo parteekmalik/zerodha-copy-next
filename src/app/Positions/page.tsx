@@ -1,6 +1,8 @@
 "use client";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import { twMerge } from "tailwind-merge";
+import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
 import { RootState } from "~/components/zerodha/_redux/store";
 import {
   GridColDef,
@@ -10,11 +12,11 @@ import {
 import DataGrid from "~/components/zerodha/Table/table";
 import { sumByKey } from "~/lib/zerodha/utils";
 import { api } from "~/trpc/react";
-import { addPositiveSign, getColor } from "../utils";
-import { twMerge } from "tailwind-merge";
+import { modifyNumber, getColor } from "../utils";
 
 export default function DefaultComonent() {
-  const Livestream = useSelector((state: RootState) => state.Livestream);
+  const { Livestream } = useBinanceLiveData();
+
   const symbolsList = useSelector((state: RootState) => state.symbolsList);
   const subsciptions = useSelector(
     (state: RootState) => state.BinanceWSStats.subsciptions,
@@ -27,8 +29,8 @@ export default function DefaultComonent() {
     } = item;
     const name = item.Orders[0]?.name ?? "error";
     const LTP = Livestream[name]?.curPrice;
-    const PL = ((Number(LTP) - avgPrice) * quantity).toFixed(2);
-    const change = (Number(LTP) / avgPrice - 1).toFixed(2);
+    const PL = modifyNumber((Number(LTP) - avgPrice) * quantity, 2,true);
+    const change = modifyNumber(Number(LTP) / avgPrice - 1, 2);
     return { id, name, quantity, avgPrice, totalPrice, LTP, "P&L": PL, change };
   });
   const PositionsGridColumn: GridColDef<(typeof PositionsList)[0]>[] = [
@@ -53,7 +55,7 @@ export default function DefaultComonent() {
   const positiveAndColor = (value: unknown, styles: string) => {
     const newValue = Number(value);
     const result: [string, string] = [
-      addPositiveSign(newValue, 2),
+      modifyNumber(newValue, 2),
       twMerge(styles, getColor(newValue)),
     ];
     return result;

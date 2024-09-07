@@ -1,14 +1,14 @@
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useContext, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
+import InfoHover from "../ui/infoHover";
+import { useBinanceLiveData } from "./_contexts/LiveData/useBinanceLiveData";
 import WifiIcon from "./savages/WifiIcon";
 import { shadowBox } from "./tcss";
-import Image from "next/image";
-import Link from "next/link";
-import { redirect, usePathname } from "next/navigation";
-import { InfoIcon } from "lucide-react";
-import InfoHover from "../ui/infoHover";
 
 type RightSideType =
   | "Dashboard"
@@ -28,7 +28,7 @@ function Header() {
 
   const { backendServerConnection } = useContext(BackndWSContext);
   const headerPin = useSelector((state: RootState) => state.headerPin);
-  const Livestream = useSelector((state: RootState) => state.Livestream);
+  const { Livestream } = useBinanceLiveData();
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
   const dispatch = useDispatch<AppDispatch>();
 

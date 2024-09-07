@@ -7,9 +7,10 @@ import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
 import { updateFormData } from "~/components/zerodha/_redux/Slices/FormData";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
+import { useBinanceLiveData } from "../_contexts/LiveData/useBinanceLiveData";
 import { TFormSchema } from "./FrmSchema";
 import InputDiv from "./InputDiv";
-import { CheckBox, OrderTypeDiv } from "./OrderTypeDiv";
+import { OrderTypeDiv } from "./OrderTypeDiv";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 // export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -50,7 +51,7 @@ function TempOrderForm() {
   const APIutils = api.useUtils();
 
   const FormData = useSelector((state: RootState) => state.FormData);
-  const Livestream = useSelector((state: RootState) => state.Livestream);
+  const { Livestream } = useBinanceLiveData();
 
   useEffect(() => {
     setValue("symbolName", FormData.symbol);
