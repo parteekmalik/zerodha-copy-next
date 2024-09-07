@@ -6,7 +6,7 @@ function InfoHover({ children, info }: { info: string; children: ReactNode }) {
       {children}
       <div className="invisible absolute left-1/2 top-full -translate-x-1/2  rounded-lg bg-black px-2  text-white group-hover:visible">
         <Triangle size={10} color="black" />
-        {info}
+        <span className="text-nowrap">{info}</span>
       </div>
     </div>
   );
