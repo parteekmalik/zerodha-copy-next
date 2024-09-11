@@ -125,7 +125,7 @@ function Header() {
               <nav className=" border-r ">
                 {rightSideItems.map((x: RightSideType) => (
                   <Link
-                    href={"/" + x}
+                    href={"/kite/" + x}
                     className={
                       "cursor-pointer select-none px-[15px] text-center hover:text-orangeApp " +
                       (route === x ? "text-orangeApp" : "")
