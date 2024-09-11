@@ -3,7 +3,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 export type TBinanceWSStatsType = {
   isConnected: boolean;
   subsciptions: string[];
-  seprateSubscriptions: { [key: string]: string[] };
+  seprateSubscriptions: Record<string,string[]>;
 };
 
 const initialState: TBinanceWSStatsType = {

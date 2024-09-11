@@ -12,12 +12,9 @@ export function useBinanceLiveData() {
     );
   }
 
-  const { LiveStreanData, binanceServerConnection } = context;
+  const { LiveStreanData } = context;
 
 
   // Provide defaults to ensure values are never undefined
-  return {
-    Livestream: LiveStreanData ?? {},
-    binanceServerConnection: binanceServerConnection ?? "disconneted",
-  };
+  return {Livestream: LiveStreanData ?? {}};
 }
