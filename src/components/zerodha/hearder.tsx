@@ -19,6 +19,7 @@ type RightSideType =
   | "Funds";
 
 function Header() {
+  const baseURL = "/kite/";
   const rightSideItems: RightSideType[] = [
     "Dashboard",
     "Orders",
@@ -125,7 +126,7 @@ function Header() {
               <nav className=" border-r ">
                 {rightSideItems.map((x: RightSideType) => (
                   <Link
-                    href={"/kite/" + x}
+                    href={baseURL + x}
                     className={
                       "cursor-pointer select-none px-[15px] text-center hover:text-orangeApp " +
                       (route === x ? "text-orangeApp" : "")
