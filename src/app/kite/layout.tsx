@@ -1,11 +1,8 @@
 import "~/styles/globals.css";
 
 import { Inter } from "next/font/google";
-import { cookies, headers } from "next/headers";
-
-import { redirect } from "next/navigation";
-import { getServerAuthSession } from "~/server/auth";
-import { TRPCReactProvider } from "~/trpc/react";
+import { cookies } from "next/headers";
+import { TRPCReactProvider } from "src/trpc/react";
 import ContextLayer from "./page";
 
 const inter = Inter({
@@ -24,13 +21,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerAuthSession();
-
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider cookies={cookies().toString()}>
-          <ContextLayer>{children}</ContextLayer>
+          <ContextLayer>
+            {children}
+            </ContextLayer>
         </TRPCReactProvider>
       </body>
     </html>

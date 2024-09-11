@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { searchAndSort } from "~/app/utils";
+import { searchAndSort } from "~/app/kite/utils";
 import { RootState } from "../../_redux/store";
 import { SearchIcon } from "../../savages/searchIcon";
 import SearchList from "./searchList";

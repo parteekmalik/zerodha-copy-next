@@ -1,37 +1,34 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
- 
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  console.log(request);
-  const path = request.nextUrl.pathname
+  const path = request.nextUrl.pathname;
 
-  const isPublicPath = path === '/api/auth/signin' || path === '/signup' || path === '/verifyemail'
+  const publicPaths = ["/api/auth/signin"];
+  const isPublicPath = publicPaths.includes(path);
 
-  const token = request.cookies.get('token')?.value ?? ''
+  const token = request.cookies.get("next-auth.session-token")?.value;
 
-  if(isPublicPath && token) {
-    return NextResponse.redirect(new URL('/', request.nextUrl))
+  console.log(path, isPublicPath, token);
+
+  // Redirect from root ("/") to "/Dashboard"
+  if (path === "/kite") {
+    return NextResponse.redirect(new URL("/kite/Dashboard", request.nextUrl));
+  }
+
+  if (isPublicPath && token) {
+    return NextResponse.redirect(new URL("/", request.nextUrl));
   }
 
   if (!isPublicPath && !token) {
     // If user is not authenticated, store the requested page and redirect to login
-    const redirectUrl = new URL('/api/auth/signin', request.nextUrl);
-    redirectUrl.searchParams.set('next', path); // Store the originally requested path
+    const redirectUrl = new URL("/api/auth/signin", request.nextUrl);
+    redirectUrl.searchParams.set("next", path); // Store the originally requested path
     return NextResponse.redirect(redirectUrl);
-}
-    
+  }
 }
 
- 
-// See "Matching Paths" below to learn more
+// Apply middleware to all paths except those starting with "/_next"
 export const config = {
-  matcher: [
-    '/:path*',
-    '/',
-    '/profile',
-    '/login',
-    '/signup',
-    '/verifyemail'
-  ]
-}
+  matcher: ["/kite","/kite/(.*)", "/api/(.*)"],
+};

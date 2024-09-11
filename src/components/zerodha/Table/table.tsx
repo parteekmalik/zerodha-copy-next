@@ -1,5 +1,5 @@
 import * as React from "react";
-import { modifyNumber, getColor } from "~/app/utils";
+import { modifyNumber, getColor } from "~/app/kite/utils";
 import {
   DataGridProps,
   RowType,

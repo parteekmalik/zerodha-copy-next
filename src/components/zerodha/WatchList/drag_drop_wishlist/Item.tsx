@@ -1,7 +1,7 @@
 import { Reorder, useDragControls } from "framer-motion";
 import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
 import { useState } from "react";
-import { getColor } from "~/app/utils";
+import { getColor } from "~/app/kite/utils";
 import { TsymbolLive } from "../../_contexts/LiveData/BinanceWS";
 
 function Item({
@@ -30,7 +30,7 @@ function Item({
     >
       <div
         className={
-          " hover:bg-lightGrayApp relative flex border-b   p-[12px_15px] " +
+          " relative flex border-b p-[12px_15px]   hover:bg-lightGrayApp " +
           getColor(diff)
         }
         style={{ fontSize: ".8125rem" }}

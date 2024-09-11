@@ -1,6 +1,6 @@
 // math.test.ts
 
-import { parsePrice } from "../app/utils";
+import { parsePrice } from "../app/kite/utils";
 // const sample: TcalculateTradesSummaryFIFO[] = [
 //   {
 //     type: "BUY",

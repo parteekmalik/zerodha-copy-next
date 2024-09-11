@@ -7,7 +7,7 @@ import {
   TsymbolLive,
   TsymbolTrade,
 } from "./BinanceWS";
-import { modifyNumber } from "~/app/utils";
+import { modifyNumber } from "~/app/kite/utils";
 
 const initialState: TLivestreamType = {};
 function getChange(prevPrice: number | string, curPrice: number | string) {
@@ -17,8 +17,8 @@ function getChange(prevPrice: number | string, curPrice: number | string) {
   );
   return {
     prevPrice: Number(prevPrice),
-    PriceChange: modifyNumber(PriceChange, getPointCount(curPrice),true),
-    PriceChangePercent: modifyNumber(PriceChangePercent, 2,true),
+    PriceChange: modifyNumber(PriceChange, getPointCount(curPrice), true),
+    PriceChangePercent: modifyNumber(PriceChangePercent, 2, true),
   };
 }
 function getPointCount(price: string | number) {
