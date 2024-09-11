@@ -7,7 +7,6 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "~/server/auth";
 import { TRPCReactProvider } from "~/trpc/react";
 import ContextLayer from "./page";
-import { getServerSideProps } from "next/dist/build/templates/pages";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,18 +25,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerAuthSession();
-  // console.log(getServerSideProps());
-  const headersList = headers();
-  const data = (headersList.get("x-current-path") ?? "not_loaded").split("/");
-  const route = () => {
-    return data[data.length - 1];
-  };
-  // console.log(data, headersList);
-  console.log("session", session);
-  console.log(route());
-  if (!session && route() !== "not_loaded" && route() !== "signin" && route() !== "login" && route() !== "logout") {
-    redirect("/api/auth/signin");
-  }
 
   return (
     <html lang="en">
