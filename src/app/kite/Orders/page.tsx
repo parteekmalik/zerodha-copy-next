@@ -164,14 +164,14 @@ const colorColsData = [
     name: "type",
     fn: (value: unknown, styles: string) => {
       const orderType = value as $Enums.OrderType;
-      const restult: [ReactNode, string] = [
+      const component = (
         <FadedColoredCell
           text={orderType}
           bgColor={orderType === "BUY" ? "bg-blueApp " : "bg-redApp "}
           textColor={orderType === "BUY" ? "text-blueApp " : "text-redApp "}
-        />,
-        twMerge(styles, ""),
-      ];
+        />
+      );
+      const restult: [ReactNode, string] = [component, twMerge(styles, "")];
       return restult;
     },
   },
@@ -179,7 +179,7 @@ const colorColsData = [
     name: "status",
     fn: (value: unknown, styles: string) => {
       const orderType = value as $Enums.OrderStatus;
-      const restult: [ReactNode, string] = [
+      const component = (
         <FadedColoredCell
           text={orderType}
           bgColor={
@@ -188,9 +188,9 @@ const colorColsData = [
           textColor={
             orderType === "COMPLETED" ? "text-greenApp " : "text-black "
           }
-        />,
-        twMerge(styles, ""),
-      ];
+        />
+      );
+      const restult: [ReactNode, string] = [component, twMerge(styles, "")];
       return restult;
     },
   },

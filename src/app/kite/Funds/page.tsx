@@ -6,7 +6,7 @@ import {
   coloredColsType,
   FundsRow,
   GridColDef,
-  TableDefaultstyles
+  TableDefaultstyles,
 } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import DataGrid from "~/components/zerodha/Table/table";
 import { api } from "~/trpc/react";
@@ -50,14 +50,14 @@ const colorColsData = [
     name: "widrawal",
     fn: (value: unknown, styles: string) => {
       const text = value as string;
-      const restult: [ReactNode, string] = [
+      const component = (
         <FadedColoredCell
           text={text}
           bgColor={"bg-redApp"}
           textColor={"text-redApp"}
-        />,
-        twMerge(styles, ""),
-      ];
+        />
+      );
+      const restult: [ReactNode, string] = [component, twMerge(styles, "")];
       return restult;
     },
   },
@@ -65,14 +65,14 @@ const colorColsData = [
     name: "deposit",
     fn: (value: unknown, styles: string) => {
       const text = value as string;
-      const restult: [ReactNode, string] = [
+      const component = (
         <FadedColoredCell
           text={text}
           bgColor={"bg-blueApp "}
           textColor={"text-blueApp "}
-        />,
-        twMerge(styles, ""),
-      ];
+        />
+      );
+      const restult: [ReactNode, string] = [component, twMerge(styles, "")];
       return restult;
     },
   },

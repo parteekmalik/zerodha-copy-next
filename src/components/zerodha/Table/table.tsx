@@ -97,7 +97,7 @@ const DataGrid = <T extends RowType>({
               <button
                 className={footerStyles?.button}
                 onClick={() => {
-                  const items = selectedIds.map((id) => rows.find((i) => i.id === id) as T);
+                  const items = selectedIds.map((id) => rows.find((i) => i.id === id)!);
                   selected.handleFn(items);
                   setSelectedIds([]);
                 }}
