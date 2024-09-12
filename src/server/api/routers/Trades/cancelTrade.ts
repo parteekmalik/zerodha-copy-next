@@ -1,6 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
-import TsMap from "ts-map";
 
 // TODO: add logic for limit orders (add lockedBalance)
 export default async function cancelOrderTranection(

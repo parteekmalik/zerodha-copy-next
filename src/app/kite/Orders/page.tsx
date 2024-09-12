@@ -1,6 +1,6 @@
 "use client";
 import { $Enums } from "@prisma/client";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useContext, useMemo } from "react";
 import { twMerge } from "tailwind-merge";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
 import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
@@ -14,6 +14,8 @@ import {
 import DataGrid from "~/components/zerodha/Table/table";
 import { api } from "~/trpc/react";
 import { formatDate } from "../utils";
+import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
+import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
 
 function Order() {
   const { Livestream } = useBinanceLiveData();
@@ -77,27 +79,70 @@ function Order() {
     { headerName: "price", field: "price", width: 0 },
     { headerName: "status", field: "status", width: 0 },
   ];
+  const APIutils = api.useUtils();
+  const { WSsendOrder } = useContext(BackndWSContext);
+  const toast = useToast();
+
+  const cancelOrdersAPI = api.Order.cancelTrade.useMutation({
+    onSuccess(messages) {
+      messages.map((message) => {
+        console.log("mutation nsucess -> ", message);
+        if (typeof message === "string") {
+          toast.open({
+            state: "error",
+            errorMessage: message,
+          });
+        } else {
+          toast.open({
+            name: message.name,
+            state:
+              message.status === "OPEN"
+                ? "placed"
+                : message.status === "COMPLETED" ||
+                    message.status === "CANCELLED"
+                  ? "sucess"
+                  : "error",
+            quantity: message.quantity,
+            orderId: message.id,
+            type: message.type,
+          });
+          WSsendOrder("order", message);
+        }
+      });
+    },
+    onSettled() {
+      APIutils.Order.getOrders.invalidate().catch((err) => console.log(err));
+      APIutils.getAccountInfo.getAllBalance
+        .invalidate()
+        .catch((err) => console.log(err));
+    },
+  });
 
   const handleFn = (items: OrderOpenRow[]) => {
     // Placeholder function for handling selection
-    console.log("submitted: ", items);
+    const orderids = items.map((it) => it.id);
+    cancelOrdersAPI.mutate({ orderids });
   };
 
   if (typeof orders === "string" || orders === undefined) return <>{orders}</>;
   return (
     <div className="flex  h-full w-full flex-col p-4">
-      <div className="flex w-full py-2">
-        <span className="grow text-lg text-textDark">
-          Open Trades ({openOrders.length})
-        </span>
-      </div>
-      <DataGrid<OrderOpenRow>
-        rows={openOrders}
-        columns={openOrdersColumn}
-        coloredCols={colorColsData as coloredColsType<OrderOpenRow>}
-        selected={{handleFn , text:"cancel Orders"}}
-        styles={TableDefaultstyles}
-      />
+      {openOrders.length ? (
+        <>
+          <div className="flex w-full py-2">
+            <span className="grow text-lg text-textDark">
+              Open Trades ({openOrders.length})
+            </span>
+          </div>
+          <DataGrid<OrderOpenRow>
+            rows={openOrders}
+            columns={openOrdersColumn}
+            coloredCols={colorColsData as coloredColsType<OrderOpenRow>}
+            selected={{ handleFn, text: "cancel Orders" }}
+            styles={TableDefaultstyles}
+          />
+        </>
+      ) : null}
       <div className="flex w-full py-2">
         <span className="grow text-lg text-textDark">
           Executed Trades ({closedOrders.length})

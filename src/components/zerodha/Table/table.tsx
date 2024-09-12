@@ -99,6 +99,7 @@ const DataGrid = <T extends RowType>({
                 onClick={() => {
                   const items = selectedIds.map((id) => rows.find((i) => i.id === id) as T);
                   selected.handleFn(items);
+                  setSelectedIds([]);
                 }}
               >
                 {selected.text}
