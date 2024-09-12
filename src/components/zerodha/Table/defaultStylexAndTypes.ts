@@ -44,7 +44,7 @@ export const TableDefaultstyles: DataGridStyles = {
 export type GridColDef<T> = {
   headerName: string;
   field: keyof T;
-  width: number;
+  width?: number;
 };
 
 export type PositionRow = {
@@ -93,7 +93,7 @@ export interface DataGridProps<T extends RowType> {
     skip: number;
   };
   coloredCols?: coloredColsType<T>;
-  selected?: (selectedIds: (string | number)[]) => void; // Update the type of selected to accept an array of IDs
+  selected?: (selectedIds: T[]) => void; // Update the type of selected to accept an array of IDs
 }
 
 export type coloredColsType<T> = {

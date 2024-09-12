@@ -64,9 +64,9 @@ export default function DefaultComonent() {
     [PositionsList],
   );
 
-  const handleFn = (ids: (string | number)[]) => {
+  const handleFn = (items: PositionRow[]) => {
     // Placeholder function for handling selection
-    console.log("submitted: ", ids);
+    console.log("submitted: ", items);
   };
 
   const positiveAndColor = (value: unknown, styles: string) => {

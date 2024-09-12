@@ -78,9 +78,9 @@ function Order() {
     { headerName: "status", field: "status", width: 0 },
   ];
 
-  const handleFn = (ids: (string | number)[]) => {
+  const handleFn = (items: OrderOpenRow[]) => {
     // Placeholder function for handling selection
-    console.log("submitted: ", ids);
+    console.log("submitted: ", items);
   };
 
   if (typeof orders === "string" || orders === undefined) return <>{orders}</>;
