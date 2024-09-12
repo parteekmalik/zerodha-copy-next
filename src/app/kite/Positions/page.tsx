@@ -93,7 +93,7 @@ export default function DefaultComonent() {
           { name: "quantity", fn: positiveAndColor },
           { name: "change", fn: positiveAndColor },
         ]}
-        selected={handleFn}
+        selected={{handleFn,text:"close Orders"}}
         footer={PositionsTotal}
         styles={TableDefaultstyles}
       />

@@ -93,7 +93,7 @@ export interface DataGridProps<T extends RowType> {
     skip: number;
   };
   coloredCols?: coloredColsType<T>;
-  selected?: (selectedIds: T[]) => void; // Update the type of selected to accept an array of IDs
+  selected?: {handleFn:(selectedIds: T[]) => void,text:string}; // Update the type of selected to accept an array of IDs
 }
 
 export type coloredColsType<T> = {

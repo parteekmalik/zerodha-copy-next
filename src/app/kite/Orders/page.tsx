@@ -95,7 +95,7 @@ function Order() {
         rows={openOrders}
         columns={openOrdersColumn}
         coloredCols={colorColsData as coloredColsType<OrderOpenRow>}
-        selected={handleFn}
+        selected={{handleFn , text:"cancel Orders"}}
         styles={TableDefaultstyles}
       />
       <div className="flex w-full py-2">
