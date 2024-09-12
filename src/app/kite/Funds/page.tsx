@@ -6,8 +6,7 @@ import {
   coloredColsType,
   FundsRow,
   GridColDef,
-  PositionRow,
-  TableDefaultstyles,
+  TableDefaultstyles
 } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import DataGrid from "~/components/zerodha/Table/table";
 import { api } from "~/trpc/react";

@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
-import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
+import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
+import { AppDispatch } from "~/components/zerodha/_redux/store";
 import {
   GridColDef,
   PositionRow,
@@ -12,8 +13,7 @@ import {
 import DataGrid from "~/components/zerodha/Table/table";
 import { sumByKey } from "~/lib/zerodha/utils";
 import { api } from "~/trpc/react";
-import { modifyNumber, getColor } from "../utils";
-import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
+import { getColor, modifyNumber } from "../utils";
 
 export default function DefaultComonent() {
   const { Livestream } = useBinanceLiveData();

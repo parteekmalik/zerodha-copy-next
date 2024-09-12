@@ -3,6 +3,7 @@ import { $Enums } from "@prisma/client";
 import { ReactNode, useMemo } from "react";
 import { twMerge } from "tailwind-merge";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
+import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
 import {
   coloredColsType,
   GridColDef,
@@ -13,7 +14,6 @@ import {
 import DataGrid from "~/components/zerodha/Table/table";
 import { api } from "~/trpc/react";
 import { formatDate } from "../utils";
-import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
 
 function Order() {
   const { Livestream } = useBinanceLiveData();
