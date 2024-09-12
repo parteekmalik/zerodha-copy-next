@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
-  const publicPaths = ["/api/auth/signin"];
+  const publicPaths = ["/api/auth/signin","/api/auth/signin/discord","/api/auth/callback/discord"];
   const isPublicPath = publicPaths.includes(path);
 
   const token = request.cookies.get("next-auth.session-token")?.value;
@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
   console.log(path, isPublicPath, token);
 
   // Redirect from root ("/") to "/Dashboard"
-  if (path === "/kite") {
+  if (path === "/kite" || path === "/") {
     return NextResponse.redirect(new URL("/kite/Dashboard", request.nextUrl));
   }
 
@@ -30,5 +30,5 @@ export function middleware(request: NextRequest) {
 
 // Apply middleware to all paths except those starting with "/_next"
 export const config = {
-  matcher: ["/kite","/kite/(.*)", "/api/(.*)"],
+  matcher: ["/","/kite","/kite/(.*)", "/api/(.*)"],
 };
