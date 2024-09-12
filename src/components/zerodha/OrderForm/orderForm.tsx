@@ -89,6 +89,7 @@ function TempOrderForm() {
     },
     onSettled() {
       APIutils.Order.getOrders.invalidate().catch((err) => console.log(err));
+      APIutils.Order.getRemainingFilledOrders.invalidate().catch((err) => console.log(err));
       APIutils.getAccountInfo.getAllBalance
         .invalidate()
         .catch((err) => console.log(err));
