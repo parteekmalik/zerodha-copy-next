@@ -34,6 +34,9 @@ export const TableDefaultstyles: DataGridStyles = {
     row: "border-b-[1px] border-gray-300",
     cell: "p-3 text-center uppercase  font-thin ",
   },
+  footer: {
+    button: "bg-blueApp text-white my-3 px-2 rounded-md"
+  },
   checkbox: "text-center",
 };
 
