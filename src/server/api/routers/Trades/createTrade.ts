@@ -73,17 +73,34 @@ export default async function createOrderTransection({
           },
         },
       });
-    // console.log({
-    //   price,
-    //   type: input.orderType,
-    //   triggerType: input.trigerType,
-    //   name: input.symbolName,
-    //   quantity: input.quantity,
-    //   status: input.trigerType === "MARKET" ? "COMPLETED" : "OPEN",
-    //   TradingAccountId: Taccount,
-    //   AssetsId: baseAsset.id,
-    // });
-    // console.log(tx.order.create);
+    else {
+      await tx.assets.update({
+        where: {
+          unique_TradingAccountId_name: {
+            TradingAccountId: Taccount,
+            name: input.orderType === "BUY" ? usdtAsset.name : BaseAssetName,
+          },
+        },
+        data: {
+          freeAmount: {
+            decrement: requiredBalaceForOrder,
+          },
+        },
+      });
+      await tx.assets.update({
+        where: {
+          unique_TradingAccountId_name: {
+            TradingAccountId: Taccount,
+            name: input.orderType === "BUY" ? BaseAssetName : usdtAsset.name,
+          },
+        },
+        data: {
+          freeAmount: {
+            increment: input.quantity,
+          },
+        },
+      });
+    }
     return await tx.order.create({
       data: {
         price,
