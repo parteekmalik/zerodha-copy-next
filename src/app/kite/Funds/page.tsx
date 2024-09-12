@@ -1,6 +1,9 @@
 "use client";
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
+import { twMerge } from "tailwind-merge";
+import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
 import {
+  coloredColsType,
   FundsRow,
   GridColDef,
   PositionRow,
@@ -24,8 +27,8 @@ function Funds() {
     { headerName: "name", field: "name", width: 0 },
     { headerName: "freeAmount", field: "freeAmount", width: 0 },
     { headerName: "lockedAmount", field: "lockedAmount", width: 0 },
-    { headerName: "widrawal", field: "widrawal", width: 0 },
     { headerName: "deposit", field: "deposit", width: 0 },
+    { headerName: "widrawal", field: "widrawal", width: 0 },
   ];
   const handleFn = (ids: (string | number)[]) => {
     // Placeholder function for handling selection
@@ -36,10 +39,42 @@ function Funds() {
       <DataGrid<FundsRow>
         rows={FundsList}
         columns={FundsGridColumn}
-        coloredCols={[]}
+        coloredCols={colorColsData as coloredColsType<FundsRow>}
         styles={TableDefaultstyles}
       />
     </div>
   );
 }
 export default Funds;
+const colorColsData = [
+  {
+    name: "widrawal",
+    fn: (value: unknown, styles: string) => {
+      const text = value as string;
+      const restult: [ReactNode, string] = [
+        <FadedColoredCell
+          text={text}
+          bgColor={"bg-redApp"}
+          textColor={"text-redApp"}
+        />,
+        twMerge(styles, ""),
+      ];
+      return restult;
+    },
+  },
+  {
+    name: "deposit",
+    fn: (value: unknown, styles: string) => {
+      const text = value as string;
+      const restult: [ReactNode, string] = [
+        <FadedColoredCell
+          text={text}
+          bgColor={"bg-blueApp "}
+          textColor={"text-blueApp "}
+        />,
+        twMerge(styles, ""),
+      ];
+      return restult;
+    },
+  },
+];

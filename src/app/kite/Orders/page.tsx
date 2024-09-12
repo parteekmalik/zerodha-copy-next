@@ -13,10 +13,10 @@ import {
 import DataGrid from "~/components/zerodha/Table/table";
 import { api } from "~/trpc/react";
 import { formatDate } from "../utils";
+import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
 
 function Order() {
   const { Livestream } = useBinanceLiveData();
-
 
   const orders = api.Order.getOrders.useQuery().data;
   const closedOrders = useMemo(
@@ -87,7 +87,7 @@ function Order() {
   return (
     <div className="flex  h-full w-full flex-col p-4">
       <div className="flex w-full py-2">
-        <span className="text-textDark grow text-lg">
+        <span className="grow text-lg text-textDark">
           Open Trades ({openOrders.length})
         </span>
       </div>
@@ -99,7 +99,7 @@ function Order() {
         styles={TableDefaultstyles}
       />
       <div className="flex w-full py-2">
-        <span className="text-textDark grow text-lg">
+        <span className="grow text-lg text-textDark">
           Executed Trades ({closedOrders.length})
         </span>
       </div>
@@ -120,19 +120,11 @@ const colorColsData = [
     fn: (value: unknown, styles: string) => {
       const orderType = value as $Enums.OrderType;
       const restult: [ReactNode, string] = [
-        <div key={"hi"} className={twMerge("relative  m-auto")}>
-          <div
-            className={twMerge(
-              "absolute left-0 top-0 h-full w-full rounded-sm opacity-30  ",
-              orderType === "BUY" ? "bg-blueApp " : "bg-redApp ",
-            )}
-          ></div>
-          <span
-            className={orderType === "BUY" ? "text-blueApp " : "text-redApp "}
-          >
-            {orderType}
-          </span>
-        </div>,
+        <FadedColoredCell
+          text={orderType}
+          bgColor={orderType === "BUY" ? "bg-blueApp " : "bg-redApp "}
+          textColor={orderType === "BUY" ? "text-blueApp " : "text-redApp "}
+        />,
         twMerge(styles, ""),
       ];
       return restult;
@@ -143,21 +135,15 @@ const colorColsData = [
     fn: (value: unknown, styles: string) => {
       const orderType = value as $Enums.OrderStatus;
       const restult: [ReactNode, string] = [
-        <div key={"hi"} className={twMerge("relative  m-auto")}>
-          <div
-            className={twMerge(
-              "absolute left-0 top-0 h-full w-full rounded-sm opacity-30  ",
-              orderType === "COMPLETED" ? "bg-greenApp " : "bg-darkGrayApp ",
-            )}
-          ></div>
-          <span
-            className={
-              orderType === "COMPLETED" ? "text-greenApp " : "text-black "
-            }
-          >
-            {orderType}
-          </span>
-        </div>,
+        <FadedColoredCell
+          text={orderType}
+          bgColor={
+            orderType === "COMPLETED" ? "bg-greenApp " : "bg-darkGrayApp "
+          }
+          textColor={
+            orderType === "COMPLETED" ? "text-greenApp " : "text-black "
+          }
+        />,
         twMerge(styles, ""),
       ];
       return restult;
