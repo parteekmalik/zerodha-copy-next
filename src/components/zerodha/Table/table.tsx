@@ -90,32 +90,34 @@ const DataGrid = <T extends RowType>({
           </tr>
         ))}
       </tbody>
-      {footer && (
-        <tfoot className={footerStyles?.className}>
-          <tr>
-            <td colSpan={(footer.skip ?? 1) + Number(selected !== undefined)}>
-              {selectedIds.length && selected ? (
-                <button
-                  className={footerStyles?.button}
-                  onClick={() => {
-                    selected(selectedIds);
-                  }}
-                >
-                  submit
-                </button>
-              ) : null}
-            </td>
-            <td className={bodyStyles?.cell}>{footer.LTP}</td>
-            <td
-              className={
-                bodyStyles?.cell + ` ${getColor(Number(footer["P&L"]))}`
-              }
-            >
-              {modifyNumber(footer["P&L"])}
-            </td>
-          </tr>
-        </tfoot>
-      )}
+      <tfoot className={footerStyles?.className}>
+        <tr>
+          <td colSpan={(footer?.skip ?? 1) + Number(selected !== undefined)}>
+            {selectedIds.length && selected ? (
+              <button
+                className={footerStyles?.button}
+                onClick={() => {
+                  selected(selectedIds);
+                }}
+              >
+                submit
+              </button>
+            ) : null}
+          </td>
+          {footer && (
+            <>
+              <td className={bodyStyles?.cell}>{footer.LTP}</td>
+              <td
+                className={
+                  bodyStyles?.cell + ` ${getColor(Number(footer["P&L"]))}`
+                }
+              >
+                {modifyNumber(footer["P&L"])}
+              </td>
+            </>
+          )}
+        </tr>
+      </tfoot>
     </table>
   );
 };
