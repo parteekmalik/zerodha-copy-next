@@ -9,7 +9,7 @@ export function middleware(request: NextRequest) {
 
   const token = request.cookies.get("next-auth.session-token")?.value;
 
-  console.log(path, isPublicPath, token);
+  console.log(path, isPublicPath, token, request.cookies);
 
   // Redirect from root ("/") to "/Dashboard"
   if (path === "/kite" || path === "/") {
