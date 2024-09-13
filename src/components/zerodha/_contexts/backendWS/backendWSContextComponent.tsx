@@ -39,12 +39,12 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
           orderId: lastMessage.id,
           type: lastMessage.type,
         });
-        APIutils.Order.getOrders.invalidate().catch((err) => console.log(err));
+        APIutils.Order.getOrders.refetch().catch((err) => console.log(err));
         APIutils.Order.getRemainingFilledOrders
-          .invalidate()
+          .refetch()
           .catch((err) => console.log(err));
         // APIutils.getAccountInfo.getBalance
-        //   .invalidate()
+        //   .refetch()
         //   .catch((err) => console.log(err));
       } else if (lastMessage === "connected" || lastMessage === "disconneted") {
         setbackendServerConnection(lastMessage);
