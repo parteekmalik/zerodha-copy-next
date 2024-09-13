@@ -265,7 +265,7 @@ function TempOrderForm() {
             value={watch().orderType}
           />
           <div
-            className="cursor-pointer border border-borderDarkGrayApp bg-white p-[8px_12px] text-textDark hover:bg-borderDarkGrayApp hover:text-white"
+            className="border-borderApp hover:bg-borderApp cursor-pointer border bg-white p-[8px_12px] text-textDark hover:text-white"
             onClick={() =>
               dispatch(
                 updateFormData({

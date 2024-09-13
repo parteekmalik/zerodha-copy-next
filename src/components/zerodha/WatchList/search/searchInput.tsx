@@ -53,14 +53,14 @@ function SearchInput({
     <div className="z-20 min-h-[50px] min-w-[0px]">
       <div
         ref={refElement}
-        className="  flex  items-center justify-center border-b p-3"
+        className="  flex  items-center justify-center border-b border-borderApp p-3"
       >
         <div className=" h-[15px] w-[15px]">
-          <SearchIcon />
+          <SearchIcon fill="fill-foreground" />
         </div>
         <input
           ref={inputRef}
-          className="boarder-[0px] grow px-2 text-sm focus:outline-0"
+          className="boarder-[0px] bg-background grow px-2 text-sm focus:outline-0"
           type="text"
           autoComplete="off"
           autoCorrect="off"

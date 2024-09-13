@@ -68,7 +68,7 @@ function Header() {
   return (
     <header className={"  flex w-full justify-center bg-background " + shadowBox}>
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
-        <div className="flex h-full min-w-[430px] items-center justify-around  gap-5 border-r text-base uppercase">
+        <div className="flex h-full min-w-[430px] items-center justify-around  gap-5 border-r border-borderApp text-base uppercase">
           <div className="flex cursor-pointer gap-2 ">
             <Link href={`Chart?symbol=${PinData.first.name}&TimeFrame=${5}`}>
               {headerPin.Pin0}

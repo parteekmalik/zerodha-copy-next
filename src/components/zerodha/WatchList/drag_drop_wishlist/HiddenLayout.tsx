@@ -41,10 +41,10 @@ export function BaseSymbolLayout({
       <div className="grow">{symbolName}</div>
       <div className="flex">
         <div className="flex opacity-[.7]">
-          <div className="pr-[3px] text-black opacity-[.65] ">
+          <div className="pr-[3px] text-foreground/65 ">
             {symbolLiveTemp?.PriceChange}
           </div>
-          <div className="flex  w-[45px] min-w-[45px]  text-black  ">
+          <div className="flex  w-[45px] min-w-[45px]  text-foreground  ">
             <div className="grow text-right">
               {symbolLiveTemp?.PriceChangePercent}
             </div>
