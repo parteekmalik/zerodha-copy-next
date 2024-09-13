@@ -1,13 +1,12 @@
 import { z } from "zod";
 import { FormSchema } from "~/components/zerodha/OrderForm/FrmSchema";
 
+import { Order } from "@prisma/client";
+import { sumByKey } from "~/lib/zerodha/utils";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import cancelOrderTranection from "./cancelTrade";
 import createOrderTransection from "./createTrade";
 import { getTradingAccount } from "./utils/getTradingAccount";
-import { experimental_standaloneMiddleware } from "@trpc/server";
-import { Order } from "@prisma/client";
-import { sumByKey } from "~/lib/zerodha/utils";
 
 export const OrderRouter = createTRPCRouter({
   getOrders: protectedProcedure.query(async ({ ctx }) => {
@@ -21,17 +20,24 @@ export const OrderRouter = createTRPCRouter({
   }),
 
   createOrder: protectedProcedure
-    .input(FormSchema)
+    .input(z.union([FormSchema, z.array(FormSchema)]))
     .mutation(async ({ ctx, input }) => {
-      const Taccount = (await getTradingAccount(ctx)).id;
-      if (Taccount) {
-        const res = await createOrderTransection({
-          db: ctx.db,
-          input,
-          Taccount,
-        });
-        return res;
-      }
+      const tradingAccountId = (await getTradingAccount(ctx)).id;
+      // Ensure orderids is an array
+      const ordersArray = Array.isArray(input) ? input : [input];
+
+      // Use Promise.all to handle all asynchronous createOrderTransection calls
+      const result = await Promise.all(
+        ordersArray.map((order) =>
+          createOrderTransection({
+            db: ctx.db,
+            input: order,
+            Taccount: tradingAccountId,
+          }),
+        ),
+      );
+
+      return result;
     }),
   cancelTrade: protectedProcedure
     .input(

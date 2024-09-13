@@ -8,7 +8,7 @@ import { updateFormData } from "~/components/zerodha/_redux/Slices/FormData";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
 import { useBinanceLiveData } from "../_contexts/LiveData/useBinanceLiveData";
-import { TFormSchema } from "./FrmSchema";
+import { TFormSchema } from "./FormSchema";
 import InputDiv from "./InputDiv";
 import { OrderTypeDiv } from "./OrderTypeDiv";
 
