@@ -11,6 +11,7 @@ import { useBinanceLiveData } from "../_contexts/LiveData/useBinanceLiveData";
 import { TFormSchema } from "./FormSchema";
 import InputDiv from "./InputDiv";
 import { OrderTypeDiv } from "./OrderTypeDiv";
+import { twMerge } from "tailwind-merge";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 // export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -31,7 +32,7 @@ function TempOrderForm() {
     setValue, 
     watch,
     formState: { errors },
-  } = useForm<{isMarketOrder: boolean; isSl: boolean; isTp: boolean;} & z.output<TFormSchema>>({
+  } = useForm<{isMarketOrder: boolean; } & z.output<TFormSchema>>({
     defaultValues: {
       price: 0,
       quantity: 1,
@@ -39,8 +40,6 @@ function TempOrderForm() {
       orderType: "BUY",
       marketType: "SPOT",
       isMarketOrder: true,
-      isSl: false,
-      isTp: false,
     },
   });
 
@@ -106,9 +105,6 @@ function TempOrderForm() {
       ...data,
       price: Number(data.price),
       quantity: Number(data.quantity),
-      // sl: Number(data.sl),
-      // tp: Number(data.tp),
-      // trigerType: isAvl.orderType,
       trigerType:
         data.price >= Number(Livestream[data.symbolName]?.curPrice ?? 0)
           ? "STOP"
@@ -128,7 +124,7 @@ function TempOrderForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className={` absolute z-50 w-[600px] bg-white text-xs `}
+      className={` absolute z-50 w-[600px] bg-background text-xs `}
       style={{ top: 0, right: 0 }}
     >
       <header
@@ -200,72 +196,42 @@ function TempOrderForm() {
             />
           </div>
         </div>
-        {/* <div className="flex "> */}
-        {/* <div className="flex flex-col items-end ">
-            <InputDiv
-              Type="float"
-              data={{
-                label: "SL",
-                isDisabled: !watch().isSl,
-              }}
-              register={register("sl")}
-            />
-            <div className="m-2">
-              <CheckBox
-                data={{
-                  isSelected: watch().isSl,
-                  type: "SL",
-                }}
-                clickHandler={() => {
-                  setValue("isSl", !watch().isSl);
-                }}
-              />
-            </div>
-          </div> */}
-        {/* <div className="flex flex-col items-end ">
-            <InputDiv
-              Type="float"
-              data={{
-                label: "TP",
-                isDisabled: !watch().isTp,
-              }}
-              register={register("tp")}
-            />
-            <div className="m-2">
-              <CheckBox
-                data={{
-                  isSelected: watch().isTp,
-                  type: "TP",
-                }}
-                clickHandler={() => {
-                  setValue("isTp", !watch().isTp);
-                }}
-              />
-            </div>
-          </div> */}
-        {/* </div> */}
       </div>
 
-      <div className="relative flex w-full gap-2 bg-[rgb(249,249,249)] p-[15px_20px] text-textDark ">
+      <div className="relative flex w-full gap-2 bg-lightGrayApp p-[15px_20px] text-textDark ">
         <div className="flex grow gap-1">
           <div className="flex gap-1">
-            <p>Total </p> <div className={"" + style.textcolor}>${10}</div>
+            <p>Total </p>{" "}
+            <div className={"" + style.textcolor}>
+              $
+              {(
+                Number(watch().quantity) *
+                (watch().isMarketOrder
+                  ? Number(Livestream[watch().symbolName]?.curPrice) ?? 0
+                  : watch().price)
+              ).toFixed(Number(Livestream[watch().symbolName]?.decimal) ?? 2)}
+            </div>
           </div>
           <div className="flex gap-1">
             <p>Charges </p>
-            <div className={"" + style.textcolor}>${1}</div>
+            <div className={"flex gap-2"}>
+              <span className={style.textcolor}>${0}</span>
+              <p className=" text-white">(*for limited time)</p>
+            </div>
           </div>
         </div>
         <div className="flex gap-2 text-right">
+          {/* make input stop updation on every render */}
           <input
             type="submit"
-            className={
-              "cursor-pointer p-[8px_12px] text-white " + style.bgcolor
-            }
+            className={twMerge(
+              "cursor-pointer p-[8px_12px]  font-medium text-white ",
+              style.bgcolor,
+            )}
             value={watch().orderType}
           />
           <div
-            className="border-borderApp hover:bg-borderApp cursor-pointer border bg-white p-[8px_12px] text-textDark hover:text-white"
+            className="cursor-pointer border border-borderApp bg-background p-[8px_12px]  font-medium text-textDark hover:bg-borderApp hover:text-white"
             onClick={() =>
               dispatch(
                 updateFormData({
@@ -279,7 +245,7 @@ function TempOrderForm() {
           </div>
         </div>
       </div>
-      {JSON.stringify(watch())}
+      {/* {JSON.stringify(watch())} */}
     </form>
   );
 }

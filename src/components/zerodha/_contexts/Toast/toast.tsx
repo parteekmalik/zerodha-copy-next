@@ -2,6 +2,7 @@
 import { $Enums } from "@prisma/client";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ToastContext } from "./toast-context";
+import { twMerge } from "tailwind-merge";
 
 function useTimeout(callbackFunction: () => void, duration: number) {
   const SavedCallback = useRef(callbackFunction);
@@ -111,10 +112,10 @@ function Toast({ message, close }: ToastProperties) {
   useTimeout(close, 10000);
   return (
     <div
-      className={
-        "boarder-[0.677px]   reative animate-slidein relative  m-[0px_10px_10px_0px] max-w-[400px]   rounded border-l-[20px] bg-white p-[10px_20px_15px_15px]" +
-        ToastStaticData[message.state].color
-      }
+      className={twMerge(
+        "animate-slidein relative m-[0px_10px_10px_0px] max-w-[400px] rounded border-[0.677px] border-l-[20px] bg-background p-[10px_20px_15px_15px]",
+        ToastStaticData[message.state].color,
+      )}
       style={{ wordWrap: "break-word" }}
     >
       <h4 className="m-[5px_0px_10px_0px] text-[16px] font-bold">

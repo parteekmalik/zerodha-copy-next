@@ -26,7 +26,7 @@ function InputDiv<T>({
         {...register}
       />
       <div className=" absolute " style={{ top: "0px", left: "0px" }}>
-        <div className="ml-5 bg-white ">{label}</div>
+        <div className="ml-5 px-[1px] bg-background ">{label}</div>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { twMerge } from "tailwind-merge";
+
 export function OrderTypeDiv({
   isMarketOrder,
   setFormdata,
@@ -30,13 +32,16 @@ export function CheckBox({
       className="flex cursor-pointer items-center justify-center gap-1"
       onClick={clickHandler}
     >
-      {!isSelected ? (
-        <div className="h-[10px] w-[10px]  rounded-full border border-black opacity-[.75]"></div>
-      ) : (
-        <div className="flex h-[10px] w-[10px] items-center justify-center rounded-full border border-black ">
+      <div
+        className={twMerge(
+          "flex h-[10px] w-[10px] items-center justify-center rounded-full border border-foreground ",
+          !isSelected && "opacity-75",
+        )}
+      >
+        {isSelected && (
           <div className="h-[6px] w-[6px] rounded-full bg-blue-500 "></div>
-        </div>
-      )}
+        )}
+      </div>
       <div>{type}</div>
     </div>
   );
