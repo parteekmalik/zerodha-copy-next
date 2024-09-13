@@ -28,40 +28,23 @@ export default async function cancelOrderTranection(
     const usdt_to_be_freed = Trade.quantity * Trade.price;
     console.log("canceling data ->", usdt_to_be_freed);
 
-    if (res.type === "BUY")
-      await tx.assets.update({
-        where: {
-          unique_TradingAccountId_name: {
-            TradingAccountId: Taccounts,
-            name: "USDT",
-          },
+    // freeing locked amount
+    await tx.assets.update({
+      where: {
+        unique_TradingAccountId_name: {
+          TradingAccountId: Taccounts,
+          name: res.type === "BUY" ? "USDT" : res.name,
         },
-        data: {
-          freeAmount: {
-            increment: usdt_to_be_freed,
-          },
-          lockedAmount: {
-            decrement: usdt_to_be_freed,
-          },
+      },
+      data: {
+        freeAmount: {
+          increment: res.type === "BUY" ? usdt_to_be_freed : Trade.quantity,
         },
-      });
-    else
-      await tx.assets.update({
-        where: {
-          unique_TradingAccountId_name: {
-            TradingAccountId: Taccounts,
-            name: res.name,
-          },
+        lockedAmount: {
+          decrement: res.type === "BUY" ? usdt_to_be_freed : Trade.quantity,
         },
-        data: {
-          freeAmount: {
-            increment: Trade.quantity,
-          },
-          lockedAmount: {
-            decrement: Trade.quantity,
-          },
-        },
-      });
+      },
+    });
     return { ...Trade, status: "CANCELLED" };
   });
   return transection;
