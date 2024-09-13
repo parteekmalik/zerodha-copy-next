@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FormSchema } from "~/components/zerodha/OrderForm/FrmSchema";
+import { FormSchema } from "~/components/zerodha/OrderForm/FormSchema";
 
 import { Order } from "@prisma/client";
 import { sumByKey } from "~/lib/zerodha/utils";

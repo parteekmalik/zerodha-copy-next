@@ -62,34 +62,38 @@ function TempOrderForm() {
   const { WSsendOrder } = useContext(BackndWSContext);
 
   const orderapi = api.Order.createOrder.useMutation({
-    onSuccess: (msg) => {
-      if (msg && toast) {
-        console.log("mutation nsucess -> ", msg);
-        if (typeof msg === "string") {
-          toast.open({
-            state: "error",
-            errorMessage: msg,
-          });
-        } else {
-          toast.open({
-            name: msg.name,
-            state:
-              msg.status === "OPEN"
-                ? "placed"
-                : msg.status === "COMPLETED" || msg.status === "CANCELLED"
-                  ? "sucess"
-                  : "error",
-            quantity: msg.quantity,
-            orderId: msg.id,
-            type: msg.type,
-          });
-          WSsendOrder("order", msg);
+    onSuccess: (messages) => {
+      messages.map((msg) => {
+        if (msg && toast) {
+          console.log("mutation nsucess -> ", msg);
+          if (typeof msg === "string") {
+            toast.open({
+              state: "error",
+              errorMessage: msg,
+            });
+          } else {
+            toast.open({
+              name: msg.name,
+              state:
+                msg.status === "OPEN"
+                  ? "placed"
+                  : msg.status === "COMPLETED" || msg.status === "CANCELLED"
+                    ? "sucess"
+                    : "error",
+              quantity: msg.quantity,
+              orderId: msg.id,
+              type: msg.type,
+            });
+            WSsendOrder("order", msg);
+          }
         }
-      }
+      });
     },
     onSettled() {
       APIutils.Order.getOrders.invalidate().catch((err) => console.log(err));
-      APIutils.Order.getRemainingFilledOrders.invalidate().catch((err) => console.log(err));
+      APIutils.Order.getRemainingFilledOrders
+        .invalidate()
+        .catch((err) => console.log(err));
       APIutils.getAccountInfo.getAllBalance
         .invalidate()
         .catch((err) => console.log(err));
@@ -137,7 +141,7 @@ function TempOrderForm() {
         </div>
         <div></div>
       </header>
-      <div className={"bg-lightGrayApp flex w-full  "}>
+      <div className={"flex w-full bg-lightGrayApp  "}>
         {(["SPOT", "MARGIN"] as TmarketType[]).map((x) => {
           return (
             <div
@@ -158,7 +162,7 @@ function TempOrderForm() {
             </div>
           );
         })}
-        <div className=" text-blueApp grow p-[10px_20px] text-right">Tags</div>
+        <div className=" grow p-[10px_20px] text-right text-blueApp">Tags</div>
       </div>
 
       <div className="m-2 ">
@@ -242,7 +246,7 @@ function TempOrderForm() {
         {/* </div> */}
       </div>
 
-      <div className="text-textDark relative flex w-full gap-2 bg-[rgb(249,249,249)] p-[15px_20px] ">
+      <div className="relative flex w-full gap-2 bg-[rgb(249,249,249)] p-[15px_20px] text-textDark ">
         <div className="flex grow gap-1">
           <div className="flex gap-1">
             <p>Total </p> <div className={"" + style.textcolor}>${10}</div>
@@ -261,7 +265,7 @@ function TempOrderForm() {
             value={watch().orderType}
           />
           <div
-            className="text-textDark border-borderDarkGrayApp hover:bg-borderDarkGrayApp cursor-pointer border bg-white p-[8px_12px] hover:text-white"
+            className="cursor-pointer border border-borderDarkGrayApp bg-white p-[8px_12px] text-textDark hover:bg-borderDarkGrayApp hover:text-white"
             onClick={() =>
               dispatch(
                 updateFormData({

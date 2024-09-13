@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
@@ -14,6 +14,13 @@ import DataGrid from "~/components/zerodha/Table/table";
 import { sumByKey } from "~/lib/zerodha/utils";
 import { api } from "~/trpc/react";
 import { getColor, modifyNumber } from "../utils";
+import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
+import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
+import {
+  FormSchema,
+  TFormSchema,
+} from "~/components/zerodha/OrderForm/FormSchema";
+import { $Enums } from "@prisma/client";
 
 export default function DefaultComonent() {
   const { Livestream } = useBinanceLiveData();
@@ -39,6 +46,49 @@ export default function DefaultComonent() {
       );
     };
   }, [Positions]);
+  const toast = useToast();
+  const APIutils = api.useUtils();
+  const { WSsendOrder } = useContext(BackndWSContext);
+
+  const OrdersAPI = api.Order.createOrder.useMutation({
+    onSuccess: (messages) => {
+      messages.map((msg) => {
+        if (msg && toast) {
+          console.log("mutation nsucess -> ", msg);
+          if (typeof msg === "string") {
+            toast.open({
+              state: "error",
+              errorMessage: msg,
+            });
+          } else {
+            toast.open({
+              name: msg.name,
+              state:
+                msg.status === "OPEN"
+                  ? "placed"
+                  : msg.status === "COMPLETED" || msg.status === "CANCELLED"
+                    ? "sucess"
+                    : "error",
+              quantity: msg.quantity,
+              orderId: msg.id,
+              type: msg.type,
+            });
+            WSsendOrder("order", msg);
+          }
+        }
+      });
+    },
+    onSettled() {
+      APIutils.Order.getOrders.invalidate().catch((err) => console.log(err));
+      APIutils.Order.getRemainingFilledOrders
+        .invalidate()
+        .catch((err) => console.log(err));
+      APIutils.getAccountInfo.getAllBalance
+        .invalidate()
+        .catch((err) => console.log(err));
+    },
+  });
+
   const PositionsList = (Positions ?? []).map((item) => {
     const {
       id,
@@ -66,7 +116,19 @@ export default function DefaultComonent() {
 
   const handleFn = (items: PositionRow[]) => {
     // Placeholder function for handling selection
-    console.log("submitted: ", items);
+    const orders = items.map((position) => {
+      const data = {
+        orderType: Number(position.quantity) ? "SELL" : "BUY",
+        quantity: Number(position.quantity) ,
+        trigerType: "MARKET",
+        price: 0,
+        symbolName: position.name,
+        marketType: "SPOT",
+      };
+      console.log(data);
+      return FormSchema.parse(data);
+    });
+    OrdersAPI.mutate(orders);
   };
 
   const positiveAndColor = (value: unknown, styles: string) => {
@@ -93,7 +155,7 @@ export default function DefaultComonent() {
           { name: "quantity", fn: positiveAndColor },
           { name: "change", fn: positiveAndColor },
         ]}
-        selected={{handleFn,text:"close Orders"}}
+        selected={{ handleFn, text: "close Orders" }}
         footer={PositionsTotal}
         styles={TableDefaultstyles}
       />
