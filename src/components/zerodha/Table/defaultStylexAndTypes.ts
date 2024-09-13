@@ -26,16 +26,16 @@ export const TableDefaultstyles: DataGridStyles = {
   },
   head: {
     className: "opacity-50 text-sm  ",
-    row: "border-y-[1px] border-gray-300 ",
+    row: "border-y-[1px] border-borderApp ",
     cell: "p-3   font-thin",
   },
   body: {
     className: "text-textDark",
-    row: "border-b-[1px] border-gray-300",
+    row: "border-b-[1px] border-borderApp",
     cell: "p-3 text-center uppercase  font-thin ",
   },
   footer: {
-    button: "bg-blueApp text-white my-3 px-2 rounded-md"
+    button: "bg-blueApp text-white my-3 px-2 rounded-md",
   },
   checkbox: "text-center",
 };
@@ -63,7 +63,7 @@ export type FundsRow = {
   freeAmount: number;
   lockedAmount: number;
   widrawal: string;
-  deposit: string ;
+  deposit: string;
 };
 
 export type OrderClosedRow = {
@@ -93,7 +93,7 @@ export interface DataGridProps<T extends RowType> {
     skip: number;
   };
   coloredCols?: coloredColsType<T>;
-  selected?: {handleFn:(selectedIds: T[]) => void,text:string}; // Update the type of selected to accept an array of IDs
+  selected?: { handleFn: (selectedIds: T[]) => void; text: string }; // Update the type of selected to accept an array of IDs
 }
 
 export type coloredColsType<T> = {

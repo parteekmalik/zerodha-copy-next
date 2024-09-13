@@ -26,7 +26,7 @@ export default function ContextLayer({
               <WatchList />
               <div className={" flex max-w-[1110px] grow "}>
                 <div
-                  className="w-full overflow-y-auto overflow-x-hidden bg-white"
+                  className="w-full overflow-y-auto overflow-x-hidden bg-background"
                   style={{ scrollbarWidth: "none" }}
                 >
                   {children}

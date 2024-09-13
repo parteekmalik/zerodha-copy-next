@@ -91,7 +91,7 @@ const ToastStaticData: Record<
     heading: "Error",
   },
   cancelled: {
-    color: " border-borderDarkGrayApp text-borderDarkGrayApp",
+    color: " border-borderApp text-borderApp",
     heading: "Canceled",
   },
   sucess: {

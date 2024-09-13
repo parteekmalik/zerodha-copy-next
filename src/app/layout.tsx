@@ -1,5 +1,6 @@
 import "~/styles/globals.css";
 
+import { Providers } from "./providers";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import { TRPCReactProvider } from "src/trpc/react";
@@ -24,7 +25,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider cookies={cookies().toString()}>
-          {children}
+          <Providers>{children}</Providers>
         </TRPCReactProvider>
       </body>
     </html>

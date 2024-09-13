@@ -10,6 +10,7 @@ import { useBinanceLiveData } from "./_contexts/LiveData/useBinanceLiveData";
 import { updateSeprateSubscriptions } from "./_redux/Slices/BinanceWSStats";
 import WifiIcon from "./savages/WifiIcon";
 import { shadowBox } from "./tcss";
+import ThemeSwitch from "./ThemeSwitch";
 
 type RightSideType =
   | "Dashboard"
@@ -65,9 +66,9 @@ function Header() {
     return data[data.length - 1];
   }, [temp]);
   return (
-    <header className={"  flex w-full justify-center bg-white " + shadowBox}>
+    <header className={"  flex w-full justify-center bg-background " + shadowBox}>
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
-        <div className="flex h-full min-w-[430px] items-center justify-around  gap-5 border-r text-base uppercase">
+        <div className="flex h-full min-w-[430px] items-center justify-around  gap-5 border-r border-borderApp text-base uppercase">
           <div className="flex cursor-pointer gap-2 ">
             <Link href={`Chart?symbol=${PinData.first.name}&TimeFrame=${5}`}>
               {headerPin.Pin0}
@@ -120,6 +121,7 @@ function Header() {
                 />
               </InfoHover>
             </div>
+            <ThemeSwitch />
           </div>
           <div className="flex h-full items-center  p-4">
             <div className="flex gap-4">

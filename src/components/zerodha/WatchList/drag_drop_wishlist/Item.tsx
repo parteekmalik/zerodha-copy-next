@@ -30,7 +30,7 @@ function Item({
     >
       <div
         className={
-          " relative flex border-b p-[12px_15px]   hover:bg-lightGrayApp " +
+          " relative flex border-b border-borderApp p-[12px_15px]   hover:bg-lightGrayApp " +
           getColor(diff)
         }
         style={{ fontSize: ".8125rem" }}

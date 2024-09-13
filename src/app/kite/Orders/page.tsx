@@ -183,10 +183,10 @@ const colorColsData = [
         <FadedColoredCell
           text={orderType}
           bgColor={
-            orderType === "COMPLETED" ? "bg-greenApp " : "bg-darkGrayApp "
+            orderType === "COMPLETED" ? "bg-greenApp " : "bg-foreground "
           }
           textColor={
-            orderType === "COMPLETED" ? "text-greenApp " : "text-black "
+            orderType === "COMPLETED" ? "text-greenApp " : "text-foreground "
           }
         />
       );
