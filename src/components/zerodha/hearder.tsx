@@ -1,4 +1,3 @@
-import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import Avatar from "@mui/material/Avatar";
 import Image from "next/image";

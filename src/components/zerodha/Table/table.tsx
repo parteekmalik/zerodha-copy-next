@@ -1,5 +1,5 @@
 import * as React from "react";
-import { modifyNumber, getColor } from "~/app/kite/utils";
+import { getColor, modifyNumber } from "~/app/kite/utils";
 import {
   DataGridProps,
   RowType,
@@ -97,7 +97,9 @@ const DataGrid = <T extends RowType>({
               <button
                 className={footerStyles?.button}
                 onClick={() => {
-                  const items = selectedIds.map((id) => rows.find((i) => i.id === id)!);
+                  const items = selectedIds.map(
+                    (id) => rows.find((i) => i.id === id)!,
+                  );
                   selected.handleFn(items);
                   setSelectedIds([]);
                 }}

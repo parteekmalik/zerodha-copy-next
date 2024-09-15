@@ -51,8 +51,8 @@ export type PositionRow = {
   id: string;
   name: string;
   quantity: number | string;
-  avgPrice: number| string;
-  totalPrice: number| string;
+  avgPrice: number | string;
+  totalPrice: number | string;
   LTP: string | undefined;
   "P&L": string;
   change: string;
