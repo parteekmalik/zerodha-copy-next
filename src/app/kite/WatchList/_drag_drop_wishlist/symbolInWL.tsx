@@ -10,10 +10,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
-import { useBinanceLiveData } from "../../_contexts/LiveData/useBinanceLiveData";
-import type { Tsymbol } from "../watchList";
+import { useBinanceLiveData } from "../../../../components/zerodha/_contexts/LiveData/useBinanceLiveData";
+import type { Tsymbol } from "../page";
 import Item from "./Item";
-import { updateSeprateSubscriptions } from "../../_redux/Slices/BinanceWSStats";
+import { updateSeprateSubscriptions } from "../../../../components/zerodha/_redux/Slices/BinanceWSStats";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
 export type Twsbinance = {

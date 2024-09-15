@@ -1,11 +1,12 @@
+"use client";
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
-import { shadowBox } from "../tcss";
-import SymbolInWL from "./drag_drop_wishlist/symbolInWL";
-import SearchInput from "./search/searchInput";
+import { shadowBox } from "../../../components/zerodha/tcss";
+import SymbolInWL from "./_drag_drop_wishlist/symbolInWL";
+import SearchInput from "./_search/searchInput";
 import WatchlistBittom from "./watchlistBittom";
 
 export type Tsymbol = string;
@@ -48,7 +49,7 @@ function WatchList() {
   return (
     <div
       className={
-        "flex h-full w-[430px] min-w-[430px] select-none flex-col border border-borderApp bg-background " +
+        "flex h-full min-w-full lg:min-w-[430px]  select-none flex-col border border-borderApp bg-background " +
         shadowBox
       }
     >
@@ -64,7 +65,7 @@ function WatchList() {
       >
         <div
           className=" flex  h-full  flex-col overflow-x-hidden overflow-y-scroll"
-          style={{ scrollbarWidth: "none" }}
+          style={{ scrollbarWidth: "thin" }}
         >
           <SymbolInWL
             list={watchList.List[watchList.ListNo] ?? []}

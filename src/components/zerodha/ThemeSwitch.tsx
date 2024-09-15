@@ -22,10 +22,24 @@ export default function ThemeSwitch() {
     );
 
   if (resolvedTheme === "dark") {
-    return <div className="hover:cursor-pointer" onClick={() => setTheme("light")}>dark</div>;
+    return (
+      <div
+        className="rounded-md border-2 border-borderApp px-2 hover:cursor-pointer "
+        onClick={() => setTheme("light")}
+      >
+        dark
+      </div>
+    );
   }
 
   if (resolvedTheme === "light") {
-    return <div className="hover:cursor-pointer" onClick={() => setTheme("dark")}>light</div>;
+    return (
+      <div
+        className="mx-2 rounded-md border-2 border-borderApp px-2 hover:cursor-pointer"
+        onClick={() => setTheme("dark")}
+      >
+        light
+      </div>
+    );
   }
 }

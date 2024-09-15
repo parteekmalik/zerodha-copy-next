@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { searchAndSort } from "~/app/kite/utils";
-import { RootState } from "../../_redux/store";
-import { SearchIcon } from "../../savages/searchIcon";
+import { RootState } from "../../../../components/zerodha/_redux/store";
+import { SearchIcon } from "../../../../components/zerodha/savages/searchIcon";
 import SearchList from "./searchList";
 
 function SearchInput({
@@ -60,7 +60,7 @@ function SearchInput({
         </div>
         <input
           ref={inputRef}
-          className="boarder-[0px] bg-background grow px-2 text-sm focus:outline-0"
+          className="boarder-[0px] grow bg-background px-2 text-sm focus:outline-0"
           type="text"
           autoComplete="off"
           autoCorrect="off"
