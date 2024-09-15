@@ -49,7 +49,7 @@ function WatchList() {
   return (
     <div
       className={
-        "flex h-full min-w-full lg:min-w-[430px]  select-none flex-col border border-borderApp bg-background " +
+        "flex h-full min-w-full lg:min-w-[430px]  select-none flex-col border border-t-0 border-borderApp bg-background " +
         shadowBox
       }
     >

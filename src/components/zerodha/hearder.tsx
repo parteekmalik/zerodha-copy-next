@@ -60,7 +60,7 @@ function Header() {
       className={"  flex w-full justify-center bg-background " + shadowBox}
     >
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
-        <div className="hidden h-full min-w-[430px] items-center justify-around gap-5  border-r border-borderApp text-base uppercase lg:flex">
+        <div className="hidden h-full min-w-[430px] items-center justify-around gap-5 border-b border-r border-borderApp text-base uppercase lg:flex">
           <div className="flex cursor-pointer gap-2 ">
             <Link href={`Chart?symbol=${PinData.first.name}&TimeFrame=${5}`}>
               {headerPin.Pin0}
@@ -86,7 +86,7 @@ function Header() {
             </div>
           </div>
         </div>
-        <div className="relative flex h-full grow items-center justify-between  ">
+        <div className="relative flex h-full grow items-center justify-between border-b  border-borderApp ">
           <div className="flex grow items-center justify-center gap-5  p-4 lg:grow-0">
             <Image
               className=" "
