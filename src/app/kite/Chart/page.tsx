@@ -1,11 +1,13 @@
 // TradingViewWidget.jsx
 "use client";
 
+import { useTheme } from "next-themes";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef } from "react";
 
 function TradingViewWidget() {
   // fix any type
+  const { resolvedTheme } = useTheme();
   const searchParams = useSearchParams();
   useEffect(() => console.log(searchParams.get("symbol")), [searchParams]);
   const [symbolName, TimeFrame] = useMemo(
@@ -37,7 +39,7 @@ function TradingViewWidget() {
           "symbol": "${symbolName}",
           "interval": "${TimeFrame}",
           "timezone": "Etc/UTC",
-          "theme": "light",
+          "theme": "${resolvedTheme}",
           "style": "1",
           "locale": "en",
           "enable_publishing": false,
@@ -47,7 +49,7 @@ function TradingViewWidget() {
         }`;
     container.current?.appendChild(script);
     console.log("Chart modified", container.current);
-  }, [charteheight, symbolName]);
+  }, [charteheight, symbolName,resolvedTheme]);
   return (
     <div
       className="tradingview-widget-container h-[100vh] min-h-[100%]  min-w-[100%]"

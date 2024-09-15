@@ -1,9 +1,11 @@
+import Logout from "@mui/icons-material/Logout";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import { Divider, ListItemIcon } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
@@ -16,13 +18,7 @@ import { shadowBox } from "./tcss";
 import ThemeSwitch from "./ThemeSwitch";
 
 const baseURL = "/kite/";
-const rightSideItems = [
-  "Dashboard",
-  "Orders",
-  "Holdings",
-  "Positions",
-  "Funds",
-];
+
 function Header() {
   const { backendServerConnection } = useContext(BackndWSContext);
   const headerPin = useSelector((state: RootState) => state.headerPin);
@@ -86,7 +82,7 @@ function Header() {
             </div>
           </div>
         </div>
-        <div className="relative flex h-full grow items-center justify-between border-b  border-borderApp ">
+        <div className="relative flex h-full grow items-center border-b  border-borderApp ">
           <div className="flex grow items-center justify-center gap-5  p-4 lg:grow-0">
             <Image
               className=" "
@@ -98,20 +94,20 @@ function Header() {
 
             <InfoHover
               info={
-                backendServerConnection === "connected"
-                  ? "backend server is up"
-                  : "backend server is down"
+                <WifiIcon
+                  color={
+                    backendServerConnection === "connected" ? "green" : "red"
+                  }
+                  size={"20px"}
+                />
               }
             >
+              {backendServerConnection === "connected"
+                ? "backend server is up"
+                : "backend server is down"}
               {/* TODO: ( pending order will execute while page is open ) */}
-              <WifiIcon
-                color={
-                  backendServerConnection === "connected" ? "green" : "red"
-                }
-                size={"20px"}
-              />
             </InfoHover>
-            <p className="mx-auto">{route}</p>
+            <p className="mx-auto lg:hidden">{route}</p>
             <ThemeSwitch />
             <Notifications className="lg:hidden" />
           </div>
@@ -123,76 +119,126 @@ function Header() {
 }
 
 export default Header;
-
+import SupportIcon from "@mui/icons-material/Support";
+const rightSideItems = [
+  { name: "Dashboard", icon: "" },
+  { name: "Orders", icon: "" },
+  { name: "Holdings", icon: "" },
+  { name: "Positions", icon: "" },
+  { name: "Funds", icon: "" },
+];
 function NavigationNav({ route }: { route: string }) {
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
-  const [isopened, setisopened] = useState(false);
   return (
     <>
-      <div
-        className="p-4 lg:hidden"
-        onClick={() => setisopened((prev) => !prev)}
-      >
-        <Avatar
-          sx={{ width: 24, height: 24 }}
-          src={UserInfo.image ?? ""}
-          alt="user-icon"
-        />
-      </div>
-      {isopened && (
-        <div
-          className="absolute left-0  top-full z-50 flex w-full flex-col  bg-background text-foreground "
-          style={{ height: "calc(100dvh - 100%)" }}
-        >
-          {["WatchList", ...rightSideItems].map((pageLink) => (
-            <Link
-              href={baseURL + pageLink}
-              onClick={() => setisopened(false)}
-              className={twMerge(
-                " w-full border-b  border-borderApp p-[15px] text-center",
-                route === pageLink ? "text-orangeApp" : "",
-              )}
-              key={pageLink}
-            >
-              {pageLink}
-            </Link>
-          ))}
-        </div>
-      )}
-      <div className="hidden h-full items-center p-4  lg:flex">
+      <div className="ml-auto hidden h-full items-center p-4  lg:flex">
         <div className="flex gap-4 ">
           <nav className=" border-r ">
             {rightSideItems.map((x) => (
               <Link
-                href={baseURL + x}
+                href={baseURL + x.name}
                 className={
                   "cursor-pointer select-none px-[15px] text-center hover:text-orangeApp " +
-                  (route === x ? "text-orangeApp" : "")
+                  (route === x.name ? "text-orangeApp" : "")
                 }
-                key={x}
+                key={x.name}
               >
-                {x}
+                {x.name}
               </Link>
             ))}
           </nav>
           <Notifications />
-          {UserInfo.image && UserInfo.image !== "not_found" && (
-            <Avatar
-              sx={{ width: 24, height: 24 }}
-              src={UserInfo.image ?? ""}
-              alt="user-icon"
-            />
-          )}
-          <div className="max-w-[100px] truncate">
-            #{UserInfo.TradingAccountId}
-          </div>
         </div>
       </div>
+      <InfoHover
+        options={{ isClick: true, position: "right" }}
+        info={
+          <div className="flex gap-4 hover:cursor-pointer hover:text-orangeApp">
+            <Avatar
+              sx={{ width: 24, height: 24 }}
+              src={
+                UserInfo.image && UserInfo.image !== "not_found"
+                  ? UserInfo.image
+                  : "N"
+              }
+              alt="user-icon"
+            />
+            <div className="hidden max-w-[100px] truncate md:block">
+              #{UserInfo.TradingAccountId}
+            </div>
+          </div>
+        }
+      >
+        <div className="mt-4 min-w-[200px] rounded-md border border-borderApp bg-background py-1  text-foreground ">
+          <div className="m-1 flex items-center justify-between bg-blueApp/10 p-1 px-2 ">
+            <div className="flex flex-col">
+              <span className="uppercase">{UserInfo.name}</span>
+              <span className="text-foreground/75">
+                {UserInfo.email ?? "not provided"}
+              </span>
+            </div>
+            <Link href={"/Profile"}>{">"}</Link>
+          </div>
+
+          <ul className="w-full lg:hidden appearance-none ">
+            {rightSideItems.map((item) => (
+              <Link
+                href={item.name}
+                key={item.name}
+                className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
+              >
+                {item.icon && (
+                  <div className="fill-foreground ">{item.icon}</div>
+                )}
+                <span> {item.name}</span>
+              </Link>
+            ))}
+          </ul>
+          <ul className="w-full appearance-none ">
+            {[{ url: "/console", name: "Console", icon: <SupportIcon /> }].map(
+              (item) => (
+                <Link
+                  href={item.url}
+                  key={item.name}
+                  className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
+                >
+                  {item.icon && (
+                    <div className="fill-foreground ">{item.icon}</div>
+                  )}
+                  <span> {item.name}</span>
+                </Link>
+              ),
+            )}
+          </ul>
+          <ul className="w-full appearance-none ">
+            {[
+              { url: "/support", name: "Support", icon: <SupportIcon /> },
+              { url: "/api/auth/signout", name: "Logout", icon: <Logout /> },
+            ].map((item) => (
+              <Link
+                href={item.url}
+                key={item.name}
+                className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
+              >
+                {item.icon && (
+                  <div className="fill-foreground ">{item.icon}</div>
+                )}
+                <span> {item.name}</span>
+              </Link>
+            ))}
+          </ul>
+        </div>
+      </InfoHover>
     </>
   );
 }
 function Notifications({ className }: { className?: string }) {
   return (
-    <NotificationsNoneIcon className={twMerge("fill-foreground", className)} />
+    <NotificationsNoneIcon
+      className={twMerge(
+        "fill-foreground hover:cursor-pointer hover:fill-orangeApp",
+        className,
+      )}
+    />
   );
 }
