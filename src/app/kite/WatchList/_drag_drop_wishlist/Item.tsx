@@ -2,7 +2,7 @@ import { Reorder, useDragControls } from "framer-motion";
 import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
 import { useState } from "react";
 import { getColor } from "~/app/kite/utils";
-import { TsymbolLive } from "../../_contexts/LiveData/BinanceWS";
+import { TsymbolLive } from "../../../../components/zerodha/_contexts/LiveData/BinanceWS";
 
 function Item({
   isup: diff,

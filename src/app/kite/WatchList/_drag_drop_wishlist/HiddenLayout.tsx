@@ -10,7 +10,7 @@ import Link from "next/link";
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
-import { TsymbolLive } from "../../_contexts/LiveData/BinanceWS";
+import { TsymbolLive } from "../../../../components/zerodha/_contexts/LiveData/BinanceWS";
 type IdataContextActions =
   | {
       type: "update_rightHandSide";

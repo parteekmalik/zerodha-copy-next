@@ -1,8 +1,12 @@
+import DensityMediumIcon from "@mui/icons-material/DensityMedium";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import Avatar from "@mui/material/Avatar";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { twMerge } from "tailwind-merge";
 import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import InfoHover from "../ui/infoHover";
@@ -12,27 +16,18 @@ import WifiIcon from "./savages/WifiIcon";
 import { shadowBox } from "./tcss";
 import ThemeSwitch from "./ThemeSwitch";
 
-type RightSideType =
-  | "Dashboard"
-  | "Orders"
-  | "Holdings"
-  | "Positions"
-  | "Funds";
-
+const baseURL = "/kite/";
+const rightSideItems = [
+  "Dashboard",
+  "Orders",
+  "Holdings",
+  "Positions",
+  "Funds",
+];
 function Header() {
-  const baseURL = "/kite/";
-  const rightSideItems: RightSideType[] = [
-    "Dashboard",
-    "Orders",
-    "Holdings",
-    "Positions",
-    "Funds",
-  ];
-
   const { backendServerConnection } = useContext(BackndWSContext);
   const headerPin = useSelector((state: RootState) => state.headerPin);
   const { Livestream } = useBinanceLiveData();
-  const UserInfo = useSelector((state: RootState) => state.UserInfo);
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(
@@ -59,16 +54,13 @@ function Header() {
     [Livestream, headerPin],
   );
   // ff5722
-  const temp = usePathname();
-  const route = useMemo(() => {
-    const data = temp.split("/");
 
-    return data[data.length - 1];
-  }, [temp]);
   return (
-    <header className={"  flex w-full justify-center bg-background " + shadowBox}>
+    <header
+      className={"  flex w-full justify-center bg-background " + shadowBox}
+    >
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
-        <div className="flex h-full min-w-[430px] items-center justify-around  gap-5 border-r border-borderApp text-base uppercase">
+        <div className="hidden h-full min-w-[430px] items-center justify-around gap-5  border-r border-borderApp text-base uppercase lg:flex">
           <div className="flex cursor-pointer gap-2 ">
             <Link href={`Chart?symbol=${PinData.first.name}&TimeFrame=${5}`}>
               {headerPin.Pin0}
@@ -94,70 +86,34 @@ function Header() {
             </div>
           </div>
         </div>
-        <div className="flex h-full grow items-center justify-between ">
-          <div className="flex   ">
+        <div className="relative flex h-full grow  justify-between  ">
+          <div className="flex grow items-center justify-center gap-5  p-4 lg:grow-0">
             <Image
-              className="ml-[30px] mr-[20px] "
+              className=" "
               src="https://kite.zerodha.com/static/images/kite-logo.svg"
               alt=""
               width={30}
               height={20}
             />
 
-            <div className=" h-[20px] w-[20px]">
-              <InfoHover
-                info={
-                  backendServerConnection === "connected"
-                    ? "backend server is up"
-                    : "backend server is down"
+            <InfoHover
+              info={
+                backendServerConnection === "connected"
+                  ? "backend server is up"
+                  : "backend server is down"
+              }
+            >
+              {/* TODO: ( pending order will execute while page is open ) */}
+              <WifiIcon
+                color={
+                  backendServerConnection === "connected" ? "green" : "red"
                 }
-              >
-                {/* TODO: ( pending order will execute while page is open ) */}
-                <WifiIcon
-                  color={
-                    backendServerConnection === "connected" ? "green" : "red"
-                  }
-                  size={"20px"}
-                />
-              </InfoHover>
-            </div>
+                size={"20px"}
+              />
+            </InfoHover>
             <ThemeSwitch />
           </div>
-          <div className="flex h-full items-center  p-4">
-            <div className="flex gap-4">
-              <nav className=" border-r ">
-                {rightSideItems.map((x: RightSideType) => (
-                  <Link
-                    href={baseURL + x}
-                    className={
-                      "cursor-pointer select-none px-[15px] text-center hover:text-orangeApp " +
-                      (route === x ? "text-orangeApp" : "")
-                    }
-                    key={x}
-                  >
-                    {x}
-                  </Link>
-                ))}
-              </nav>
-              <Image
-                className="h-fit cursor-pointer select-none"
-                width={24}
-                height={24}
-                src="https://img.icons8.com/material-outlined/24/filled-appointment-reminders.png"
-                alt="filled-appointment-reminders"
-              />
-              {UserInfo.image && UserInfo.image !== "not_found" && (
-                <Image
-                  src={UserInfo.image ?? ""}
-                  alt="user-icon"
-                  className="mr-1 h-fit cursor-pointer select-none rounded-full"
-                  width={24}
-                  height={24}
-                />
-              )}
-              <div>#{UserInfo.TradingAccountId}</div>
-            </div>
-          </div>
+          <NavigationNav />
         </div>
       </div>
     </header>
@@ -165,3 +121,65 @@ function Header() {
 }
 
 export default Header;
+
+function NavigationNav() {
+  const UserInfo = useSelector((state: RootState) => state.UserInfo);
+  const route = usePathname().split("/").pop();
+  const [isopened, setisopened] = useState(false);
+  return (
+    <>
+      <div className="lg:hidden" onClick={() => setisopened((prev) => !prev)}>
+        <DensityMediumIcon />
+      </div>
+      {isopened && (
+        <div
+          className="absolute left-0  top-full z-50 flex w-full flex-col  bg-background text-foreground "
+          style={{ height: "calc(100dvh - 100%)" }}
+        >
+          {["WatchList", ...rightSideItems].map((pageLink) => (
+            <Link
+              href={baseURL + pageLink}
+              onClick={() => setisopened(false)}
+              className={twMerge(
+                " w-full border-b  border-borderApp p-[15px] text-center",
+                route === pageLink ? "text-orangeApp" : "",
+              )}
+              key={pageLink}
+            >
+              {pageLink}
+            </Link>
+          ))}
+        </div>
+      )}
+      <div className="hidden h-full items-center p-4  lg:flex">
+        <div className="flex gap-4 ">
+          <nav className=" border-r ">
+            {rightSideItems.map((x) => (
+              <Link
+                href={baseURL + x}
+                className={
+                  "cursor-pointer select-none px-[15px] text-center hover:text-orangeApp " +
+                  (route === x ? "text-orangeApp" : "")
+                }
+                key={x}
+              >
+                {x}
+              </Link>
+            ))}
+          </nav>
+          <NotificationsNoneIcon className="fill-foreground" />
+          {UserInfo.image && UserInfo.image !== "not_found" && (
+            <Avatar
+              sx={{ width: 24, height: 24 }}
+              src={UserInfo.image ?? ""}
+              alt="user-icon"
+            />
+          )}
+          <div className="max-w-[100px] truncate">
+            #{UserInfo.TradingAccountId}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

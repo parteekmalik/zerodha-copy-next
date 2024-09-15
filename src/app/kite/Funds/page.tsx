@@ -34,7 +34,7 @@ function Funds() {
     console.log("submitted: ", ids);
   };
   return (
-    <div>
+    <div className="w-full">
       <DataGrid<FundsRow>
         rows={FundsList}
         columns={FundsGridColumn}

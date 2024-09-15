@@ -148,7 +148,7 @@ export default function DefaultComonent() {
   };
   if (!PositionsList) return null;
   return (
-    <div className=" p-4">
+    <div className=" p-4 w-full">
       <div className="flex py-2">
         <h1 className="text-xl opacity-80">
           Positions({Positions ? Positions.length : 0})
