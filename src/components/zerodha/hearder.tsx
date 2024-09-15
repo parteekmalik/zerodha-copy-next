@@ -113,6 +113,7 @@ function Header() {
             </InfoHover>
             <p className="mx-auto">{route}</p>
             <ThemeSwitch />
+            <Notifications className="lg:hidden" />
           </div>
           <NavigationNav route={route ?? "404"} />
         </div>
@@ -174,7 +175,7 @@ function NavigationNav({ route }: { route: string }) {
               </Link>
             ))}
           </nav>
-          <NotificationsNoneIcon className="fill-foreground" />
+          <Notifications />
           {UserInfo.image && UserInfo.image !== "not_found" && (
             <Avatar
               sx={{ width: 24, height: 24 }}
@@ -188,5 +189,10 @@ function NavigationNav({ route }: { route: string }) {
         </div>
       </div>
     </>
+  );
+}
+function Notifications({ className }: { className?: string }) {
+  return (
+    <NotificationsNoneIcon className={twMerge("fill-foreground", className)} />
   );
 }

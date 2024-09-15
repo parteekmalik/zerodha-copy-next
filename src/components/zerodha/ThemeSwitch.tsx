@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import InfoHover from "../ui/infoHover";
 
 export default function ThemeSwitch() {
   const [mounted, setMounted] = useState(false);
@@ -23,23 +24,27 @@ export default function ThemeSwitch() {
 
   if (resolvedTheme === "dark") {
     return (
-      <div
-        className="rounded-md border-2 border-borderApp px-2 hover:cursor-pointer "
-        onClick={() => setTheme("light")}
-      >
-        dark
-      </div>
+      <InfoHover info="dark mode">
+        <div
+          className="rounded-md border-2 border-borderApp px-2 hover:cursor-pointer "
+          onClick={() => setTheme("light")}
+        >
+          D
+        </div>
+      </InfoHover>
     );
   }
 
   if (resolvedTheme === "light") {
     return (
-      <div
-        className="mx-2 rounded-md border-2 border-borderApp px-2 hover:cursor-pointer"
-        onClick={() => setTheme("dark")}
-      >
-        light
-      </div>
+      <InfoHover info="light mode">
+        <div
+          className="mx-2 rounded-md border-2 border-borderApp px-2 hover:cursor-pointer"
+          onClick={() => setTheme("dark")}
+        >
+          L
+        </div>
+      </InfoHover>
     );
   }
 }
