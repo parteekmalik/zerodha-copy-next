@@ -14,6 +14,7 @@ function InputDiv<T>({
     <div className="relative">
       <input
         type={Type}
+        autoComplete="off"
         className="m-2 rounded-[3px] border p-[10px_15px] focus:border-black focus:outline-none "
         disabled={isDisabled}
         style={

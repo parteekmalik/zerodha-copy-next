@@ -50,10 +50,10 @@ export type GridColDef<T> = {
 export type PositionRow = {
   id: string;
   name: string;
-  quantity: number;
-  avgPrice: number;
-  totalPrice: number;
-  LTP: string | undefined;
+  quantity: number | string;
+  avgPrice: number| string;
+  totalPrice: number| string;
+  LTP: string | undefined| string;
   "P&L": string;
   change: string;
 };

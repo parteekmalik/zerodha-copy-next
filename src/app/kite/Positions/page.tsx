@@ -2,9 +2,14 @@
 import { useContext, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { twMerge } from "tailwind-merge";
+import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
+import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
 import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
 import { AppDispatch } from "~/components/zerodha/_redux/store";
+import {
+  FormSchema
+} from "~/components/zerodha/OrderForm/FormSchema";
 import {
   GridColDef,
   PositionRow,
@@ -14,13 +19,6 @@ import DataGrid from "~/components/zerodha/Table/table";
 import { sumByKey } from "~/lib/zerodha/utils";
 import { api } from "~/trpc/react";
 import { getColor, modifyNumber } from "../utils";
-import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
-import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
-import {
-  FormSchema,
-  TFormSchema,
-} from "~/components/zerodha/OrderForm/FormSchema";
-import { $Enums } from "@prisma/client";
 
 export default function DefaultComonent() {
   const { Livestream } = useBinanceLiveData();
@@ -98,9 +96,18 @@ export default function DefaultComonent() {
     const LTP = Livestream[name]?.curPrice;
     const PL = modifyNumber((Number(LTP) - avgPrice) * quantity, 2, true);
     const change = modifyNumber(Number(LTP) / avgPrice - 1, 2);
-    return { id, name, quantity, avgPrice, totalPrice, LTP, "P&L": PL, change };
+    return {
+      id,
+      name,
+      quantity: modifyNumber(quantity, 2),
+      avgPrice: modifyNumber(avgPrice, 3),
+      totalPrice,
+      LTP,
+      "P&L": PL,
+      change,
+    };
   });
-  const PositionsGridColumn: GridColDef<(typeof PositionsList)[0]>[] = [
+  const PositionsGridColumn: GridColDef<PositionRow>[] = [
     // { headerName: "Product", field: "id", width: 0 },
     { headerName: "Instrument", field: "name", width: 0 },
     { headerName: "Qty.", field: "quantity", width: 0 },
@@ -119,7 +126,7 @@ export default function DefaultComonent() {
     const orders = items.map((position) => {
       const data = {
         orderType: Number(position.quantity) ? "SELL" : "BUY",
-        quantity: Number(position.quantity) ,
+        quantity: Number(position.quantity),
         trigerType: "MARKET",
         price: 0,
         symbolName: position.name,
@@ -134,7 +141,7 @@ export default function DefaultComonent() {
   const positiveAndColor = (value: unknown, styles: string) => {
     const newValue = Number(value);
     const result: [string, string] = [
-      modifyNumber(newValue, 2),
+      String(newValue),
       twMerge(styles, getColor(newValue)),
     ];
     return result;
