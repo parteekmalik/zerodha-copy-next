@@ -54,6 +54,7 @@ function Header() {
     [Livestream, headerPin],
   );
   // ff5722
+  const route = usePathname().split("/").pop();
 
   return (
     <header
@@ -86,7 +87,7 @@ function Header() {
             </div>
           </div>
         </div>
-        <div className="relative flex h-full grow  justify-between  ">
+        <div className="relative flex h-full grow items-center justify-between  ">
           <div className="flex grow items-center justify-center gap-5  p-4 lg:grow-0">
             <Image
               className=" "
@@ -111,9 +112,10 @@ function Header() {
                 size={"20px"}
               />
             </InfoHover>
+            <p className="mx-auto">{route}</p>
             <ThemeSwitch />
           </div>
-          <NavigationNav />
+          <NavigationNav route={route ?? "404"} />
         </div>
       </div>
     </header>
@@ -122,14 +124,20 @@ function Header() {
 
 export default Header;
 
-function NavigationNav() {
+function NavigationNav({ route }: { route: string }) {
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
-  const route = usePathname().split("/").pop();
   const [isopened, setisopened] = useState(false);
   return (
     <>
-      <div className="lg:hidden" onClick={() => setisopened((prev) => !prev)}>
-        <DensityMediumIcon />
+      <div
+        className="p-4 lg:hidden"
+        onClick={() => setisopened((prev) => !prev)}
+      >
+        <Avatar
+          sx={{ width: 24, height: 24 }}
+          src={UserInfo.image ?? ""}
+          alt="user-icon"
+        />
       </div>
       {isopened && (
         <div

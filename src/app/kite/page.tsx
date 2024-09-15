@@ -22,10 +22,10 @@ export default function ContextLayer({
           <StoreComponent />
           <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center  justify-center overflow-hidden  bg-lightGrayApp font-['Open_Sans','sans-serif']  ">
             <Header />
-            <div className="text-red flex h-full w-full min-w-[430px] overflow-y-auto lg:hidden ">
+            <div className="flex h-full w-full  overflow-y-auto lg:hidden ">
               {children}
             </div>
-            <div className="text-red hidden w-full max-w-[1536px] grow overflow-hidden lg:flex ">
+            <div className="hidden w-full max-w-[1536px] grow overflow-hidden lg:flex ">
               <WatchList />
               <div className={"flex max-w-[1110px] grow "}>
                 <div
