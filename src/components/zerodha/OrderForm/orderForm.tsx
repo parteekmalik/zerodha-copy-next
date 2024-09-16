@@ -90,7 +90,7 @@ function TempOrderForm() {
     },
     onSettled() {
       APIutils.Order.getOrders.refetch().catch((err) => console.log(err));
-      APIutils.Order.getRemainingFilledOrders
+      APIutils.Console.getRemainingFilledOrders
         .refetch()
         .catch((err) => console.log(err));
       APIutils.getAccountInfo.getAllBalance

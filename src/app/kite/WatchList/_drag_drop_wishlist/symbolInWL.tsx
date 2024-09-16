@@ -105,7 +105,7 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
         const symbolName = symbol.toUpperCase();
         return (
           <Item
-            isup={Livestream[symbolName]?.isup ?? 0}
+            isup={Livestream[symbolName]?.isup ?? "same"}
             symbolLiveTemp={Livestream[symbolName]}
             symbolName={symbolName}
             submitUpdate={submitUpdate}

@@ -31,6 +31,5 @@ export function convert1D_2D(input: string[]): string[][] {
       }),
     );
   });
-  console.log(watchlistFinal);
   return watchlistFinal;
 }
