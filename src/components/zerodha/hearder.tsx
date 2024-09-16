@@ -168,7 +168,7 @@ function NavigationNav({ route }: { route: string }) {
                 {UserInfo.email ?? "not provided"}
               </span>
             </div>
-            <Link href={"/Profile"}>{">"}</Link>
+            <Link href={"/kite/Profile"}>{">"}</Link>
           </div>
 
           <ul className="w-full appearance-none lg:hidden ">
