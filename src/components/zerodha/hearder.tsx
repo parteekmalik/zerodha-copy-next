@@ -148,13 +148,12 @@ function NavigationNav({ route }: { route: string }) {
           <div className="flex gap-4 hover:cursor-pointer hover:text-orangeApp">
             <Avatar
               sx={{ width: 24, height: 24 }}
-              src={
-                UserInfo.image && UserInfo.image !== "not_found"
-                  ? UserInfo.image
-                  : "N"
-              }
+              {...(UserInfo.image && UserInfo.image !== "not_found"
+                ? { src: UserInfo.image }
+                : {children: "N"})}
               alt="user-icon"
             />
+
             <div className="hidden max-w-[100px] truncate md:block">
               #{UserInfo.TradingAccountId}
             </div>

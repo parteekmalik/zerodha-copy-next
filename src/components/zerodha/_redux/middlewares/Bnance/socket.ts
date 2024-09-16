@@ -74,9 +74,9 @@ const setupSocket = (url: string) => {
       }
     };
   const subAndUnsubTimeOut = {
-    sub: setTimeout(() =>  console.log('dummy fn'), 1000),
-    unsub: setTimeout(() =>  console.log('dummy fn'), 1000),
-    list: setTimeout(() =>  console.log('dummy fn'), 1000),
+    sub: setTimeout(() => console.log("dummy fn"), 1000),
+    unsub: setTimeout(() => console.log("dummy fn"), 1000),
+    list: setTimeout(() => console.log("dummy fn"), 1000),
   };
   const subUnsubMddleware: Middleware = (store) => (next) => (action) => {
     const { type, payload } = JSON.parse(JSON.stringify(action)) as {
@@ -98,6 +98,7 @@ const setupSocket = (url: string) => {
         newState.BinanceWSStats.seprateSubscriptions,
       )
         .flat()
+        .filter((i) => i !== "")
         .map((i) => SymbolsConvertor(i));
 
       const common = prevSubs.filter((x) => newSubs.includes(x));
@@ -139,7 +140,7 @@ const setupSocket = (url: string) => {
 function SymbolsConvertor(symbol: string) {
   symbol = symbol.toLowerCase();
   let [first] = symbol.split("@");
-  const [_,second] = symbol.split("@");
+  const [_, second] = symbol.split("@");
   if (first && !first.endsWith("usdt")) first += "usdt";
   return (first ?? "") + (second ?? "@trade");
 }
