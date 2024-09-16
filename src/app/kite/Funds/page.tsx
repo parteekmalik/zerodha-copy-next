@@ -11,8 +11,6 @@ import {
 import DataGrid from "~/components/zerodha/Table/table";
 import { api } from "~/trpc/react";
 
-const shadowBox = " shadow-[0_0_5px_0_rgba(0,0,0,.1)] ";
-
 function Funds() {
   const data = api.getAccountInfo.getAllBalance.useQuery().data ?? [];
   const FundsList: FundsRow[] = useMemo(() => {
@@ -29,10 +27,7 @@ function Funds() {
     { headerName: "deposit", field: "deposit", width: 0 },
     { headerName: "widrawal", field: "widrawal", width: 0 },
   ];
-  const handleFn = (ids: (string | number)[]) => {
-    // Placeholder function for handling selection
-    console.log("submitted: ", ids);
-  };
+
   return (
     <div className="w-full">
       <DataGrid<FundsRow>

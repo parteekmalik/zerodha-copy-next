@@ -3,6 +3,7 @@ import { SymbolList } from "./routers/symbolList";
 import { OrderRouter } from "./routers/Trades/Order";
 import { getAccountInfoRouter } from "./routers/TradingAccount/accountInfo";
 import { updateAccountInfoRouter } from "./routers/TradingAccount/UpdateaccountInfo";
+import { PositionsData } from "./routers/Console/PositionsData";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   upadteAccountInfo: updateAccountInfoRouter,
   Order: OrderRouter,
   symbolList: SymbolList,
+  Console: PositionsData,
 });
 
 // export type definition of API

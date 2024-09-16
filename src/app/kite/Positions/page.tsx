@@ -7,9 +7,7 @@ import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useB
 import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
 import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
 import { AppDispatch } from "~/components/zerodha/_redux/store";
-import {
-  FormSchema
-} from "~/components/zerodha/OrderForm/FormSchema";
+import { FormSchema } from "~/components/zerodha/OrderForm/FormSchema";
 import {
   GridColDef,
   PositionRow,
@@ -23,7 +21,7 @@ import { getColor, modifyNumber } from "../utils";
 export default function DefaultComonent() {
   const { Livestream } = useBinanceLiveData();
 
-  const Positions = api.Order.getRemainingFilledOrders.useQuery().data;
+  const Positions = api.Console.getRemainingFilledOrders.useQuery().data;
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     if (Positions)
@@ -78,7 +76,7 @@ export default function DefaultComonent() {
     },
     onSettled() {
       APIutils.Order.getOrders.refetch().catch((err) => console.log(err));
-      APIutils.Order.getRemainingFilledOrders
+      APIutils.Console.getRemainingFilledOrders
         .refetch()
         .catch((err) => console.log(err));
       APIutils.getAccountInfo.getAllBalance
@@ -148,7 +146,7 @@ export default function DefaultComonent() {
   };
   if (!PositionsList) return null;
   return (
-    <div className=" p-4 w-full">
+    <div className=" w-full p-4">
       <div className="flex py-2">
         <h1 className="text-xl opacity-80">
           Positions({Positions ? Positions.length : 0})

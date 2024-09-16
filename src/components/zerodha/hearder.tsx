@@ -1,13 +1,14 @@
 import Logout from "@mui/icons-material/Logout";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import { Divider, ListItemIcon } from "@mui/material";
+import SupportIcon from "@mui/icons-material/Support";
 import Avatar from "@mui/material/Avatar";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
+import { getColor } from "~/app/kite/utils";
 import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import InfoHover from "../ui/infoHover";
@@ -37,12 +38,12 @@ function Header() {
     () => ({
       first: {
         name: headerPin.Pin0.toUpperCase(),
-        isgreen: Livestream[headerPin.Pin0]?.isup,
+        isgreen: Livestream[headerPin.Pin0]?.isup ?? "same",
         price: Livestream[headerPin.Pin0]?.curPrice,
       },
       second: {
         name: headerPin.Pin1.toUpperCase(),
-        isgreen: Livestream[headerPin.Pin1]?.isup,
+        isgreen: Livestream[headerPin.Pin1]?.isup ?? "same",
         price: Livestream[headerPin.Pin1]?.curPrice,
       },
     }),
@@ -61,11 +62,7 @@ function Header() {
             <Link href={`Chart?symbol=${PinData.first.name}&TimeFrame=${5}`}>
               {headerPin.Pin0}
             </Link>
-            <div
-              className={`${
-                PinData.first.isgreen ? "text-greenApp" : "text-redApp"
-              }`}
-            >
+            <div className={`${getColor(PinData.first.isgreen)}`}>
               {PinData.first.price}
             </div>
           </div>
@@ -73,11 +70,7 @@ function Header() {
             <Link href={`Chart?symbol=${PinData.second.name}&TimeFrame=${5}`}>
               {headerPin.Pin1}
             </Link>
-            <div
-              className={`${
-                PinData.second.isgreen ? "text-greenApp" : "text-redApp"
-              }`}
-            >
+            <div className={`${getColor(PinData.second.isgreen)}`}>
               {PinData.second.price}
             </div>
           </div>
@@ -119,7 +112,6 @@ function Header() {
 }
 
 export default Header;
-import SupportIcon from "@mui/icons-material/Support";
 const rightSideItems = [
   { name: "Dashboard", icon: "" },
   { name: "Orders", icon: "" },
@@ -180,19 +172,21 @@ function NavigationNav({ route }: { route: string }) {
             <Link href={"/Profile"}>{">"}</Link>
           </div>
 
-          <ul className="w-full lg:hidden appearance-none ">
-            {[{name:"WatchList",icon:""},...rightSideItems].map((item) => (
-              <Link
-                href={item.name}
-                key={item.name}
-                className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
-              >
-                {item.icon && (
-                  <div className="fill-foreground ">{item.icon}</div>
-                )}
-                <span> {item.name}</span>
-              </Link>
-            ))}
+          <ul className="w-full appearance-none lg:hidden ">
+            {[{ name: "WatchList", icon: "" }, ...rightSideItems].map(
+              (item) => (
+                <Link
+                  href={item.name}
+                  key={item.name}
+                  className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
+                >
+                  {item.icon && (
+                    <div className="fill-foreground ">{item.icon}</div>
+                  )}
+                  <span> {item.name}</span>
+                </Link>
+              ),
+            )}
           </ul>
           <ul className="w-full appearance-none ">
             {[{ url: "/console", name: "Console", icon: <SupportIcon /> }].map(
