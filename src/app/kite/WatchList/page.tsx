@@ -14,7 +14,7 @@ export type Tsymbol = string;
 function WatchList() {
   const [search, setSearch] = useState({
     focus: false,
-    matchingSymbol: [""],
+    matchingSymbol: [] as string[],
     data: "",
     Selected: 0,
   });
