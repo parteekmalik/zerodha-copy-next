@@ -11,20 +11,21 @@ const subsciptionsMddleware: ThunkMiddleware =
 
     if (type === "BinanceWSStatsType/updateBinanceWSSubsriptions") {
       const newState = Store.getState() as RootState;
-      getLast24hrData(newState.BinanceWSStats.subsciptions)
-        .then((payload) => {
-          websocketService.reducer({
-            action: "update24hrData",
-            payload,
-          });
-        })
-        .catch((err) => console.log(err));
+      if (newState.BinanceWSStats.subsciptions.length)
+        getLast24hrData(newState.BinanceWSStats.subsciptions)
+          .then((payload) => {
+            websocketService.reducer({
+              action: "update24hrData",
+              payload,
+            });
+          })
+          .catch((err) => console.log(err));
     }
   };
 export default subsciptionsMddleware;
 export const getLast24hrData = async (subscriptions: string[]) => {
-  // console.log("subscriptions", subscriptions);
-  subscriptions = subscriptions.filter((i) => i !== "");
+  subscriptions = subscriptions.filter((i) => i !== "" && i !== " ");
+  console.log("subscriptions ->", subscriptions,subscriptions.filter((i) => i !== "" && i !== " "));
   if (subscriptions.length === 0) return [] as Tsymbol24hr[];
   const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
   const subSymbol = JSON.stringify(
