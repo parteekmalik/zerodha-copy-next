@@ -2,7 +2,10 @@ import { Reorder, useDragControls } from "framer-motion";
 import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
 import { useState } from "react";
 import { getColor } from "~/app/kite/utils";
-import { TsymbolLive } from "../../../../components/zerodha/_contexts/LiveData/BinanceWS";
+import {
+  TsymbolLive,
+  ChangeState,
+} from "../../../../components/zerodha/_contexts/LiveData/BinanceWS";
 
 function Item({
   isup: diff,
@@ -10,7 +13,7 @@ function Item({
   symbolName,
   submitUpdate,
 }: {
-  isup: number | boolean;
+  isup: ChangeState;
   symbolLiveTemp: TsymbolLive | undefined;
   symbolName: string;
   submitUpdate: () => void;

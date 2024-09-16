@@ -181,7 +181,7 @@ function NavigationNav({ route }: { route: string }) {
           </div>
 
           <ul className="w-full lg:hidden appearance-none ">
-            {rightSideItems.map((item) => (
+            {[{name:"WatchList",icon:""},...rightSideItems].map((item) => (
               <Link
                 href={item.name}
                 key={item.name}

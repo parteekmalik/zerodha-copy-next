@@ -2,11 +2,12 @@ import { createContext } from "react";
 interface IWSContext {
   LiveStreanData: TLivestreamType;
 }
+export type ChangeState ="up" | "down" | "same"; 
 export type TsymbolTrade = { curPrice: string; symbol: string };
 export type TsymbolLive = {
   symbol: string;
   curPrice: string;
-  isup: boolean;
+  isup: ChangeState;
   decimal: number;
   prevPrice?: number;
   PriceChange?: string;

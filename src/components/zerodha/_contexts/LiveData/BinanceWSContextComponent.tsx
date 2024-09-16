@@ -92,30 +92,25 @@ export const websocketService = {
       case "updateData": {
         const payload = data.payload;
         updateDatafunction((Livestream) => {
-          const isup = (curent: string, prev: number | undefined): boolean => {
-            if (!prev) return true;
-            return parseFloat(curent) >= prev;
-          };
           const data = Livestream[payload.symbol];
           const price = Number(payload.curPrice);
           const decimal = Math.max(
             data?.decimal ?? 0,
             countDecimalPoints(price),
           );
+          const diff =
+            Number(payload.curPrice) -
+            Number(Livestream[payload.symbol]?.curPrice);
           let temp: TsymbolLive = {
             ...payload,
             curPrice: price.toFixed(decimal),
             decimal,
-            isup: isup(
-              payload.curPrice,
-              Number(Livestream[payload.symbol]?.curPrice),
-            ),
+            isup: diff > 0 ? "up" : diff === 0 ? data?.isup ?? "same" : "down",
           };
           if (data?.prevPrice)
             temp = { ...temp, ...getChange(data.prevPrice, data.curPrice) };
 
           Livestream[payload.symbol] = temp;
-
           return { ...Livestream };
         });
         break;
@@ -127,7 +122,7 @@ export const websocketService = {
             const data = LiveData[x.symbol] ?? {
               symbol: x.symbol,
               decimal: 0,
-              isup: true,
+              isup: "up",
               curPrice: x.curPrice,
             };
             const price = Number(x.curPrice);

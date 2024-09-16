@@ -56,11 +56,13 @@ export function listToRecord<T>(list: T[], key: keyof T): Record<string, T> {
 }
 export const getColor = (diff: number | string | boolean) => {
   if (typeof diff === "string") {
-    if (diff === "completed") {
-      diff = 1;
-    } else if (diff === "cancelled") {
-      diff = -1;
-    } else if (diff.endsWith("%")) diff = diff.split("%")[0] ?? "";
+    if (diff === "up") {
+      return "text-greenApp";
+    } else if (diff === "down") {
+      return "text-redApp";
+    } else {
+      return "";
+    }
   } else if (typeof diff === "boolean") diff = diff ? 1 : -1;
   diff = Number(diff);
   if (diff > 0) {
