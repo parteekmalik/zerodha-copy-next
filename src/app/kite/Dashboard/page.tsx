@@ -1,6 +1,4 @@
-import { useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
-import { RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/server";
 import { getColor } from "../utils";
 
