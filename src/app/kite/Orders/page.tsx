@@ -13,9 +13,13 @@ import {
 } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import DataGrid from "~/components/zerodha/Table/table";
 import { api } from "~/trpc/react";
-import { formatDate } from "../utils";
+import { formatDate, getColor } from "../utils";
 import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
+import { first } from "lodash";
+import MobileTable, {
+  MobileRowType,
+} from "~/components/zerodha/Table/mobileTable/MobileTable";
 
 function Order() {
   const { Livestream } = useBinanceLiveData();
@@ -27,7 +31,16 @@ function Order() {
         ? orders
             .filter((i) => i.status !== "OPEN")
             .map((it) => {
-              const { name, id, openedAt, quantity, price, type, status } = it;
+              const {
+                name,
+                id,
+                openedAt,
+                quantity,
+                price,
+                type,
+                status,
+                triggerType,
+              } = it;
               return {
                 name,
                 id,
@@ -36,6 +49,7 @@ function Order() {
                 price,
                 type,
                 status,
+                triggerType,
               };
             })
         : [],
@@ -47,7 +61,16 @@ function Order() {
         ? orders
             .filter((i) => i.status === "OPEN")
             .map((it) => {
-              const { name, id, openedAt, quantity, price, type, status } = it;
+              const {
+                name,
+                id,
+                openedAt,
+                quantity,
+                price,
+                type,
+                status,
+                triggerType,
+              } = it;
               return {
                 name,
                 id,
@@ -57,6 +80,7 @@ function Order() {
                 price,
                 type,
                 status,
+                triggerType,
               };
             })
         : [],
@@ -123,6 +147,74 @@ function Order() {
     const orderids = items.map((it) => it.id);
     cancelOrdersAPI.mutate({ orderids });
   };
+  const openOrderMobile = openOrders.map((order) => {
+    return [
+      {
+        first: [
+          <FadedColoredCell
+            key={"quantity"}
+            parentStyle="px-1"
+            text={order.type}
+            bgColor={order.type === "BUY" ? "bg-blueApp " : "bg-redApp "}
+            textColor={order.type === "BUY" ? "text-blueApp " : "text-redApp "}
+          />,
+          order.quantity,
+        ],
+        second: [
+          order.openedAt.split(" ")[1],
+          <FadedColoredCell
+            key={"status"}
+            parentStyle="px-1"
+            text={order.status}
+            bgColor={
+              order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "
+            }
+            textColor={
+              order.status === "COMPLETED"
+                ? "text-greenApp "
+                : "text-foreground "
+            }
+          />,
+        ],
+      },
+      { first: [order.name], second: [order.price] },
+      { first: ["SPOT", order.triggerType], second: ["LTP " + order.LTP] },
+    ];
+  });
+  const closedOrderMobile = closedOrders.map((order) => {
+    return [
+      {
+        first: [
+          <FadedColoredCell
+            key={"quantity"}
+            parentStyle="px-1"
+            text={order.type}
+            bgColor={order.type === "BUY" ? "bg-blueApp " : "bg-redApp "}
+            textColor={order.type === "BUY" ? "text-blueApp " : "text-redApp "}
+          />,
+          order.quantity,
+        ],
+        second: [
+          order.openedAt.split(" ")[1],
+          <FadedColoredCell
+            key={"status"}
+            parentStyle="px-1"
+            text={order.status}
+            bgColor={
+              order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "
+            }
+            textColor={
+              order.status === "COMPLETED"
+                ? "text-greenApp "
+                : "text-foreground "
+            }
+          />,
+        ],
+      },
+      { first: [order.name], second: [order.price] },
+      { first: ["SPOT"], second: [order.triggerType] },
+    ];
+  });
 
   if (typeof orders === "string" || orders === undefined) return <>{orders}</>;
   return (
@@ -134,13 +226,16 @@ function Order() {
               Open Trades ({openOrders.length})
             </span>
           </div>
-          <DataGrid<OrderOpenRow>
-            rows={openOrders}
-            columns={openOrdersColumn}
-            coloredCols={colorColsData as coloredColsType<OrderOpenRow>}
-            selected={{ handleFn, text: "cancel Orders" }}
-            styles={TableDefaultstyles}
-          />
+          <div className="hidden lg:block">
+            <DataGrid<OrderOpenRow>
+              rows={openOrders}
+              columns={openOrdersColumn}
+              coloredCols={colorColsData as coloredColsType<OrderOpenRow>}
+              selected={{ handleFn, text: "cancel Orders" }}
+              styles={TableDefaultstyles}
+            />
+          </div>
+          <MobileTable orders={openOrderMobile as MobileRowType} />
         </>
       ) : null}
       <div className="flex w-full py-2">
@@ -148,12 +243,15 @@ function Order() {
           Executed Trades ({closedOrders.length})
         </span>
       </div>
-      <DataGrid<OrderClosedRow>
-        rows={closedOrders}
-        columns={closedOrdersColumn}
-        coloredCols={colorColsData as coloredColsType<OrderClosedRow>}
-        styles={TableDefaultstyles}
-      />
+      <div className="hidden lg:block">
+        <DataGrid<OrderClosedRow>
+          rows={closedOrders}
+          columns={closedOrdersColumn}
+          coloredCols={colorColsData as coloredColsType<OrderClosedRow>}
+          styles={TableDefaultstyles}
+        />
+      </div>
+      <MobileTable orders={closedOrderMobile as MobileRowType} />
     </div>
   );
 }
@@ -171,7 +269,7 @@ const colorColsData = [
           textColor={orderType === "BUY" ? "text-blueApp " : "text-redApp "}
         />
       );
-      const restult: [ReactNode, string] = [component, twMerge(styles, "")];
+      const restult: [ReactNode, string] = [component, twMerge(styles)];
       return restult;
     },
   },

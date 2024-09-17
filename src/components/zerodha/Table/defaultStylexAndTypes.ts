@@ -74,6 +74,7 @@ export type OrderClosedRow = {
   price: number;
   type: $Enums.OrderType;
   status: $Enums.OrderStatus;
+  triggerType: $Enums.EtriggerType
 };
 
 export interface OrderOpenRow extends OrderClosedRow {

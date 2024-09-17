@@ -17,6 +17,9 @@ import DataGrid from "~/components/zerodha/Table/table";
 import { sumByKey } from "~/lib/zerodha/utils";
 import { api } from "~/trpc/react";
 import { getColor, modifyNumber } from "../utils";
+import MobileTable, {
+  MobileRowType,
+} from "~/components/zerodha/Table/mobileTable/MobileTable";
 
 export default function DefaultComonent() {
   const { Livestream } = useBinanceLiveData();
@@ -144,6 +147,63 @@ export default function DefaultComonent() {
     ];
     return result;
   };
+  const MobileTableData = PositionsList.map((position) => {
+    return [
+      {
+        first: [
+          <div key={"quantity"} className="flex gap-1">
+            <span>Qty.</span>
+            <div className="text-textDark/60"> {position.quantity}</div>
+          </div>,
+          <div key={"dot"} className="flex items-center justify-center">
+            <p className="h-2 w-2 rounded-full bg-textDark"></p>
+          </div>,
+          <div key={"avgPrice"} className="flex gap-1">
+            <span>Avg.</span>
+            <div className="text-textDark/60"> {position.avgPrice}</div>
+          </div>,
+        ],
+        second: [
+          <div key={"change"} className={getColor(Number(position.change))}>
+            {modifyNumber(position.change, 2, true)}%
+          </div>,
+        ],
+      },
+      {
+        first: [position.name],
+        second: [
+          <div key={"P&L"} className={getColor(Number(position["P&L"]))}>
+            {modifyNumber(position["P&L"], 2, true)}
+          </div>,
+        ],
+      },
+      {
+        first: [
+          <div key={"Invested"} className="flex gap-1">
+            <span>Invested</span>
+            <div className="text-textDark/60">
+              {" "}
+              {position.totalPrice.toFixed(2)}
+            </div>
+          </div>,
+        ],
+        second: [
+          <div key={"LTP"} className="flex gap-1">
+            <span>LTP</span>
+            <div className="text-textDark/60"> {position.LTP}</div>
+          </div>,
+          <div
+            key={"PriceChangePercent"}
+            className={getColor(
+              Number(Livestream[position.name]?.PriceChangePercent),
+            )}
+          >
+            ({Livestream[position.name]?.PriceChangePercent}%)
+          </div>,
+        ],
+      },
+    ];
+  });
   if (!PositionsList) return null;
   return (
     <div className=" w-full p-4">
@@ -152,18 +212,21 @@ export default function DefaultComonent() {
           Positions({Positions ? Positions.length : 0})
         </h1>
       </div>
-      <DataGrid<PositionRow>
-        rows={PositionsList}
-        columns={PositionsGridColumn}
-        coloredCols={[
-          { name: "P&L", fn: positiveAndColor },
-          { name: "quantity", fn: positiveAndColor },
-          { name: "change", fn: positiveAndColor },
-        ]}
-        selected={{ handleFn, text: "close Orders" }}
-        footer={PositionsTotal}
-        styles={TableDefaultstyles}
-      />
+      <div className="hidden lg:block">
+        <DataGrid<PositionRow>
+          rows={PositionsList}
+          columns={PositionsGridColumn}
+          coloredCols={[
+            { name: "P&L", fn: positiveAndColor },
+            { name: "quantity", fn: positiveAndColor },
+            { name: "change", fn: positiveAndColor },
+          ]}
+          selected={{ handleFn, text: "close Orders" }}
+          footer={PositionsTotal}
+          styles={TableDefaultstyles}
+        />
+      </div>
+      <MobileTable orders={MobileTableData as MobileRowType} />
     </div>
   );
 }

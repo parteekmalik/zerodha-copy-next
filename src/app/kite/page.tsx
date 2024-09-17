@@ -20,7 +20,7 @@ export default function ContextLayer({
         <Provider store={store}>
           {/* <BackendWSContextComponent> */}
           <StoreComponent />
-          <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center  justify-center overflow-hidden  bg-lightGrayApp font-['Open_Sans','sans-serif']  ">
+          <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center  justify-center overflow-hidden  bg-background font-['Open_Sans','sans-serif']  ">
             <Header />
             <div className="flex h-full w-full  overflow-y-auto lg:hidden ">
               {children}

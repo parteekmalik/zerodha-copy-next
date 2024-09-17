@@ -5,7 +5,7 @@ import { getColor } from "../utils";
 async function Dashboard() {
   const UserInfo = await api.getAccountInfo.getInitInfo.query();
   const data = await api.Console.getPositionCurrentDetails.query();
-  console.log("rendered dashboard")
+  console.log("rendered dashboard");
   return (
     <div className="flex h-full w-full flex-col p-[30px] pl-[20px] ">
       <div className="mb-[30px] pb-[15px] text-[24px]">
@@ -49,7 +49,9 @@ async function Dashboard() {
         <div className="flex w-full">
           <div className="flex grow flex-col">
             <div className="text-[2.25rem] font-light">
-              {Number(data.currentTotal) + Number(data.usdtBalance)}
+              {(Number(data.currentTotal) + Number(data.usdtBalance)).toFixed(
+                2,
+              )}
             </div>
           </div>
           <div className="flex grow flex-col">
