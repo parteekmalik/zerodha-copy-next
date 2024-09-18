@@ -4,7 +4,7 @@ export type MobileRowType = { first: ReactNode[]; second: ReactNode[] }[][];
 
 const MobileTable = ({ orders }: { orders: MobileRowType }) => {
   return (
-    <div className="m-2 flex flex-col gap-2 p-2 text-textDark  lg:hidden">
+    <div className=" flex flex-col gap-2 text-sm text-textDark  lg:hidden">
       {orders.map((order, orderIndex) => {
         return (
           <div
