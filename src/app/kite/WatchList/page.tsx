@@ -49,7 +49,7 @@ function WatchList() {
   return (
     <div
       className={
-        "flex h-full min-w-full lg:min-w-[430px]  select-none flex-col border border-t-0 border-borderApp bg-background " +
+        "flex h-full min-w-full select-none  flex-col border border-t-0 border-borderApp bg-background lg:min-w-[430px] " +
         shadowBox
       }
     >
@@ -67,10 +67,10 @@ function WatchList() {
           className=" flex  h-full  flex-col overflow-x-hidden overflow-y-scroll"
           style={{ scrollbarWidth: "thin" }}
         >
-          <SymbolInWL
-            list={watchList.List[watchList.ListNo] ?? []}
-            setSearch={setSearch}
-          />
+            <SymbolInWL
+              list={watchList.List[watchList.ListNo] ?? []}
+              setSearch={setSearch}
+            />
         </div>
       </div>
       <WatchlistBittom />
