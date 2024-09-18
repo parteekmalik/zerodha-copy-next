@@ -102,7 +102,6 @@ function Header() {
             </InfoHover>
             <p className="mx-auto lg:hidden">{route}</p>
             <ThemeSwitch />
-            <Notifications className="lg:hidden" />
           </div>
           <NavigationNav route={route ?? "404"} />
         </div>
@@ -139,57 +138,59 @@ function NavigationNav({ route }: { route: string }) {
               </Link>
             ))}
           </nav>
-          <Notifications />
         </div>
       </div>
-      <InfoHover
-        options={{ isClickEnabled: true, position: "right" }}
-        info={
-          <div className="flex gap-4 hover:cursor-pointer hover:text-orangeApp">
-            <Avatar
-              sx={{ width: 24, height: 24 }}
-              {...(UserInfo.image && UserInfo.image !== "not_found"
-                ? { src: UserInfo.image }
-                : { children: "N" })}
-              alt="user-icon"
-            />
+      <div className="flex gap-4 p-4 pl-0">
+        <Notifications />
+        <InfoHover
+          options={{ isClickEnabled: true, position: "right" }}
+          info={
+            <div className="flex gap-4 hover:cursor-pointer hover:text-orangeApp">
+              <Avatar
+                sx={{ width: 24, height: 24 }}
+                {...(UserInfo.image && UserInfo.image !== "not_found"
+                  ? { src: UserInfo.image }
+                  : { children: "N" })}
+                alt="user-icon"
+              />
 
-            <div className="hidden max-w-[100px] truncate md:block">
-              #{UserInfo.TradingAccountId}
+              <div className="hidden max-w-[100px] truncate md:block">
+                #{UserInfo.TradingAccountId}
+              </div>
             </div>
-          </div>
-        }
-      >
-        <div className="mt-4  min-w-[200px] rounded-md border border-borderApp bg-background py-1  text-foreground ">
-          <div className="m-1 flex items-center justify-between bg-blueApp/10 p-1 px-2 ">
-            <div className="flex flex-col">
-              <span className="uppercase">{UserInfo.name}</span>
-              <span className="text-foreground/75">
-                {UserInfo.email ?? "not provided"}
-              </span>
+          }
+        >
+          <div className="mt-4  min-w-[200px] rounded-md border border-borderApp bg-background py-1  text-foreground ">
+            <div className="m-1 flex items-center justify-between bg-blueApp/10 p-1 px-2 ">
+              <div className="flex flex-col">
+                <span className="uppercase">{UserInfo.name}</span>
+                <span className="text-foreground/75">
+                  {UserInfo.email ?? "not provided"}
+                </span>
+              </div>
+              <Link href={"/kite/Profile"}>{">"}</Link>
             </div>
-            <Link href={"/kite/Profile"}>{">"}</Link>
-          </div>
 
-          <ul className="w-full appearance-none lg:hidden ">
-            {[{ name: "WatchList", icon: "" }, ...rightSideItems].map(
-              (item) => (
-                <Link
-                  href={item.name}
-                  key={item.name}
-                  className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
-                >
-                  {item.icon && (
-                    <div className="fill-foreground ">{item.icon}</div>
-                  )}
-                  <span> {item.name}</span>
-                </Link>
-              ),
-            )}
-          </ul>
-          <ul className="w-full appearance-none ">
-            {[{ url: "/console", name: "Console", icon: <SupportIcon /> }].map(
-              (item) => (
+            <ul className="w-full appearance-none lg:hidden ">
+              {[{ name: "WatchList", icon: "" }, ...rightSideItems].map(
+                (item) => (
+                  <Link
+                    href={item.name}
+                    key={item.name}
+                    className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
+                  >
+                    {item.icon && (
+                      <div className="fill-foreground ">{item.icon}</div>
+                    )}
+                    <span> {item.name}</span>
+                  </Link>
+                ),
+              )}
+            </ul>
+            <ul className="w-full appearance-none ">
+              {[
+                { url: "/console", name: "Console", icon: <SupportIcon /> },
+              ].map((item) => (
                 <Link
                   href={item.url}
                   key={item.name}
@@ -200,28 +201,28 @@ function NavigationNav({ route }: { route: string }) {
                   )}
                   <span> {item.name}</span>
                 </Link>
-              ),
-            )}
-          </ul>
-          <ul className="w-full appearance-none ">
-            {[
-              { url: "/support", name: "Support", icon: <SupportIcon /> },
-              { url: "/api/auth/signout", name: "Logout", icon: <Logout /> },
-            ].map((item) => (
-              <Link
-                href={item.url}
-                key={item.name}
-                className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
-              >
-                {item.icon && (
-                  <div className="fill-foreground ">{item.icon}</div>
-                )}
-                <span> {item.name}</span>
-              </Link>
-            ))}
-          </ul>
-        </div>
-      </InfoHover>
+              ))}
+            </ul>
+            <ul className="w-full appearance-none ">
+              {[
+                { url: "/support", name: "Support", icon: <SupportIcon /> },
+                { url: "/api/auth/signout", name: "Logout", icon: <Logout /> },
+              ].map((item) => (
+                <Link
+                  href={item.url}
+                  key={item.name}
+                  className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
+                >
+                  {item.icon && (
+                    <div className="fill-foreground ">{item.icon}</div>
+                  )}
+                  <span> {item.name}</span>
+                </Link>
+              ))}
+            </ul>
+          </div>
+        </InfoHover>
+      </div>
     </>
   );
 }
