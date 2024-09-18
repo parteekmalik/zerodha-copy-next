@@ -143,14 +143,14 @@ function NavigationNav({ route }: { route: string }) {
         </div>
       </div>
       <InfoHover
-        options={{ isClick: true, position: "right" }}
+        options={{ isClickEnabled: true, position: "right" }}
         info={
           <div className="flex gap-4 hover:cursor-pointer hover:text-orangeApp">
             <Avatar
               sx={{ width: 24, height: 24 }}
               {...(UserInfo.image && UserInfo.image !== "not_found"
                 ? { src: UserInfo.image }
-                : {children: "N"})}
+                : { children: "N" })}
               alt="user-icon"
             />
 
@@ -160,7 +160,7 @@ function NavigationNav({ route }: { route: string }) {
           </div>
         }
       >
-        <div className="mt-4 min-w-[200px] rounded-md border border-borderApp bg-background py-1  text-foreground ">
+        <div className="mt-4  min-w-[200px] rounded-md border border-borderApp bg-background py-1  text-foreground ">
           <div className="m-1 flex items-center justify-between bg-blueApp/10 p-1 px-2 ">
             <div className="flex flex-col">
               <span className="uppercase">{UserInfo.name}</span>

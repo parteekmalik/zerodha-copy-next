@@ -9,7 +9,7 @@ function TradingViewWidget() {
   // fix any type
   const { resolvedTheme } = useTheme();
   const searchParams = useSearchParams();
-  useEffect(() => console.log(searchParams.get("symbol")), [searchParams]);
+  // useEffect(() => console.log(searchParams.get("symbol")), [searchParams]);
   const [symbolName, TimeFrame] = useMemo(
     () => [
       searchParams.get("symbol") ?? "BTCUSDT",
@@ -48,7 +48,7 @@ function TradingViewWidget() {
           "support_host": "https://www.tradingview.com"
         }`;
     container.current?.appendChild(script);
-    console.log("Chart modified", container.current);
+    // console.log("Chart modified", container.current);
   }, [charteheight, symbolName,resolvedTheme]);
   return (
     <div

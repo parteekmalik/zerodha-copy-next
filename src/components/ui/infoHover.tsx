@@ -4,66 +4,89 @@ import { twMerge } from "tailwind-merge";
 function InfoHover({
   children,
   info,
-  options = { position: "center",isHoverOn:true },
+  options = { position: "center", isHoverEnabled: true },
 }: {
   info: string | ReactNode;
   children: ReactNode;
   options?: {
-    isClick?: boolean;
-    isHoverOn?: boolean;
-    isHoverOnChild?: boolean;
+    isClickEnabled?: boolean;
+    isHoverEnabled?: boolean;
+    isHoverEnabledOnChild?: boolean;
     paddingFromTop?: number | string;
     position?: "center" | "left" | "right";
   };
 }) {
-  const [isopened, setisopened] = useState(false);
-  const [isVisible, setisVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+
   useEffect(() => {
-    if (isopened) {
-      const handleClickOutside = (event: MouseEvent) => {
-        // Close the component if it's open
-        setisopened(false);
-        setisVisible(false);
-      };
+    if (!isOpen) return;
 
-      // Add event listener to handle clicks anywhere on the DOM
-      document.addEventListener("click", handleClickOutside);
+    const iframes = document.querySelectorAll("iframe");
+    const iframePointerEventsCache: string[] = [];
 
-      // Cleanup the event listener on component unmount
-      return () => {
-        document.removeEventListener("click", handleClickOutside);
-      };
+    // Disable pointer events on all iframe elements
+    iframes.forEach((iframe) => {
+      iframePointerEventsCache.push(iframe.style.pointerEvents);
+      iframe.style.pointerEvents = "none";
+    });
+
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      console.log(event);
+      setIsOpen(false);
+      setIsTooltipVisible(false);
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      // Restore pointer events on cleanup
+      iframes.forEach((iframe, index) => {
+        iframe.style.pointerEvents = iframePointerEventsCache[index] ?? "auto";
+      });
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const handleMouseEnter = () => {
+    if (options?.isHoverEnabled) {
+      setIsTooltipVisible(true);
     }
-  }, [isopened]);
+  };
+
+  const handleMouseLeave = () => {
+    if (options?.isHoverEnabled) {
+      setIsTooltipVisible(false);
+    }
+  };
+
   return (
-    <div className="relative">
+    <div className="relative touch-none">
       <div
-        {...(options?.isHoverOn && {
-          onMouseEnter: () => setisVisible(true),
-          onMouseLeave: () => setisVisible(false),
-        })}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         onClick={
-          options?.isClick ? () => setisopened((prev) => !prev) : undefined
+          options?.isClickEnabled
+            ? () => setIsOpen((prev) => !prev)
+            : () => setIsTooltipVisible(false)
         }
       >
         {info}
       </div>
       <div
         className={twMerge(
-          isopened || isVisible ? "visible" : "invisible",
+          isOpen || isTooltipVisible ? "visible" : "invisible",
           options.position === "right"
             ? "right-0"
             : options.position === "left"
-              ? "left-0"
-              : "left-1/2 -translate-x-1/2",
-          " absolute top-full z-50  flex flex-col items-center  p-2  pt-0  text-background ",
+            ? "left-0"
+            : "left-1/2 -translate-x-1/2",
+          "absolute top-full flex flex-col items-center p-2 pt-0 text-background"
         )}
-        style={{ paddingTop: options?.paddingFromTop }}
-        onClick={() => setisopened(false)}
-        {...(options?.isHoverOnChild && {
-          onMouseEnter: () => setisVisible(true),
-          onMouseLeave: () => setisVisible(false),
-        })}
+        style={{ zIndex: 101, paddingTop: options?.paddingFromTop }}
+        onClick={() => setIsOpen(false)}
+        onMouseEnter={options?.isHoverEnabledOnChild ? handleMouseEnter : undefined}
+        onMouseLeave={options?.isHoverEnabledOnChild ? handleMouseLeave : undefined}
       >
         {typeof children === "string" ? (
           <span className="mt-3 text-nowrap rounded-md bg-foreground px-2">
@@ -76,4 +99,5 @@ function InfoHover({
     </div>
   );
 }
+
 export default InfoHover;
