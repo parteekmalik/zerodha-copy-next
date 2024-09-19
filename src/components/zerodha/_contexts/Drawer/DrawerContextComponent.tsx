@@ -36,7 +36,7 @@ export const DrawerProvider: React.FC<{ children: ReactNode }> = ({
   // Function to open the drawer with content and an optional title
   const openDrawer = (content: ReactNode, title?: string) => {
     setDrawerContent(content);
-    setDrawerTitle(title || ""); // Set the title if provided
+    setDrawerTitle(title ?? ""); // Set the title if provided
     setIsOpen(true);
   };
 
