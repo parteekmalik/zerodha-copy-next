@@ -6,6 +6,7 @@ import ordersReducer from "./Slices/orders";
 import symbolsListReducer from "./Slices/symbolsList";
 import userInfoReducer from "./Slices/userInfo";
 import watchListReducer from "./Slices/watchList";
+import DeviceTypeReducer from "./Slices/DeviceType";
 import setupSocket from "./middlewares/Bnance/socket";
 import subsciptionsMddleware from "./middlewares/subsciptions";
 import { env } from "~/env";
@@ -23,6 +24,7 @@ export const store = configureStore({
     watchList: watchListReducer,
     symbolsList: symbolsListReducer,
     BinanceWSStats: BinanceWSStatsReducer,
+    DeviceType: DeviceTypeReducer,
   },
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware().concat(middleware);
