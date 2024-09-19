@@ -10,7 +10,7 @@ import {
   Drawer,
   DrawerContent,
   DrawerHeader,
-  DrawerTitle
+  DrawerTitle,
 } from "~/components/ui/drawer"; // Assuming these components are pre-configured in your project
 import { greaterThan } from "../../_redux/Slices/DeviceType";
 import { RootState } from "../../_redux/store";
@@ -59,7 +59,8 @@ export const DrawerProvider: React.FC<{ children: ReactNode }> = ({
 
       {/* Drawer rendering */}
       {greaterThan("lg", DeviceType) ? null : (
-        <Drawer open={isOpen} onOpenChange={setIsOpen} >
+        <Drawer open={isOpen} onOpenChange={setIsOpen}>
+          <DrawerTitle></DrawerTitle>
           <DrawerContent>
             <div className="flex flex-col">
               {drawerContent ?? <TempOrderForm isdraggable={false} />}
