@@ -40,11 +40,13 @@ function Header() {
         name: headerPin.Pin0.toUpperCase(),
         isgreen: Livestream[headerPin.Pin0]?.isup ?? "same",
         price: Livestream[headerPin.Pin0]?.curPrice,
+        change: Livestream[headerPin.Pin0]?.PriceChangePercent,
       },
       second: {
         name: headerPin.Pin1.toUpperCase(),
         isgreen: Livestream[headerPin.Pin1]?.isup ?? "same",
         price: Livestream[headerPin.Pin1]?.curPrice,
+        change: Livestream[headerPin.Pin1]?.PriceChangePercent,
       },
     }),
     [Livestream, headerPin],
@@ -60,18 +62,20 @@ function Header() {
         <div className="hidden h-full min-w-[430px] items-center justify-around gap-5 border-b border-r border-borderApp text-base uppercase lg:flex">
           <div className="flex cursor-pointer gap-2 ">
             <Link href={`Chart?symbol=${PinData.first.name}&TimeFrame=${5}`}>
-              {headerPin.Pin0}
+              {PinData.first.name}
             </Link>
-            <div className={`${getColor(PinData.first.isgreen)}`}>
-              {PinData.first.price}
+            <div className={`flex gap-1 ${getColor(PinData.first.isgreen)} `}>
+              <p>{PinData.first.price}</p>
+              <span>({PinData.first.change}%)</span>
             </div>
           </div>
           <div className="flex cursor-pointer gap-2">
             <Link href={`Chart?symbol=${PinData.second.name}&TimeFrame=${5}`}>
-              {headerPin.Pin1}
+              {PinData.second.name}
             </Link>
-            <div className={`${getColor(PinData.second.isgreen)}`}>
-              {PinData.second.price}
+            <div className={`flex gap-1 ${getColor(PinData.second.isgreen)}`}>
+              <p>{PinData.second.price}</p>
+              <span>({PinData.second.change}%)</span>
             </div>
           </div>
         </div>
