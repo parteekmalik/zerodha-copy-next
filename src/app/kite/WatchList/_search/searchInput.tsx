@@ -50,7 +50,7 @@ function SearchInput({
 
   const refElement = useRef<HTMLDivElement>(null);
   return (
-    <div className="z-20 min-h-[50px] min-w-[0px]">
+    <div className=" min-h-[50px] min-w-[0px]">
       <div
         ref={refElement}
         className="  flex  items-center justify-center border-b border-borderApp p-3"

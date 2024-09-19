@@ -63,7 +63,29 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
     [listNo, LocalList],
   );
 
-  if (!LocalList.length)
+  if (LocalList.length)
+    return (
+      <Reorder.Group
+        values={LocalList}
+        onReorder={(e) => setLocalList(e)}
+        axis="y"
+        dragMomentum={false}
+      >
+        {LocalList.map((symbol) => {
+          const symbolName = symbol.toUpperCase();
+          return (
+            <Item
+              isup={Livestream[symbolName]?.isup ?? "same"}
+              symbolLiveTemp={Livestream[symbolName]}
+              symbolName={symbolName}
+              submitUpdate={submitUpdate}
+              key={symbolName}
+            />
+          );
+        })}
+      </Reorder.Group>
+    );
+  else
     return (
       <div className="flex w-full  flex-col items-center justify-center ">
         <img
@@ -94,27 +116,6 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
         </button>
       </div>
     );
-  return (
-    <Reorder.Group
-      values={LocalList}
-      onReorder={(e) => setLocalList(e)}
-      axis="y"
-      dragMomentum={false}
-    >
-      {LocalList.map((symbol) => {
-        const symbolName = symbol.toUpperCase();
-        return (
-          <Item
-            isup={Livestream[symbolName]?.isup ?? "same"}
-            symbolLiveTemp={Livestream[symbolName]}
-            symbolName={symbolName}
-            submitUpdate={submitUpdate}
-            key={symbolName}
-          />
-        );
-      })}
-    </Reorder.Group>
-  );
 }
 
 export default SymbolInWL;

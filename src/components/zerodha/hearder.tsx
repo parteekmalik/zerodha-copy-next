@@ -54,7 +54,7 @@ function Header() {
 
   return (
     <header
-      className={"  flex w-full justify-center bg-background " + shadowBox}
+      className={twMerge("flex w-full justify-center bg-background", shadowBox)}
     >
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
         <div className="hidden h-full min-w-[430px] items-center justify-around gap-5 border-b border-r border-borderApp text-base uppercase lg:flex">
