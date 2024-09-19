@@ -60,7 +60,7 @@ function WatchList() {
         setSearch={setSearch}
       />
       <div
-        className="relative z-10 flex h-full w-full flex-col"
+        className="relative flex h-full w-full flex-col"
         style={{ maxHeight: "calc(100% - 100px)" }}
       >
         <div

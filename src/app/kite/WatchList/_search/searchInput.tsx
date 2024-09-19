@@ -48,13 +48,9 @@ function SearchInput({
       });
   }, [search.data, search.focus]);
 
-  const refElement = useRef<HTMLDivElement>(null);
   return (
-    <div className=" z-10 min-h-[50px] min-w-[0px]">
-      <div
-        ref={refElement}
-        className="  flex  items-center justify-center border-b border-borderApp p-3"
-      >
+    <div className=" relative z-10 min-h-[50px] min-w-[0px]">
+      <div className="  flex  items-center justify-center border-b border-borderApp p-3">
         <div className=" h-[15px] w-[15px]">
           <SearchIcon fill="fill-foreground" />
         </div>
@@ -96,10 +92,9 @@ function SearchInput({
       </div>
       {search.focus ? (
         <div
-          className="absolute h-[40vh] overflow-y-auto text-[.8125rem]"
+          className="absolute h-[40vh] w-full overflow-y-auto text-[.8125rem]"
           style={{
             scrollbarWidth: "thin",
-            width: refElement.current?.clientWidth,
           }}
         >
           <SearchList
