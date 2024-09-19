@@ -26,6 +26,11 @@ export default function DefaultComonent() {
       {/* <div>{symbolLiveState.Livestream}</div> */}
       <div>{JSON.stringify(Object.keys(symbolsList))}</div>
       <div>{JSON.stringify(Object.keys(subsciptions))}</div>
+      <div className="w-full " style={{ wordWrap: "break-word" }}>
+        {/* {route} */}
+        {/* {JSON.stringify({ ...dataState, loading })} */}
+        {/* {JSON.stringify(status)} */}
+      </div>
     </div>
   );
 }
