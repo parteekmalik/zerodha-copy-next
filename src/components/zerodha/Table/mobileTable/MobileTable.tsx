@@ -18,7 +18,7 @@ const MobileTable = ({ orders }: { orders: MobileRowType }) => {
               <div
                 className={twMerge(
                   "flex justify-between gap-1",
-                  index === 1 ? "text-white" : "",
+                  index === 1 && "text-foreground",
                 )}
                 key={index}
               >
