@@ -50,7 +50,7 @@ function SearchInput({
 
   const refElement = useRef<HTMLDivElement>(null);
   return (
-    <div className=" min-h-[50px] min-w-[0px]">
+    <div className=" z-10 min-h-[50px] min-w-[0px]">
       <div
         ref={refElement}
         className="  flex  items-center justify-center border-b border-borderApp p-3"
@@ -96,7 +96,7 @@ function SearchInput({
       </div>
       {search.focus ? (
         <div
-          className="  absolute h-[40vh]   overflow-y-auto text-[.8125rem]    "
+          className="absolute h-[40vh] overflow-y-auto text-[.8125rem]"
           style={{
             scrollbarWidth: "thin",
             width: refElement.current?.clientWidth,
