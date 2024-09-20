@@ -13,6 +13,7 @@ import InputDiv from "./InputDiv";
 import { OrderTypeDiv } from "./OrderTypeDiv";
 import { twMerge } from "tailwind-merge";
 import Draggable from "react-draggable";
+import { websocketService } from "../_contexts/LiveData/BinanceWSContextComponent";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 // export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -51,7 +52,6 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
   const APIutils = api.useUtils();
 
   const FormData = useSelector((state: RootState) => state.FormData);
-  const { Livestream } = useBinanceLiveData();
 
   useEffect(() => {
     setValue("symbolName", FormData.symbol);
@@ -107,11 +107,10 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
       price: Number(data.price),
       quantity: Number(data.quantity),
       trigerType:
-        data.price >= Number(Livestream[data.symbolName]?.curPrice ?? 0)
-          ? "STOP"
-          : data.price === 0
-            ? "MARKET"
-            : "LIMIT",
+        websocketService.reducer({
+          action: "comparePrice",
+          payload: { name: data.symbolName, price: data.price },
+        }) ?? "MARKET",
     });
 
     dispatch(
@@ -129,7 +128,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
         className={twMerge(
           "  w-full max-w-[600px] bg-background text-xs ",
           "lg:absolute lg:z-50 ",
-        )} 
+        )}
         style={{ top: 0, right: 0 }}
       >
         <header
@@ -178,11 +177,13 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
                   label: "Qty.",
                   isDisabled: false,
                 }}
+                step={0.00001}
                 register={register("quantity")}
               />
               <InputDiv
                 className="flex w-full justify-center"
                 Type="float"
+                step={Number(`0.${"0".repeat(FormData.decimal - 1)}1`)}
                 data={{
                   label: "Price",
                   isDisabled: watch().isMarketOrder,
@@ -194,11 +195,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
                 isMarketOrder={watch().isMarketOrder}
                 setFormdata={(isSelected: boolean) => {
                   setValue("isMarketOrder", isSelected);
-                  if (!isSelected)
-                    setValue(
-                      "price",
-                      Number(Livestream[watch().symbolName]?.curPrice) ?? 0,
-                    );
+                  if (!isSelected) setValue("price", FormData.curPrice);
                   else setValue("price", 0);
                 }}
               />
@@ -214,10 +211,8 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
                 $
                 {(
                   Number(watch().quantity) *
-                  (watch().isMarketOrder
-                    ? Number(Livestream[watch().symbolName]?.curPrice) ?? 0
-                    : watch().price)
-                ).toFixed(Number(Livestream[watch().symbolName]?.decimal) ?? 2)}
+                  (watch().isMarketOrder ? FormData.curPrice : watch().price)
+                ).toFixed(FormData.decimal)}
               </div>
             </div>
             <div className="flex gap-1">

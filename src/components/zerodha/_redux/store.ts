@@ -10,10 +10,12 @@ import DeviceTypeReducer from "./Slices/DeviceType";
 import setupSocket from "./middlewares/Bnance/socket";
 import subsciptionsMddleware from "./middlewares/subsciptions";
 import { env } from "~/env";
+import FormMddleware from "./middlewares/form";
 
 const middleware = [
   setupSocket(env.NEXT_PUBLIC_BINANCE_WS),
   subsciptionsMddleware,
+  FormMddleware
 ];
 export const store = configureStore({
   reducer: {

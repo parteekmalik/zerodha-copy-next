@@ -6,22 +6,26 @@ function InputDiv({
   register,
   Type,
   className,
+  step = 2,
 }: {
   data: { label: string; isDisabled: boolean };
   register: UseFormRegisterReturn<string>;
   className?: string;
   Type: string;
+  step?: number;
 }) {
   return (
     <div className={className}>
       <div className={twMerge("relative")}>
         <input
-          type={Type}
-          autoFocus={false}
-          autoComplete="off"
+          {...register}
           className={twMerge(
             "m-2 rounded-[3px] border border-borderApp p-[10px_15px] focus:border-foreground focus:outline-none ",
           )}
+          type={Type === "float" ? "number" : Type}
+          step={Type === "float" ? step : 1}
+          autoFocus={false}
+          autoComplete="off"
           disabled={isDisabled}
           style={
             isDisabled
