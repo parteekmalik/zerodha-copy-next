@@ -125,7 +125,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
   return (
     <Draggable handle=".drag-handle" disabled={!isdraggable} bounds="parent">
       <form
-        autoFocus={false}
+        onFocus={() => false}
         onSubmit={handleSubmit(onSubmit)}
         className={twMerge(
           "  w-full max-w-[600px] bg-background text-xs ",
