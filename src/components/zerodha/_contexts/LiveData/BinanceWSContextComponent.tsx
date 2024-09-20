@@ -59,6 +59,9 @@ const BinanceWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
   useEffect(() => {
     websocketService.updateDatafunction(setLiveStreanData);
   }, []);
+  useEffect(() => {
+    LiveStreanDataForMiddleware = LiveStreanData;
+  }, [LiveStreanData]);
 
   return (
     <BackndWSContextProvider
@@ -71,10 +74,14 @@ const BinanceWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
   );
 };
 export default BinanceWSContextComponent;
-
+export let LiveStreanDataForMiddleware: TLivestreamType = {};
 export type actionBinanceData =
   | { action: "updateData"; payload: TsymbolTrade }
-  | { action: "update24hrData"; payload: Tsymbol24hr[] };
+  | { action: "update24hrData"; payload: Tsymbol24hr[] }
+  | {
+      action: "comparePrice";
+      payload: { price: string | number; name: string };
+    };
 
 type updateDatafunctionType = React.Dispatch<
   React.SetStateAction<TLivestreamType>
@@ -139,6 +146,17 @@ export const websocketService = {
           return { ...LiveData };
         });
         break;
+      }
+      case "comparePrice": {
+        const curPrice = Number(
+          LiveStreanDataForMiddleware[data.payload.name]?.curPrice,
+        );
+        const givenPrice = Number(data.payload.price);
+        return curPrice <= givenPrice
+          ? "STOP"
+          : curPrice === givenPrice
+            ? "MARKET"
+            : "LIMIT";
       }
       default: {
         console.log("default statement run in binanceData", data);

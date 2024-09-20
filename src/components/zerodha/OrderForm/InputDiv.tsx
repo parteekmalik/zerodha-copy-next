@@ -1,26 +1,31 @@
 import { UseFormRegisterReturn } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 
-function InputDiv<T>({
+function InputDiv({
   data: { label, isDisabled },
   register,
   Type,
   className,
+  step = 2,
 }: {
   data: { label: string; isDisabled: boolean };
   register: UseFormRegisterReturn<string>;
   className?: string;
   Type: string;
+  step?: number;
 }) {
   return (
     <div className={className}>
       <div className={twMerge("relative")}>
         <input
-          type={Type}
-          autoComplete="off"
+          {...register}
           className={twMerge(
-            "m-2 rounded-[3px] border p-[10px_15px] focus:border-black focus:outline-none ",
+            "m-2 rounded-[3px] border border-borderApp p-[10px_15px] focus:border-foreground focus:outline-none ",
           )}
+          type={Type === "float" ? "number" : Type}
+          step={Type === "float" ? step : 1}
+          autoFocus={false}
+          autoComplete="off"
           disabled={isDisabled}
           style={
             isDisabled
@@ -29,7 +34,6 @@ function InputDiv<T>({
                 }
               : {}
           }
-          {...register}
         />
         <div className=" absolute " style={{ top: "0px", left: "0px" }}>
           <div className="ml-5 bg-background px-[1px] ">{label}</div>
