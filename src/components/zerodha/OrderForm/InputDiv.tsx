@@ -17,7 +17,7 @@ function InputDiv<T>({
       <div className={twMerge("relative")}>
         <input
           type={Type}
-          autoFocus={false}
+          onFocus={() => false}
           autoComplete="off"
           className={twMerge(
             "m-2 rounded-[3px] border p-[10px_15px] focus:border-black focus:outline-none ",
