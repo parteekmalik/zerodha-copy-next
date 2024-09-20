@@ -11,6 +11,7 @@ import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
 import { TsymbolLive } from "../../../../components/zerodha/_contexts/LiveData/BinanceWS";
+import { twMerge } from "tailwind-merge";
 type IdataContextActions =
   | {
       type: "update_rightHandSide";
@@ -35,7 +36,7 @@ export function BaseSymbolLayout({
   symbolName: string;
   symbolLiveTemp: TsymbolLive | undefined;
 }) {
-  const diff = symbolLiveTemp?.isup ? 1 : -1;
+  const isUp = symbolLiveTemp?.isup ?? "same";
   return (
     <>
       <div className="grow">{symbolName}</div>
@@ -57,12 +58,11 @@ export function BaseSymbolLayout({
         <div className="flex ">
           {symbolLiveTemp && (
             <a
-              className={
-                ` px-2 font-semibold    ` +
-                (diff > 0
-                  ? "rotate-90 after:content-['<']"
-                  : "rotate-90 after:content-['>']")
-              }
+              className={twMerge(
+                "px-2 font-semibold",
+                isUp === "up" && "rotate-90 after:content-['<']",
+                isUp === "down" && "rotate-90 after:content-['>']",
+              )}
             ></a>
           )}
           <a className="min-w-[60px] text-right">{symbolLiveTemp?.curPrice}</a>
