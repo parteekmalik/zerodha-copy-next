@@ -133,7 +133,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
         style={{ top: 0, right: 0 }}
       >
         <header
-          className={`drag-handle rounded-[3px_3px_0px_0px] p-[15px_20px]  text-white cursor-default lg:hover:cursor-move ${style.bgcolor}`}
+          className={`drag-handle cursor-default rounded-[3px_3px_0px_0px]  p-[15px_20px] text-white lg:hover:cursor-move ${style.bgcolor}`}
         >
           <div className="text-sm font-semibold">
             {`${watch().orderType} ${watch().symbolName.toUpperCase()}  x ${
@@ -170,8 +170,9 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
 
         <div className="m-2 p-5">
           <div className="flex flex-col gap-5">
-            <div className="flex w-full flex-col items-center justify-center gap-5  lg:flex-row">
+            <div className="grid w-full grid-cols-1 gap-5 lg:w-fit lg:grid-cols-2 ">
               <InputDiv
+                className="flex w-full justify-center"
                 Type="float"
                 data={{
                   label: "Qty.",
@@ -180,6 +181,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
                 register={register("quantity")}
               />
               <InputDiv
+                className="flex w-full justify-center"
                 Type="float"
                 data={{
                   label: "Price",
@@ -187,9 +189,8 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
                 }}
                 register={register("price")}
               />
-            </div>
-            <div className="m-2 mr-3">
               <OrderTypeDiv
+                className=" lg:col-start-2  "
                 isMarketOrder={watch().isMarketOrder}
                 setFormdata={(isSelected: boolean) => {
                   setValue("isMarketOrder", isSelected);
@@ -205,7 +206,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
           </div>
         </div>
 
-        <div className="relative flex flex-col  lg:flex-row w-full gap-2 bg-lightGrayApp p-[15px_20px] text-textDark ">
+        <div className="relative flex w-full  flex-col gap-2 bg-lightGrayApp p-[15px_20px] text-textDark lg:flex-row ">
           <div className="flex grow gap-1">
             <div className="flex gap-1">
               <p>Total </p>{" "}
@@ -232,13 +233,13 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
             <input
               type="submit"
               className={twMerge(
-                "cursor-pointer grow lg:grow-0 p-[8px_12px]  font-medium text-white ",
+                "grow cursor-pointer p-[8px_12px] font-medium  text-white lg:grow-0 ",
                 style.bgcolor,
               )}
               value={watch().orderType}
             />
             <div
-              className="cursor-pointer text-center grow lg:grow-0 border border-borderApp bg-background p-[8px_12px]  font-medium text-textDark hover:bg-borderApp hover:text-white"
+              className="grow cursor-pointer border border-borderApp bg-background p-[8px_12px] text-center font-medium  text-textDark hover:bg-borderApp hover:text-white lg:grow-0"
               onClick={() =>
                 dispatch(
                   updateFormData({

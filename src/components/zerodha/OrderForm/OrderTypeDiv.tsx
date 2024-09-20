@@ -2,13 +2,14 @@ import { twMerge } from "tailwind-merge";
 
 export function OrderTypeDiv({
   isMarketOrder,
-  setFormdata,
+  setFormdata,className
 }: {
   isMarketOrder: boolean;
   setFormdata: (isSelected: boolean) => void;
+  className?: string
 }) {
   return (
-    <div className="flex w-full items-center justify-center gap-2">
+    <div className={twMerge("flex w-full items-center justify-center gap-2",className)}>
       <CheckBox
         data={{ isSelected: !isMarketOrder, type: "LIMIT" }}
         clickHandler={() => setFormdata(false)}
