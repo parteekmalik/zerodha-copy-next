@@ -50,6 +50,11 @@ export const DrawerProvider: React.FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     setIsOpen(FormData.isvisible);
+    setTimeout(() => {
+      const inputs = document.getElementsByTagName("input");
+      Array.from(inputs).forEach((input) => input.blur());
+      console.log("hi", inputs);
+    }, 0);
   }, [FormData]);
   const DeviceType = useSelector((state: RootState) => state.DeviceType);
 

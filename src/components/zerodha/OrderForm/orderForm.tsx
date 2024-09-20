@@ -127,9 +127,8 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
         onSubmit={handleSubmit(onSubmit)}
         className={twMerge(
           "  w-full max-w-[600px] bg-background text-xs ",
-          "lg:absolute lg:z-50 ",
+          "lg:absolute lg:z-50 lg:bottom-0 lg:left-1/3 ",
         )}
-        style={{ top: 0, right: 0 }}
       >
         <header
           className={`drag-handle cursor-default rounded-[3px_3px_0px_0px]  p-[15px_20px] text-white lg:hover:cursor-move ${style.bgcolor}`}
@@ -141,6 +140,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
           </div>
           <div></div>
         </header>
+        
         <div className={"flex w-full bg-lightGrayApp  "}>
           {(["SPOT", "MARGIN"] as TmarketType[]).map((x) => {
             return (
@@ -248,7 +248,6 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
             </div>
           </div>
         </div>
-        {/* {JSON.stringify(watch())} */}
       </form>
     </Draggable>
   );
