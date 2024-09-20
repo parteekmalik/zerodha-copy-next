@@ -3,7 +3,7 @@ import { LiveStreanDataForMiddleware } from "../../_contexts/LiveData/BinanceWSC
 import { TFormDataType } from "../Slices/FormData";
 
 const FormMddleware: ThunkMiddleware = (Store) => (next) => (action) => {
-  let newAction = action as { type: string; payload: TFormDataType };
+  const newAction = action as { type: string; payload: TFormDataType };
 
   if (newAction.type === "FormDataType/updateFormData") {
     newAction.payload.curPrice = Number(
