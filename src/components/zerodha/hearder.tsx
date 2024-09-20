@@ -38,13 +38,13 @@ function Header() {
     () => ({
       first: {
         name: headerPin.Pin0.toUpperCase(),
-        isgreen: Livestream[headerPin.Pin0]?.isup ?? "same",
+        isgreen: Number(Livestream[headerPin.Pin0]?.PriceChange) ?? 0,
         price: Livestream[headerPin.Pin0]?.curPrice,
         change: Livestream[headerPin.Pin0]?.PriceChangePercent,
       },
       second: {
         name: headerPin.Pin1.toUpperCase(),
-        isgreen: Livestream[headerPin.Pin1]?.isup ?? "same",
+        isgreen: Number(Livestream[headerPin.Pin1]?.PriceChange) ?? 0,
         price: Livestream[headerPin.Pin1]?.curPrice,
         change: Livestream[headerPin.Pin1]?.PriceChangePercent,
       },
