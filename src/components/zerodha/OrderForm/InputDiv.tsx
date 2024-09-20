@@ -20,7 +20,7 @@ function InputDiv({
           autoFocus={false}
           autoComplete="off"
           className={twMerge(
-            "m-2 rounded-[3px] border p-[10px_15px] focus:border-black focus:outline-none ",
+            "m-2 rounded-[3px] border border-borderApp p-[10px_15px] focus:border-foreground focus:outline-none ",
           )}
           disabled={isDisabled}
           style={
