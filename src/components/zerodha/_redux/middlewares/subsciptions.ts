@@ -25,7 +25,7 @@ const subsciptionsMddleware: ThunkMiddleware =
 export default subsciptionsMddleware;
 export const getLast24hrData = async (subscriptions: string[]) => {
   subscriptions = subscriptions.filter((i) => i !== "" && i !== " ");
-  console.log("subscriptions ->", subscriptions,subscriptions.filter((i) => i !== "" && i !== " "));
+  // console.log("subscriptions ->", subscriptions,subscriptions.filter((i) => i !== "" && i !== " "));
   if (subscriptions.length === 0) return [] as Tsymbol24hr[];
   const url = "https://api.binance.com/api/v3/ticker/24hr?symbols=";
   const subSymbol = JSON.stringify(

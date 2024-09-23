@@ -1,19 +1,19 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
+import Draggable from "react-draggable";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { twMerge } from "tailwind-merge";
 import { z } from "zod";
-import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
 import { updateFormData } from "~/components/zerodha/_redux/Slices/FormData";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
-import { useBinanceLiveData } from "../_contexts/LiveData/useBinanceLiveData";
+import { websocketService } from "../_contexts/LiveData/BinanceWSContextComponent";
+import { useBackendWS } from "../_contexts/backendWS/backendWSContextComponent";
 import { TFormSchema } from "./FormSchema";
 import InputDiv from "./InputDiv";
 import { OrderTypeDiv } from "./OrderTypeDiv";
-import { twMerge } from "tailwind-merge";
-import Draggable from "react-draggable";
-import { websocketService } from "../_contexts/LiveData/BinanceWSContextComponent";
+import { UPDATE_OR_ADD_ORDER } from "WStypes/typeForSocketToFrontend";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 // export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -59,7 +59,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
   }, [FormData]);
 
   const toast = useToast();
-  const { WSsendOrder } = useContext(BackndWSContext);
+  const { WSsendOrder } = useBackendWS();
 
   const orderapi = api.Order.createOrder.useMutation({
     onSuccess: (messages) => {
@@ -84,7 +84,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
               orderId: msg.id,
               type: msg.type,
             });
-            WSsendOrder("order", msg);
+            WSsendOrder({ type: UPDATE_OR_ADD_ORDER, payload: msg });
           }
         }
       });
@@ -127,7 +127,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
         onSubmit={handleSubmit(onSubmit)}
         className={twMerge(
           "  w-full max-w-[600px] bg-background text-xs ",
-          "lg:absolute lg:z-50 lg:bottom-0 lg:left-1/3 ",
+          "lg:absolute lg:bottom-0 lg:left-1/3 lg:z-50 ",
         )}
       >
         <header
@@ -140,7 +140,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
           </div>
           <div></div>
         </header>
-        
+
         <div className={"flex w-full bg-lightGrayApp  "}>
           {(["SPOT", "MARGIN"] as TmarketType[]).map((x) => {
             return (

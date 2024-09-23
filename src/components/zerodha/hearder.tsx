@@ -5,13 +5,13 @@ import Avatar from "@mui/material/Avatar";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { getColor } from "~/app/kite/utils";
-import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import InfoHover from "../ui/infoHover";
+import { useBackendWS } from "./_contexts/backendWS/backendWSContextComponent";
 import { useBinanceLiveData } from "./_contexts/LiveData/useBinanceLiveData";
 import { updateSeprateSubscriptions } from "./_redux/Slices/BinanceWSStats";
 import WifiIcon from "./savages/WifiIcon";
@@ -21,7 +21,7 @@ import ThemeSwitch from "./ThemeSwitch";
 const baseURL = "/kite/";
 
 function Header() {
-  const { backendServerConnection } = useContext(BackndWSContext);
+  const { backendServerConnection } = useBackendWS();
   const headerPin = useSelector((state: RootState) => state.headerPin);
   const { Livestream } = useBinanceLiveData();
   const dispatch = useDispatch<AppDispatch>();

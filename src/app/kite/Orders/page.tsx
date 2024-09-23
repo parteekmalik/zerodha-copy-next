@@ -1,8 +1,10 @@
 "use client";
-import { $Enums } from "@prisma/client";
-import { ReactNode, useContext, useMemo } from "react";
+import { $Enums, Order, Prisma } from "@prisma/client";
+import { ReactNode, useMemo } from "react";
 import { twMerge } from "tailwind-merge";
+import { useBackendWS } from "~/components/zerodha/_contexts/backendWS/backendWSContextComponent";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
+import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
 import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
 import {
   coloredColsType,
@@ -11,17 +13,19 @@ import {
   OrderOpenRow,
   TableDefaultstyles,
 } from "~/components/zerodha/Table/defaultStylexAndTypes";
-import DataGrid from "~/components/zerodha/Table/table";
-import { api } from "~/trpc/react";
-import { formatDate, getColor } from "../utils";
-import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
-import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
-import { first } from "lodash";
 import MobileTable, {
   MobileRowType,
 } from "~/components/zerodha/Table/mobileTable/MobileTable";
+import DataGrid from "~/components/zerodha/Table/table";
+import { api } from "~/trpc/react";
+import { formatDate } from "../utils";
+import {
+  UPDATE_OR_ADD_ORDER,
+  UPDATE_OR_ADD_ORDER_PAYLOAD,
+} from "../../../../WStypes/typeForSocketToFrontend";
+import { socketSendType } from "~/components/zerodha/_contexts/backendWS/useSocket";
 
-function Order() {
+function OrderPage() {
   const { Livestream } = useBinanceLiveData();
 
   const orders = api.Order.getOrders.useQuery().data;
@@ -104,7 +108,7 @@ function Order() {
     { headerName: "status", field: "status", width: 0 },
   ];
   const APIutils = api.useUtils();
-  const { WSsendOrder } = useContext(BackndWSContext);
+  const { WSsendOrder } = useBackendWS();
   const toast = useToast();
 
   const cancelOrdersAPI = api.Order.cancelTrade.useMutation({
@@ -130,7 +134,7 @@ function Order() {
             orderId: message.id,
             type: message.type,
           });
-          WSsendOrder("order", message);
+          WSsendOrder({ type: UPDATE_OR_ADD_ORDER, payload: message });
         }
       });
     },
@@ -256,7 +260,7 @@ function Order() {
   );
 }
 
-export default Order;
+export default OrderPage;
 const colorColsData = [
   {
     name: "type",

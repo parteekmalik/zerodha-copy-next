@@ -1,8 +1,8 @@
 "use client";
-import { useContext, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { twMerge } from "tailwind-merge";
-import BackndWSContext from "~/components/zerodha/_contexts/backendWS/backendWS";
+import { useBackendWS } from "~/components/zerodha/_contexts/backendWS/backendWSContextComponent";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
 import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
 import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
@@ -13,13 +13,14 @@ import {
   PositionRow,
   TableDefaultstyles,
 } from "~/components/zerodha/Table/defaultStylexAndTypes";
+import MobileTable, {
+  MobileRowType,
+} from "~/components/zerodha/Table/mobileTable/MobileTable";
 import DataGrid from "~/components/zerodha/Table/table";
 import { sumByKey } from "~/lib/zerodha/utils";
 import { api } from "~/trpc/react";
 import { getColor, modifyNumber } from "../utils";
-import MobileTable, {
-  MobileRowType,
-} from "~/components/zerodha/Table/mobileTable/MobileTable";
+import { UPDATE_OR_ADD_ORDER } from "WStypes/typeForSocketToFrontend";
 
 export default function DefaultComonent() {
   const { Livestream } = useBinanceLiveData();
@@ -47,7 +48,7 @@ export default function DefaultComonent() {
   }, [Positions]);
   const toast = useToast();
   const APIutils = api.useUtils();
-  const { WSsendOrder } = useContext(BackndWSContext);
+  const { WSsendOrder } = useBackendWS();
 
   const OrdersAPI = api.Order.createOrder.useMutation({
     onSuccess: (messages) => {
@@ -72,7 +73,7 @@ export default function DefaultComonent() {
               orderId: msg.id,
               type: msg.type,
             });
-            WSsendOrder("order", msg);
+            WSsendOrder({ type: UPDATE_OR_ADD_ORDER, payload: msg });
           }
         }
       });

@@ -7,6 +7,8 @@ import BinanceWSContextComponent from "~/components/zerodha/_contexts/LiveData/B
 import { store } from "../../components/zerodha/_redux/store";
 import StoreComponent from "../../components/zerodha/_redux/storeComponent";
 import Main from "./main";
+import { BackendWSProvider } from "~/components/zerodha/_contexts/backendWS/backendWSContextComponent";
+import { SessionProvider } from "next-auth/react";
 
 export default function ContextLayer({
   children,
@@ -14,19 +16,19 @@ export default function ContextLayer({
   children: React.ReactNode;
 }) {
   return (
-    <ToastProvider>
-      <BinanceWSContextComponent>
-        <Provider store={store}>
-          {/* <BackendWSContextComponent> */}
-          <StoreComponent />
-          <DrawerProvider>
-            <Main >
-              {children}
-            </Main>
-          </DrawerProvider>
-          {/* </BackendWSContextComponent> */}
-        </Provider>
-      </BinanceWSContextComponent>
-    </ToastProvider>
+    <SessionProvider>
+      <ToastProvider>
+        <BinanceWSContextComponent>
+          <Provider store={store}>
+            <BackendWSProvider>
+              <StoreComponent />
+              <DrawerProvider>
+                <Main>{children}</Main>
+              </DrawerProvider>
+            </BackendWSProvider>
+          </Provider>
+        </BinanceWSContextComponent>
+      </ToastProvider>
+    </SessionProvider>
   );
 }

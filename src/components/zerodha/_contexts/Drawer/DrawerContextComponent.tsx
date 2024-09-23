@@ -9,8 +9,7 @@ import { useSelector } from "react-redux";
 import {
   Drawer,
   DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
+  DrawerTitle
 } from "~/components/ui/drawer"; // Assuming these components are pre-configured in your project
 import { greaterThan } from "../../_redux/Slices/DeviceType";
 import { RootState } from "../../_redux/store";
@@ -53,7 +52,6 @@ export const DrawerProvider: React.FC<{ children: ReactNode }> = ({
     setTimeout(() => {
       const inputs = document.getElementsByTagName("input");
       Array.from(inputs).forEach((input) => input.blur());
-      console.log("hi", inputs);
     }, 0);
   }, [FormData]);
   const DeviceType = useSelector((state: RootState) => state.DeviceType);

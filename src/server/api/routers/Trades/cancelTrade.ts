@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { $Enums, Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 
 // TODO: add logic for limit orders (add lockedBalance)
@@ -45,7 +45,7 @@ export default async function cancelOrderTranection(
         },
       },
     });
-    return { ...Trade, status: "CANCELLED" };
+    return { ...Trade, status: "CANCELLED" as $Enums.OrderStatus };
   });
   return transection;
 }

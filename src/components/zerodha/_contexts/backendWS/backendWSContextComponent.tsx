@@ -1,33 +1,42 @@
-import type { PropsWithChildren } from "react";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSession } from "next-auth/react";
+import type { ReactNode } from "react";
+import React, { createContext, useContext, useEffect, useMemo } from "react";
 import { env } from "~/env";
-import useSocket from "../../_hooks/useSocket";
-import { RootState } from "../../_redux/store";
-import { useToast } from "../Toast/toast-context";
-import { BackndWSContextProvider } from "./backendWS";
 import { api } from "~/trpc/react";
+import { useToast } from "../Toast/toast-context";
+import useSocket, { socketSendType } from "./useSocket";
 
-const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
-  props,
-) => {
+interface IWSContext {
+  WSsendOrder: ({ type, payload }: socketSendType) => void;
+  backendServerConnection: "connected" | "disconneted";
+}
+
+const BackndWSContext = createContext<IWSContext | undefined>(undefined);
+
+export const BackendWSProvider: React.FC<{ children: ReactNode }> = (props) => {
   const { children } = props;
-  const UserInfo = useSelector((state: RootState) => state.UserInfo);
-  const [backendServerConnection, setbackendServerConnection] = useState<
-    "connected" | "disconneted"
-  >("disconneted");
 
   const toast = useToast();
-  const { socket, isConnected, lastMessage } = useSocket(
-    env.NEXT_PUBLIC_BACKEND_WS,
-    UserInfo.TradingAccountId,
-    {
-      reconnection: false,
-      reconnectionDelay: 60000,
-    },
+  const { data: session, status } = useSession();
+
+  const opts = useMemo(
+    () => ({
+      // reconnection: false,
+      reconnectionDelay: 10000,
+      auth: {
+        token: session?.user.token,
+      },
+    }),
+    [session?.user.token],
   );
+  const { SocketEmiter, backendServerConnection, isConnected, lastMessage } =
+    useSocket(env.NEXT_PUBLIC_BACKEND_WS, opts);
   const APIutils = api.useUtils();
 
+  useEffect(
+    () => console.log("backendServerConnection", backendServerConnection),
+    [backendServerConnection],
+  );
   useEffect(() => {
     if (toast && lastMessage) {
       console.log("lastMessage -> ", typeof lastMessage, lastMessage);
@@ -43,25 +52,24 @@ const BackendWSContextComponent: React.FunctionComponent<PropsWithChildren> = (
         APIutils.Console.getRemainingFilledOrders
           .refetch()
           .catch((err) => console.log(err));
-        // APIutils.getAccountInfo.getBalance
-        //   .refetch()
-        //   .catch((err) => console.log(err));
-      } else if (lastMessage === "connected" || lastMessage === "disconneted") {
-        setbackendServerConnection(lastMessage);
       }
     }
   }, [lastMessage]);
 
-  function WSsendOrder(messageType: string, payload: unknown) {
-    console.log("message sent ws ->", messageType, payload);
-    socket?.emit(messageType, JSON.stringify(payload));
-  }
-
   return (
-    <BackndWSContextProvider value={{ WSsendOrder, backendServerConnection }}>
+    <BackndWSContext.Provider
+      value={{ WSsendOrder: SocketEmiter, backendServerConnection }}
+    >
       {children}
-    </BackndWSContextProvider>
+    </BackndWSContext.Provider>
   );
 };
 
-export default BackendWSContextComponent;
+// Custom hook to use DrawerContext
+export const useBackendWS = () => {
+  const context = useContext(BackndWSContext);
+  if (!context) {
+    throw new Error("useDrawer must be used within a DrawerProvider");
+  }
+  return context;
+};

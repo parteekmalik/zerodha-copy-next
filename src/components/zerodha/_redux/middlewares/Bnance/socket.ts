@@ -35,7 +35,7 @@ function sendWSBinanceMessage(socket: WebSocket, message: Twsbinance | string) {
   }
 
   waitForSocketConnection(() => {
-    console.log("Socket sending message:", message);
+    // console.log("Socket sending message:", message);
     if (typeof message === "string") socket.send(message);
     else socket.send(JSON.stringify(message));
   });
@@ -73,10 +73,14 @@ const setupSocket = (url: string) => {
         });
       }
     };
-  const subAndUnsubTimeOut = {
-    sub: setTimeout(() => console.log("dummy fn"), 1000),
-    unsub: setTimeout(() => console.log("dummy fn"), 1000),
-    list: setTimeout(() => console.log("dummy fn"), 1000),
+  const subAndUnsubTimeOut: {
+    sub: NodeJS.Timeout | null;
+    unsub: NodeJS.Timeout | null;
+    list: NodeJS.Timeout | null;
+  } = {
+    sub: null,
+    unsub: null,
+    list: null,
   };
   const subUnsubMddleware: Middleware = (store) => (next) => (action) => {
     const { type, payload } = JSON.parse(JSON.stringify(action)) as {

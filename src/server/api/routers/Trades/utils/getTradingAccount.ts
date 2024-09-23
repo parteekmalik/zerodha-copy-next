@@ -3,22 +3,24 @@ import { DefaultArgs } from "@prisma/client/runtime/library";
 import { JWT } from "next-auth/jwt";
 import { db } from "~/server/db";
 import createTradingAccount from "./createTradingAccount";
+import { ISODateString } from "next-auth";
 
-export async function getTradingAccount(ctx: {
+export async function getTradingAccount(ctx:  {
   session: {
-    user: {
-      id: string;
-      token: JWT;
-    } & {
-      name?: string | null | undefined;
-      email?: string | null | undefined;
-      image?: string | null | undefined;
-    };
-    expires: string;
+      user: {
+          id: string;
+          token: string;
+      } & {
+          name?: string | null;
+          email?: string | null;
+          image?: string | null;
+      };
+      expires: ISODateString;
   };
   headers: Headers;
   db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>;
 }) {
+  console.log(ctx.session);
   let Taccounts = (
     await ctx.db.user.findUnique({
       where: { id: ctx.session.user.id },
