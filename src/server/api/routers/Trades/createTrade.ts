@@ -16,11 +16,7 @@ type createOrderInterface = {
   };
   Taccount: string;
 };
-export default async function createOrderTransection({
-  db,
-  input,
-  Taccount,
-}: createOrderInterface) {
+export default async function createOrderTransection({ db, input, Taccount }: createOrderInterface) {
   const BaseAssetName = input.symbolName.slice(0, -4).toUpperCase();
   const baseAsset =
     (await db.assets.findUnique({
@@ -42,18 +38,14 @@ export default async function createOrderTransection({
       },
     })) ?? (await createAsset(db, Taccount, 100000, "USDT"));
 
-  const price =
-    input.trigerType === "MARKET"
-      ? await getLTP(input.symbolName)
-      : input.price;
-  if (!price || !usdtAsset) return "server error";
-  const requiredBalaceForOrder =
-    input.orderType === "SELL" ? input.quantity : price * input.quantity;
-  const BalsnceAvailable =
-    input.orderType === "SELL" ? baseAsset.freeAmount : usdtAsset.freeAmount;
-  console.log(BalsnceAvailable, requiredBalaceForOrder);
+  const price = input.trigerType === "MARKET" ? await getLTP(baseAsset.name) : input.price;
+  if (typeof price !== "number" || !usdtAsset) return { error: "server error", price, usdtAsset };
+
+  const isBuyOrder = input.orderType === "BUY";
+  const requiredBalaceForOrder = isBuyOrder ? price * input.quantity : input.quantity;
+  const BalsnceAvailable = isBuyOrder ? usdtAsset.freeAmount : baseAsset.freeAmount;
   if (BalsnceAvailable < requiredBalaceForOrder)
-    return "insufficent asset" + BalsnceAvailable + requiredBalaceForOrder;
+    return "insufficent asset available:" + BalsnceAvailable + " required: " + requiredBalaceForOrder;
 
   return db.$transaction(async (tx) => {
     if (input.trigerType !== "MARKET")
@@ -61,7 +53,7 @@ export default async function createOrderTransection({
         where: {
           unique_TradingAccountId_name: {
             TradingAccountId: Taccount,
-            name: input.orderType === "BUY" ? usdtAsset.name : BaseAssetName,
+            name: isBuyOrder ? usdtAsset.name : baseAsset.name,
           },
         },
         data: {
@@ -74,31 +66,32 @@ export default async function createOrderTransection({
         },
       });
     else {
+      const data = {
+        asset: {
+          [isBuyOrder ? "increment" : "decrement"]: input.quantity,
+        },
+        usdt: {
+          [isBuyOrder ? "decrement" : "increment"]: input.quantity * price,
+        },
+      };
+
       await tx.assets.update({
         where: {
           unique_TradingAccountId_name: {
             TradingAccountId: Taccount,
-            name: input.orderType === "BUY" ? usdtAsset.name : BaseAssetName,
+            name: baseAsset.name,
           },
         },
-        data: {
-          freeAmount: {
-            decrement: requiredBalaceForOrder,
-          },
-        },
+        data: { freeAmount: data.asset },
       });
       await tx.assets.update({
         where: {
           unique_TradingAccountId_name: {
             TradingAccountId: Taccount,
-            name: input.orderType === "BUY" ? BaseAssetName : usdtAsset.name,
+            name: usdtAsset.name,
           },
         },
-        data: {
-          freeAmount: {
-            increment: input.quantity,
-          },
-        },
+        data: { freeAmount: data.usdt },
       });
     }
     return await tx.order.create({

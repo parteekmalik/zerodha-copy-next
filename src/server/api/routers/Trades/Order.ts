@@ -13,10 +13,14 @@ export const OrderRouter = createTRPCRouter({
     const Taccount = (await getTradingAccount(ctx)).id;
     const Orders = await ctx.db.tradingAccount.findFirst({
       where: { id: Taccount },
-      select: { Orders: true },
+      select: { Orders: {
+        orderBy:{
+          closedAt: 'desc'
+        }
+      } },
     });
     if (!Orders) return "error getting orders";
-    else return Orders.Orders.reverse();
+    else return Orders.Orders;
   }),
 
   createOrder: protectedProcedure

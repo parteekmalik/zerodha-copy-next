@@ -32,7 +32,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
     register,
     handleSubmit,
     setValue, 
-    watch,
+    watch,reset,
     formState: { errors },
   } = useForm<{isMarketOrder: boolean; } & z.output<TFormSchema>>({
     defaultValues: {
@@ -66,10 +66,10 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
       messages.map((msg) => {
         if (msg && toast) {
           console.log("mutation nsucess -> ", msg);
-          if (typeof msg === "string") {
+          if (typeof msg === "string" || "error" in msg) {
             toast.open({
               state: "error",
-              errorMessage: msg,
+              errorMessage: JSON.stringify(msg),
             });
           } else {
             toast.open({
@@ -91,12 +91,8 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
     },
     onSettled() {
       APIutils.Order.getOrders.refetch().catch((err) => console.log(err));
-      APIutils.Console.getRemainingFilledOrders
-        .refetch()
-        .catch((err) => console.log(err));
-      APIutils.getAccountInfo.getAllBalance
-        .refetch()
-        .catch((err) => console.log(err));
+      APIutils.Console.getRemainingFilledOrders.refetch().catch((err) => console.log(err));
+      APIutils.getAccountInfo.getAllBalance.refetch().catch((err) => console.log(err));
     },
   });
 
@@ -107,12 +103,15 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
       price: Number(data.price),
       quantity: Number(data.quantity),
       trigerType:
-        websocketService.reducer({
-          action: "comparePrice",
-          payload: { name: data.symbolName, price: data.price },
-        }) ?? "MARKET",
+        data.price === 0
+          ? "MARKET"
+          : websocketService.reducer({
+              action: "comparePrice",
+              payload: { name: data.symbolName, price: data.price },
+            }) ?? "MARKET",
     });
 
+    reset();
     dispatch(
       updateFormData({
         ...FormData,
@@ -134,9 +133,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
           className={`drag-handle cursor-default rounded-[3px_3px_0px_0px]  p-[15px_20px] text-white lg:hover:cursor-move ${style.bgcolor}`}
         >
           <div className="text-sm font-semibold">
-            {`${watch().orderType} ${watch().symbolName.toUpperCase()}  x ${
-              watch().quantity
-            } Qty`}
+            {`${watch().orderType} ${watch().symbolName.toUpperCase()}  x ${watch().quantity} Qty`}
           </div>
           <div></div>
         </header>
@@ -151,20 +148,14 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
                 }}
                 className={
                   "cursor-pointer border-b-2  p-[10px_20px]  " +
-                  ` ${
-                    x === watch().marketType
-                      ? `${style.textcolor} ${style.bordercolor}`
-                      : "text-darkGrayApp"
-                  } `
+                  ` ${x === watch().marketType ? `${style.textcolor} ${style.bordercolor}` : "text-darkGrayApp"} `
                 }
               >
                 {x}
               </div>
             );
           })}
-          <div className=" grow p-[10px_20px] text-right text-blueApp">
-            Tags
-          </div>
+          <div className=" grow p-[10px_20px] text-right text-blueApp">Tags</div>
         </div>
 
         <div className="m-2 p-5">
@@ -209,10 +200,9 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
               <p>Total </p>{" "}
               <div className={"" + style.textcolor}>
                 $
-                {(
-                  Number(watch().quantity) *
-                  (watch().isMarketOrder ? FormData.curPrice : watch().price)
-                ).toFixed(FormData.decimal)}
+                {(Number(watch().quantity) * (watch().isMarketOrder ? FormData.curPrice : watch().price)).toFixed(
+                  FormData.decimal,
+                )}
               </div>
             </div>
             <div className="flex gap-1">
@@ -227,22 +217,20 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
             {/* make input stop updation on every render */}
             <input
               type="submit"
-              className={twMerge(
-                "grow cursor-pointer p-[8px_12px] font-medium  text-white lg:grow-0 ",
-                style.bgcolor,
-              )}
+              className={twMerge("grow cursor-pointer p-[8px_12px] font-medium  text-white lg:grow-0 ", style.bgcolor)}
               value={watch().orderType}
             />
             <div
               className="grow cursor-pointer border border-borderApp bg-background p-[8px_12px] text-center font-medium  text-textDark hover:bg-borderApp hover:text-white lg:grow-0"
-              onClick={() =>
+              onClick={() => {
+                reset();
                 dispatch(
                   updateFormData({
                     ...FormData,
                     isvisible: false,
                   }),
-                )
-              }
+                );
+              }}
             >
               Cancel
             </div>

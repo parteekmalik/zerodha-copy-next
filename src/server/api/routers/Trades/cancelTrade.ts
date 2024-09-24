@@ -14,8 +14,43 @@ export default async function cancelOrderTranection(
 
     if (!Trade) return "unexpeted error for order: " + Orderid;
 
-    //complete transection
-    const res = await tx.order.update({
+    const usdt_to_be_freed = Trade.quantity * Trade.price;
+    console.log("canceling data ->", usdt_to_be_freed);
+    const isBuyOrder = Trade.type === "BUY";
+    const data = isBuyOrder
+      ? {
+          name: "USDT",
+          data: {
+            freeAmount: {
+              increment: usdt_to_be_freed,
+            },
+            lockedAmount: {
+              decrement: usdt_to_be_freed,
+            },
+          },
+        }
+      : {
+          name: Trade.name.slice(0, -4).toUpperCase(),
+          data: {
+            freeAmount: {
+              increment: Trade.quantity,
+            },
+            lockedAmount: {
+              decrement: Trade.quantity,
+            },
+          },
+        };
+    // freeing locked amount
+    await tx.assets.update({
+      where: {
+        unique_TradingAccountId_name: {
+          TradingAccountId: Taccounts,
+          name: data.name,
+        },
+      },
+      data: data.data,
+    });
+    return await tx.order.update({
       where: {
         id: Orderid,
         TradingAccountId: Taccounts,
@@ -24,28 +59,6 @@ export default async function cancelOrderTranection(
         status: "CANCELLED",
       },
     });
-
-    const usdt_to_be_freed = Trade.quantity * Trade.price;
-    console.log("canceling data ->", usdt_to_be_freed);
-
-    // freeing locked amount
-    await tx.assets.update({
-      where: {
-        unique_TradingAccountId_name: {
-          TradingAccountId: Taccounts,
-          name: res.type === "BUY" ? "USDT" : res.name,
-        },
-      },
-      data: {
-        freeAmount: {
-          increment: res.type === "BUY" ? usdt_to_be_freed : Trade.quantity,
-        },
-        lockedAmount: {
-          decrement: res.type === "BUY" ? usdt_to_be_freed : Trade.quantity,
-        },
-      },
-    });
-    return { ...Trade, status: "CANCELLED" as $Enums.OrderStatus };
   });
   return transection;
 }
