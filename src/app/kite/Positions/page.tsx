@@ -1,26 +1,21 @@
 "use client";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { twMerge } from "tailwind-merge";
-import { useBackendWS } from "~/components/zerodha/_contexts/backendWS/backendWSContextComponent";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
-import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
+import useCreateOrderApi from "~/components/zerodha/_hooks/API/useCreateOrderApi";
 import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
 import { AppDispatch } from "~/components/zerodha/_redux/store";
 import { FormSchema } from "~/components/zerodha/OrderForm/FormSchema";
-import { GridColDef, PositionRow, TableDefaultstyles } from "~/components/zerodha/Table/defaultStylexAndTypes";
+import { PositionRow, TableDefaultstyles } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import MobileTable, { MobileRowType } from "~/components/zerodha/Table/mobileTable/MobileTable";
 import DataGrid from "~/components/zerodha/Table/table";
-import { sumByKey } from "~/lib/zerodha/utils";
-import { api } from "~/trpc/react";
 import { getColor, modifyNumber } from "../utils";
-import { UPDATE_OR_ADD_ORDER } from "WStypes/typeForSocketToFrontend";
-import useCreateOrderApi from "~/components/zerodha/_hooks/API/useCreateOrderApi";
+import usePositions, { TPositionsList } from "./usePositions";
 
 export default function DefaultComonent() {
-  const { Livestream } = useBinanceLiveData();
+  const { Positions, PositionsGridColumn, PositionsList, PositionsTotal } = usePositions();
 
-  const Positions = api.Console.getRemainingFilledOrders.useQuery().data;
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     if (Positions)
@@ -39,45 +34,8 @@ export default function DefaultComonent() {
       );
     };
   }, [Positions]);
-  const toast = useToast();
-  const APIutils = api.useUtils();
-  const { WSsendOrder } = useBackendWS();
 
   const { CreateOrderAPI } = useCreateOrderApi();
-
-  const PositionsList = (Positions ?? []).map((item) => {
-    const {
-      id,
-      PositionDetails: { quantity, avgPrice, totalPrice },
-    } = item;
-    const name = item.Orders[0]?.name ?? "error";
-    const LTP = Livestream[name]?.curPrice;
-    const PL = modifyNumber((Number(LTP) - avgPrice) * quantity, 2, true);
-    const change = modifyNumber(Number(LTP) / avgPrice - 1, 2);
-    return {
-      id,
-      name,
-      quantity: modifyNumber(quantity, 2),
-      avgPrice: modifyNumber(avgPrice, 3),
-      totalPrice,
-      LTP,
-      "P&L": PL,
-      change,
-    };
-  });
-  const PositionsGridColumn: GridColDef<PositionRow>[] = [
-    // { headerName: "Product", field: "id", width: 0 },
-    { headerName: "Instrument", field: "name", width: 0 },
-    { headerName: "Qty.", field: "quantity", width: 0 },
-    { headerName: "Avg.", field: "avgPrice", width: 0 },
-    { headerName: "LTP", field: "LTP", width: 0 },
-    { headerName: "P&L", field: "P&L", width: 0 },
-    { headerName: "Change", field: "change", width: 0 },
-  ];
-  const PositionsTotal = useMemo(
-    () => ({ "P&L": sumByKey(PositionsList, "P&L"), LTP: "TOTAL", skip: 3 }),
-    [PositionsList],
-  );
 
   const handleFn = (items: PositionRow[]) => {
     // Placeholder function for handling selection
@@ -95,13 +53,42 @@ export default function DefaultComonent() {
     });
     CreateOrderAPI.mutate(orders);
   };
+  const MobileTableData = mobileData({ PositionsList });
 
-  const positiveAndColor = (value: unknown, styles: string) => {
-    const newValue = Number(value);
-    const result: [string, string] = [String(newValue), twMerge(styles, getColor(newValue))];
-    return result;
-  };
-  const MobileTableData = PositionsList.map((position) => {
+  if (!PositionsList) return null;
+  return (
+    <div className=" w-full p-4">
+      <div className="flex py-2">
+        <h1 className="text-xl opacity-80">Positions({Positions ? Positions.length : 0})</h1>
+      </div>
+      {}
+      <div className="hidden lg:block">
+        <DataGrid<PositionRow>
+          rows={PositionsList}
+          columns={PositionsGridColumn}
+          coloredCols={[
+            { name: "P&L", fn: positiveAndColor },
+            { name: "quantity", fn: positiveAndColor },
+            { name: "change", fn: positiveAndColor },
+          ]}
+          selected={{ handleFn, text: "close Orders" }}
+          footer={PositionsTotal}
+          styles={TableDefaultstyles}
+        />
+      </div>
+      <MobileTable orders={MobileTableData as MobileRowType} />
+    </div>
+  );
+}
+const positiveAndColor = (value: unknown, styles: string) => {
+  const newValue = Number(value);
+  const result: [string, string] = [String(newValue), twMerge(styles, getColor(newValue))];
+  return result;
+};
+function mobileData({ PositionsList }: { PositionsList: TPositionsList[] }) {
+  const { Livestream } = useBinanceLiveData();
+
+  return PositionsList.map((position) => {
     return [
       {
         first: [
@@ -150,27 +137,4 @@ export default function DefaultComonent() {
       },
     ];
   });
-  if (!PositionsList) return null;
-  return (
-    <div className=" w-full p-4">
-      <div className="flex py-2">
-        <h1 className="text-xl opacity-80">Positions({Positions ? Positions.length : 0})</h1>
-      </div>
-      <div className="hidden lg:block">
-        <DataGrid<PositionRow>
-          rows={PositionsList}
-          columns={PositionsGridColumn}
-          coloredCols={[
-            { name: "P&L", fn: positiveAndColor },
-            { name: "quantity", fn: positiveAndColor },
-            { name: "change", fn: positiveAndColor },
-          ]}
-          selected={{ handleFn, text: "close Orders" }}
-          footer={PositionsTotal}
-          styles={TableDefaultstyles}
-        />
-      </div>
-      <MobileTable orders={MobileTableData as MobileRowType} />
-    </div>
-  );
 }
