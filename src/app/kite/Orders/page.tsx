@@ -1,87 +1,23 @@
 "use client";
 import { $Enums } from "@prisma/client";
-import { ReactNode, useMemo } from "react";
+import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
-import { usecancelOrders } from "~/components/zerodha/_hooks/API/usecancelOrders";
+import useCancelOrders from "~/components/zerodha/_hooks/API/usecancelOrders";
 import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
 import {
   coloredColsType,
-  GridColDef,
   OrderClosedRow,
   OrderOpenRow,
   TableDefaultstyles,
 } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import MobileTable, { MobileRowType } from "~/components/zerodha/Table/mobileTable/MobileTable";
 import DataGrid from "~/components/zerodha/Table/table";
-import { api } from "~/trpc/react";
-import { formatDate } from "../utils";
+import useOrder from "./useOrder";
+import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
 
 function OrderPage() {
-  const { Livestream } = useBinanceLiveData();
-
-  const orders = api.Order.getOrders.useQuery().data;
-  const closedOrders = useMemo(
-    () =>
-      typeof orders === "object"
-        ? orders
-            .filter((i) => i.status !== "OPEN")
-            .map((it) => {
-              const { name, id, openedAt, quantity, price, type, status, triggerType } = it;
-              return {
-                name,
-                id,
-                openedAt: formatDate(openedAt),
-                quantity: quantity + "/" + quantity,
-                price,
-                type,
-                status,
-                triggerType,
-              };
-            })
-        : [],
-    [orders],
-  );
-  const openOrders = useMemo(
-    () =>
-      typeof orders === "object"
-        ? orders
-            .filter((i) => i.status === "OPEN")
-            .map((it) => {
-              const { name, id, openedAt, quantity, price, type, status, triggerType } = it;
-              return {
-                name,
-                id,
-                openedAt: formatDate(openedAt),
-                LTP: Livestream[name]?.curPrice,
-                quantity: "0/" + quantity,
-                price,
-                type,
-                status,
-                triggerType,
-              };
-            })
-        : [],
-    [orders, Livestream],
-  );
-  const openOrdersColumn: GridColDef<(typeof openOrders)[0]>[] = [
-    { headerName: "openedAt", field: "openedAt", width: 0 },
-    { headerName: "type", field: "type", width: 0 },
-    { headerName: "name", field: "name", width: 0 },
-    { headerName: "quantity", field: "quantity", width: 0 },
-    { headerName: "LTP", field: "LTP", width: 0 },
-    { headerName: "price", field: "price", width: 0 },
-    { headerName: "status", field: "status", width: 0 },
-  ];
-  const closedOrdersColumn: GridColDef<(typeof closedOrders)[0]>[] = [
-    { headerName: "openedAt", field: "openedAt", width: 0 },
-    { headerName: "type", field: "type", width: 0 },
-    { headerName: "name", field: "name", width: 0 },
-    { headerName: "quantity", field: "quantity", width: 0 },
-    { headerName: "price", field: "price", width: 0 },
-    { headerName: "status", field: "status", width: 0 },
-  ];
-  const { cancelOrdersAPI } = usecancelOrders();
+  const { closedOrders, closedOrdersColumn, openOrders, openOrdersColumn, orders } = useOrder();
+  const { cancelOrdersAPI } = useCancelOrders();
 
   const handleFn = (items: OrderOpenRow[]) => {
     // Placeholder function for handling selection
@@ -144,7 +80,7 @@ function OrderPage() {
       { first: ["SPOT"], second: [order.triggerType] },
     ];
   });
-
+  const { isDeviceCompatible } = useDeviceType();
   if (typeof orders === "string" || orders === undefined) return <>{orders}</>;
   return (
     <div className="flex  h-full w-full flex-col p-4">
@@ -153,7 +89,7 @@ function OrderPage() {
           <div className="flex w-full py-2">
             <span className="grow text-lg text-textDark">Open Trades ({openOrders.length})</span>
           </div>
-          <div className="hidden lg:block">
+          {isDeviceCompatible("lg") ? (
             <DataGrid<OrderOpenRow>
               rows={openOrders}
               columns={openOrdersColumn}
@@ -161,22 +97,24 @@ function OrderPage() {
               selected={{ handleFn, text: "cancel Orders" }}
               styles={TableDefaultstyles}
             />
-          </div>
-          <MobileTable orders={openOrderMobile as MobileRowType} />
+          ) : (
+            <MobileTable orders={openOrderMobile as MobileRowType} />
+          )}
         </>
       ) : null}
       <div className="flex w-full py-2">
         <span className="grow text-lg text-textDark">Executed Trades ({closedOrders.length})</span>
       </div>
-      <div className="hidden lg:block">
+      {isDeviceCompatible("lg") ? (
         <DataGrid<OrderClosedRow>
           rows={closedOrders}
           columns={closedOrdersColumn}
           coloredCols={colorColsData as coloredColsType<OrderClosedRow>}
           styles={TableDefaultstyles}
         />
-      </div>
-      <MobileTable orders={closedOrderMobile as MobileRowType} />
+      ) : (
+        <MobileTable orders={closedOrderMobile as MobileRowType} />
+      )}
     </div>
   );
 }

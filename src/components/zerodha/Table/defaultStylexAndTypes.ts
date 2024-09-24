@@ -31,7 +31,7 @@ export const TableDefaultstyles: DataGridStyles = {
   },
   body: {
     className: "text-textDark",
-    row: "border-b-[1px] border-borderApp",
+    row: "border-b-[1px] border-borderApp hover:bg-borderApp/30 group ",
     cell: "p-3 text-center uppercase  font-thin ",
   },
   footer: {
@@ -74,7 +74,7 @@ export type OrderClosedRow = {
   price: number;
   type: $Enums.OrderType;
   status: $Enums.OrderStatus;
-  triggerType: $Enums.EtriggerType
+  triggerType: $Enums.EtriggerType;
 };
 
 export interface OrderOpenRow extends OrderClosedRow {

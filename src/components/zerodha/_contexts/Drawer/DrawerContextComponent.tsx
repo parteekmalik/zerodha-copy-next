@@ -11,7 +11,7 @@ import {
   DrawerContent,
   DrawerTitle
 } from "~/components/ui/drawer"; // Assuming these components are pre-configured in your project
-import { greaterThan } from "../../_redux/Slices/DeviceType";
+import useDeviceType from "../../_hooks/useDeviceType";
 import { RootState } from "../../_redux/store";
 import TempOrderForm from "../../OrderForm/orderForm";
 
@@ -54,14 +54,13 @@ export const DrawerProvider: React.FC<{ children: ReactNode }> = ({
       Array.from(inputs).forEach((input) => input.blur());
     }, 0);
   }, [FormData]);
-  const DeviceType = useSelector((state: RootState) => state.DeviceType);
-
+  const {DeviceType,isDeviceCompatible}=useDeviceType();
   return (
     <DrawerContext.Provider value={{ openDrawer, closeDrawer }}>
       {children}
 
       {/* Drawer rendering */}
-      {greaterThan("lg", DeviceType) ? null : (
+      {isDeviceCompatible("lg") ? null : (
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
           <DrawerTitle></DrawerTitle>
           <DrawerContent>
