@@ -4,16 +4,14 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
-import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
 import { updateFormData } from "~/components/zerodha/_redux/Slices/FormData";
 import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
 import { websocketService } from "../_contexts/LiveData/BinanceWSContextComponent";
-import { useBackendWS } from "../_contexts/backendWS/backendWSContextComponent";
+import useCreateOrderApi from "../_hooks/API/useCreateOrderApi";
 import { TFormSchema } from "./FormSchema";
 import InputDiv from "./InputDiv";
 import { OrderTypeDiv } from "./OrderTypeDiv";
-import { UPDATE_OR_ADD_ORDER } from "WStypes/typeForSocketToFrontend";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 // export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -58,47 +56,11 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
     setValue("orderType", FormData.type);
   }, [FormData]);
 
-  const toast = useToast();
-  const { WSsendOrder } = useBackendWS();
-
-  const orderapi = api.Order.createOrder.useMutation({
-    onSuccess: (messages) => {
-      messages.map((msg) => {
-        if (msg && toast) {
-          console.log("mutation nsucess -> ", msg);
-          if (typeof msg === "string" || "error" in msg) {
-            toast.open({
-              state: "error",
-              errorMessage: JSON.stringify(msg),
-            });
-          } else {
-            toast.open({
-              name: msg.name,
-              state:
-                msg.status === "OPEN"
-                  ? "placed"
-                  : msg.status === "COMPLETED" || msg.status === "CANCELLED"
-                    ? "sucess"
-                    : "error",
-              quantity: msg.quantity,
-              orderId: msg.id,
-              type: msg.type,
-            });
-            WSsendOrder({ type: UPDATE_OR_ADD_ORDER, payload: msg });
-          }
-        }
-      });
-    },
-    onSettled() {
-      APIutils.Order.getOrders.refetch().catch((err) => console.log(err));
-      APIutils.Console.getRemainingFilledOrders.refetch().catch((err) => console.log(err));
-      APIutils.getAccountInfo.getAllBalance.refetch().catch((err) => console.log(err));
-    },
-  });
+  const { CreateOrderAPI } = useCreateOrderApi();
 
   const onSubmit = (data: z.output<TFormSchema>) => {
     console.log("send order", data);
-    orderapi.mutate({
+    CreateOrderAPI.mutate({
       ...data,
       price: Number(data.price),
       quantity: Number(data.quantity),
@@ -115,6 +77,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
     dispatch(
       updateFormData({
         ...FormData,
+        editOrder: undefined,
         isvisible: false,
       }),
     );
@@ -133,7 +96,9 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
           className={`drag-handle cursor-default rounded-[3px_3px_0px_0px]  p-[15px_20px] text-white lg:hover:cursor-move ${style.bgcolor}`}
         >
           <div className="text-sm font-semibold">
-            {`${watch().orderType} ${watch().symbolName.toUpperCase()}  x ${watch().quantity} Qty`}
+            {`${FormData.editOrder ? "EDIT " : ""}${watch().orderType} ${watch().symbolName.toUpperCase()}  x ${
+              watch().quantity
+            } Qty`}
           </div>
           <div></div>
         </header>
@@ -227,6 +192,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
                 dispatch(
                   updateFormData({
                     ...FormData,
+                    editOrder: undefined,
                     isvisible: false,
                   }),
                 );

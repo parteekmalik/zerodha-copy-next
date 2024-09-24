@@ -15,6 +15,7 @@ import { sumByKey } from "~/lib/zerodha/utils";
 import { api } from "~/trpc/react";
 import { getColor, modifyNumber } from "../utils";
 import { UPDATE_OR_ADD_ORDER } from "WStypes/typeForSocketToFrontend";
+import useCreateOrderApi from "~/components/zerodha/_hooks/API/useCreateOrderApi";
 
 export default function DefaultComonent() {
   const { Livestream } = useBinanceLiveData();
@@ -42,40 +43,7 @@ export default function DefaultComonent() {
   const APIutils = api.useUtils();
   const { WSsendOrder } = useBackendWS();
 
-  const OrdersAPI = api.Order.createOrder.useMutation({
-    onSuccess: (messages) => {
-      messages.map((msg) => {
-        if (msg && toast) {
-          console.log("mutation nsucess -> ", msg);
-          if (typeof msg === "string" || "error" in msg) {
-            toast.open({
-              state: "error",
-              errorMessage: JSON.stringify(msg),
-            });
-          } else {
-            toast.open({
-              name: msg.name,
-              state:
-                msg.status === "OPEN"
-                  ? "placed"
-                  : msg.status === "COMPLETED" || msg.status === "CANCELLED"
-                    ? "sucess"
-                    : "error",
-              quantity: msg.quantity,
-              orderId: msg.id,
-              type: msg.type,
-            });
-            WSsendOrder({ type: UPDATE_OR_ADD_ORDER, payload: msg });
-          }
-        }
-      });
-    },
-    onSettled() {
-      APIutils.Order.getOrders.refetch().catch((err) => console.log(err));
-      APIutils.Console.getRemainingFilledOrders.refetch().catch((err) => console.log(err));
-      APIutils.getAccountInfo.getAllBalance.refetch().catch((err) => console.log(err));
-    },
-  });
+  const { CreateOrderAPI } = useCreateOrderApi();
 
   const PositionsList = (Positions ?? []).map((item) => {
     const {
@@ -125,7 +93,7 @@ export default function DefaultComonent() {
       console.log(data);
       return FormSchema.parse(data);
     });
-    OrdersAPI.mutate(orders);
+    CreateOrderAPI.mutate(orders);
   };
 
   const positiveAndColor = (value: unknown, styles: string) => {

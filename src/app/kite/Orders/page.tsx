@@ -1,10 +1,9 @@
 "use client";
-import { $Enums, Order, Prisma } from "@prisma/client";
+import { $Enums } from "@prisma/client";
 import { ReactNode, useMemo } from "react";
 import { twMerge } from "tailwind-merge";
-import { useBackendWS } from "~/components/zerodha/_contexts/backendWS/backendWSContextComponent";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
-import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
+import { usecancelOrders } from "~/components/zerodha/_hooks/API/usecancelOrders";
 import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
 import {
   coloredColsType,
@@ -13,17 +12,10 @@ import {
   OrderOpenRow,
   TableDefaultstyles,
 } from "~/components/zerodha/Table/defaultStylexAndTypes";
-import MobileTable, {
-  MobileRowType,
-} from "~/components/zerodha/Table/mobileTable/MobileTable";
+import MobileTable, { MobileRowType } from "~/components/zerodha/Table/mobileTable/MobileTable";
 import DataGrid from "~/components/zerodha/Table/table";
 import { api } from "~/trpc/react";
 import { formatDate } from "../utils";
-import {
-  UPDATE_OR_ADD_ORDER,
-  UPDATE_OR_ADD_ORDER_PAYLOAD,
-} from "../../../../WStypes/typeForSocketToFrontend";
-import { socketSendType } from "~/components/zerodha/_contexts/backendWS/useSocket";
 
 function OrderPage() {
   const { Livestream } = useBinanceLiveData();
@@ -35,16 +27,7 @@ function OrderPage() {
         ? orders
             .filter((i) => i.status !== "OPEN")
             .map((it) => {
-              const {
-                name,
-                id,
-                openedAt,
-                quantity,
-                price,
-                type,
-                status,
-                triggerType,
-              } = it;
+              const { name, id, openedAt, quantity, price, type, status, triggerType } = it;
               return {
                 name,
                 id,
@@ -65,16 +48,7 @@ function OrderPage() {
         ? orders
             .filter((i) => i.status === "OPEN")
             .map((it) => {
-              const {
-                name,
-                id,
-                openedAt,
-                quantity,
-                price,
-                type,
-                status,
-                triggerType,
-              } = it;
+              const { name, id, openedAt, quantity, price, type, status, triggerType } = it;
               return {
                 name,
                 id,
@@ -107,44 +81,7 @@ function OrderPage() {
     { headerName: "price", field: "price", width: 0 },
     { headerName: "status", field: "status", width: 0 },
   ];
-  const APIutils = api.useUtils();
-  const { WSsendOrder } = useBackendWS();
-  const toast = useToast();
-
-  const cancelOrdersAPI = api.Order.cancelTrade.useMutation({
-    onSuccess(messages) {
-      messages.map((message) => {
-        console.log("mutation nsucess -> ", message);
-        if (typeof message === "string") {
-          toast.open({
-            state: "error",
-            errorMessage: message,
-          });
-        } else {
-          toast.open({
-            name: message.name,
-            state:
-              message.status === "OPEN"
-                ? "placed"
-                : message.status === "COMPLETED" ||
-                    message.status === "CANCELLED"
-                  ? "sucess"
-                  : "error",
-            quantity: message.quantity,
-            orderId: message.id,
-            type: message.type,
-          });
-          WSsendOrder({ type: UPDATE_OR_ADD_ORDER, payload: message });
-        }
-      });
-    },
-    onSettled() {
-      APIutils.Order.getOrders.refetch().catch((err) => console.log(err));
-      APIutils.getAccountInfo.getAllBalance
-        .refetch()
-        .catch((err) => console.log(err));
-    },
-  });
+  const { cancelOrdersAPI } = usecancelOrders();
 
   const handleFn = (items: OrderOpenRow[]) => {
     // Placeholder function for handling selection
@@ -170,14 +107,8 @@ function OrderPage() {
             key={"status"}
             parentStyle="px-1"
             text={order.status}
-            bgColor={
-              order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "
-            }
-            textColor={
-              order.status === "COMPLETED"
-                ? "text-greenApp "
-                : "text-foreground "
-            }
+            bgColor={order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "}
+            textColor={order.status === "COMPLETED" ? "text-greenApp " : "text-foreground "}
           />,
         ],
       },
@@ -204,14 +135,8 @@ function OrderPage() {
             key={"status"}
             parentStyle="px-1"
             text={order.status}
-            bgColor={
-              order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "
-            }
-            textColor={
-              order.status === "COMPLETED"
-                ? "text-greenApp "
-                : "text-foreground "
-            }
+            bgColor={order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "}
+            textColor={order.status === "COMPLETED" ? "text-greenApp " : "text-foreground "}
           />,
         ],
       },
@@ -226,9 +151,7 @@ function OrderPage() {
       {openOrders.length ? (
         <>
           <div className="flex w-full py-2">
-            <span className="grow text-lg text-textDark">
-              Open Trades ({openOrders.length})
-            </span>
+            <span className="grow text-lg text-textDark">Open Trades ({openOrders.length})</span>
           </div>
           <div className="hidden lg:block">
             <DataGrid<OrderOpenRow>
@@ -243,9 +166,7 @@ function OrderPage() {
         </>
       ) : null}
       <div className="flex w-full py-2">
-        <span className="grow text-lg text-textDark">
-          Executed Trades ({closedOrders.length})
-        </span>
+        <span className="grow text-lg text-textDark">Executed Trades ({closedOrders.length})</span>
       </div>
       <div className="hidden lg:block">
         <DataGrid<OrderClosedRow>
@@ -284,12 +205,8 @@ const colorColsData = [
       const component = (
         <FadedColoredCell
           text={orderType}
-          bgColor={
-            orderType === "COMPLETED" ? "bg-greenApp " : "bg-foreground "
-          }
-          textColor={
-            orderType === "COMPLETED" ? "text-greenApp " : "text-foreground "
-          }
+          bgColor={orderType === "COMPLETED" ? "bg-greenApp " : "bg-foreground "}
+          textColor={orderType === "COMPLETED" ? "text-greenApp " : "text-foreground "}
         />
       );
       const restult: [ReactNode, string] = [component, twMerge(styles, "")];

@@ -1,3 +1,4 @@
+import { Order } from "@prisma/client";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export type TFormDataType = {
@@ -6,6 +7,7 @@ export type TFormDataType = {
   type: "BUY" | "SELL";
   curPrice: number;
   decimal: number;
+  editOrder: undefined | Order;
 };
 
 const initialState: TFormDataType = {
@@ -14,6 +16,7 @@ const initialState: TFormDataType = {
   type: "BUY",
   curPrice: 0,
   decimal: 2,
+  editOrder: undefined,
 };
 
 const FormDataSlice = createSlice({
