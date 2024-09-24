@@ -3,7 +3,29 @@ import { GridColDef } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import { formatDate } from "../utils";
 import { api } from "~/trpc/react";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
+import { $Enums } from "@prisma/client";
 
+export type TclosedOrder = {
+  name: string;
+  id: number;
+  openedAt: string;
+  quantity: string;
+  price: number;
+  type: $Enums.OrderType;
+  status: $Enums.OrderStatus;
+  triggerType: $Enums.EtriggerType;
+};
+export type TopenOrders = {
+  name: string;
+  id: number;
+  openedAt: string;
+  LTP: string | undefined;
+  quantity: string;
+  price: number;
+  type: $Enums.OrderType;
+  status: $Enums.OrderStatus;
+  triggerType: $Enums.EtriggerType;
+};
 export default function useOrder() {
   const { Livestream } = useBinanceLiveData();
 
@@ -68,6 +90,6 @@ export default function useOrder() {
     { headerName: "price", field: "price", width: 0 },
     { headerName: "status", field: "status", width: 0 },
   ];
-  
-  return { openOrders, openOrdersColumn, closedOrders, closedOrdersColumn,orders };
+
+  return { openOrders, openOrdersColumn, closedOrders, closedOrdersColumn, orders };
 }

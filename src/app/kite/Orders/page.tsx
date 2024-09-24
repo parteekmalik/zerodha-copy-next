@@ -1,5 +1,5 @@
 "use client";
-import { $Enums } from "@prisma/client";
+import { $Enums, Order } from "@prisma/client";
 import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import useCancelOrders from "~/components/zerodha/_hooks/API/usecancelOrders";
@@ -12,7 +12,7 @@ import {
 } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import MobileTable, { MobileRowType } from "~/components/zerodha/Table/mobileTable/MobileTable";
 import DataGrid from "~/components/zerodha/Table/table";
-import useOrder from "./useOrder";
+import useOrder, { TclosedOrder, TopenOrders } from "./useOrder";
 import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
 
 function OrderPage() {
@@ -24,63 +24,10 @@ function OrderPage() {
     const orderids = items.map((it) => it.id);
     cancelOrdersAPI.mutate({ orderids });
   };
-  const openOrderMobile = openOrders.map((order) => {
-    return [
-      {
-        first: [
-          <FadedColoredCell
-            key={"quantity"}
-            parentStyle="px-1"
-            text={order.type}
-            bgColor={order.type === "BUY" ? "bg-blueApp " : "bg-redApp "}
-            textColor={order.type === "BUY" ? "text-blueApp " : "text-redApp "}
-          />,
-          order.quantity,
-        ],
-        second: [
-          order.openedAt.split(" ")[1],
-          <FadedColoredCell
-            key={"status"}
-            parentStyle="px-1"
-            text={order.status}
-            bgColor={order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "}
-            textColor={order.status === "COMPLETED" ? "text-greenApp " : "text-foreground "}
-          />,
-        ],
-      },
-      { first: [order.name], second: [order.price] },
-      { first: ["SPOT", order.triggerType], second: ["LTP " + order.LTP] },
-    ];
-  });
-  const closedOrderMobile = closedOrders.map((order) => {
-    return [
-      {
-        first: [
-          <FadedColoredCell
-            key={"quantity"}
-            parentStyle="px-1"
-            text={order.type}
-            bgColor={order.type === "BUY" ? "bg-blueApp " : "bg-redApp "}
-            textColor={order.type === "BUY" ? "text-blueApp " : "text-redApp "}
-          />,
-          order.quantity,
-        ],
-        second: [
-          order.openedAt.split(" ")[1],
-          <FadedColoredCell
-            key={"status"}
-            parentStyle="px-1"
-            text={order.status}
-            bgColor={order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "}
-            textColor={order.status === "COMPLETED" ? "text-greenApp " : "text-foreground "}
-          />,
-        ],
-      },
-      { first: [order.name], second: [order.price] },
-      { first: ["SPOT"], second: [order.triggerType] },
-    ];
-  });
+
+  const { closedOrderMobile, openOrderMobile } = convertIntoMobileData({ openOrders, closedOrders });
   const { isDeviceCompatible } = useDeviceType();
+
   if (typeof orders === "string" || orders === undefined) return <>{orders}</>;
   return (
     <div className="flex  h-full w-full flex-col p-4">
@@ -152,3 +99,68 @@ const colorColsData = [
     },
   },
 ];
+function convertIntoMobileData({
+  openOrders,
+  closedOrders,
+}: {
+  openOrders: TopenOrders[];
+  closedOrders: TclosedOrder[];
+}) {
+  const openOrderMobile = openOrders.map((order) => {
+    return [
+      {
+        first: [
+          <FadedColoredCell
+            key={"quantity"}
+            parentStyle="px-1"
+            text={order.type}
+            bgColor={order.type === "BUY" ? "bg-blueApp " : "bg-redApp "}
+            textColor={order.type === "BUY" ? "text-blueApp " : "text-redApp "}
+          />,
+          order.quantity,
+        ],
+        second: [
+          order.openedAt.split(" ")[1],
+          <FadedColoredCell
+            key={"status"}
+            parentStyle="px-1"
+            text={order.status}
+            bgColor={order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "}
+            textColor={order.status === "COMPLETED" ? "text-greenApp " : "text-foreground "}
+          />,
+        ],
+      },
+      { first: [order.name], second: [order.price] },
+      { first: ["SPOT", order.triggerType], second: ["LTP " + order.LTP] },
+    ];
+  });
+  const closedOrderMobile = closedOrders.map((order) => {
+    return [
+      {
+        first: [
+          <FadedColoredCell
+            key={"quantity"}
+            parentStyle="px-1"
+            text={order.type}
+            bgColor={order.type === "BUY" ? "bg-blueApp " : "bg-redApp "}
+            textColor={order.type === "BUY" ? "text-blueApp " : "text-redApp "}
+          />,
+          order.quantity,
+        ],
+        second: [
+          order.openedAt.split(" ")[1],
+          <FadedColoredCell
+            key={"status"}
+            parentStyle="px-1"
+            text={order.status}
+            bgColor={order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "}
+            textColor={order.status === "COMPLETED" ? "text-greenApp " : "text-foreground "}
+          />,
+        ],
+      },
+      { first: [order.name], second: [order.price] },
+      { first: ["SPOT"], second: [order.triggerType] },
+    ];
+  });
+  return { closedOrderMobile, openOrderMobile };
+}
