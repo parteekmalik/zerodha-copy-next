@@ -1,6 +1,6 @@
-import { Order, Prisma, PrismaClient } from "@prisma/client";
+import { Assets, Order, Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
-import { sumByKey } from "~/lib/zerodha/utils";
+import { sumByKey } from "../../../../../lib/zerodha/utils";
 
 export default async function getOpenPositions({
   db,
@@ -14,41 +14,10 @@ export default async function getOpenPositions({
       TradingAccountId: tradingAccountId,
       NOT: { name: "USDT" },
     },
-    include: { Orders: true },
+    include: { Orders: { orderBy: { closedAt: "asc" } } },
   });
-
-  return AssetsWithOrders.map((Asset) => {
-    const buyOrdrers = Asset.Orders.filter(
-      (i) => i.status === "COMPLETED" && i.type === "BUY",
-    );
-    const sellOrdrers = Asset.Orders.filter(
-      (i) => i.status === "COMPLETED" && i.type === "SELL",
-    );
-    const sellOrdrersTotalQuantity = sumByKey(sellOrdrers, "quantity");
-    let buyOrdrersTotalQuantity = 0;
-
-    while (
-      "0" in buyOrdrers &&
-      buyOrdrersTotalQuantity + buyOrdrers[0].quantity <=
-        sellOrdrersTotalQuantity
-    ) {
-      buyOrdrersTotalQuantity += buyOrdrers[0].quantity;
-      buyOrdrers.pop();
-    }
-    if (
-      buyOrdrersTotalQuantity !== sellOrdrersTotalQuantity &&
-      "0" in buyOrdrers
-    ) {
-      buyOrdrers[0].quantity =
-        sellOrdrersTotalQuantity - buyOrdrersTotalQuantity;
-    }
-
-    return {
-      ...Asset,
-      Orders: buyOrdrers,
-      PositionDetails: convertIntoAvg(buyOrdrers),
-    };
-  }).filter((i) => i.PositionDetails.quantity > 0);
+  const result = getRemainingOrders(AssetsWithOrders);
+  return result.filter((i) => i.PositionDetails.quantity > 0);
 }
 
 export const convertIntoAvg = (orders: Order[]) => {
@@ -64,3 +33,25 @@ export const convertIntoAvg = (orders: Order[]) => {
   data.avgPrice = data.totalPrice / data.quantity;
   return data;
 };
+
+export function getRemainingOrders(AssetsWithOrders: (Assets & { Orders: Order[] })[]) {
+  return AssetsWithOrders.map((Asset) => {
+    const buyOrdrers = Asset.Orders.filter((i) => i.status === "COMPLETED" && i.type === "BUY");
+    const sellOrdrers = Asset.Orders.filter((i) => i.status === "COMPLETED" && i.type === "SELL");
+    const sellOrdrersTotalQuantity = sumByKey(sellOrdrers, "quantity");
+    let buyOrdrersTotalQuantity = 0;
+    while ("0" in buyOrdrers && buyOrdrersTotalQuantity + buyOrdrers[0].quantity <= sellOrdrersTotalQuantity) {
+      buyOrdrersTotalQuantity += buyOrdrers[0].quantity;
+      buyOrdrers.shift();
+    }
+    if (buyOrdrersTotalQuantity !== sellOrdrersTotalQuantity && "0" in buyOrdrers) {
+      buyOrdrers[0].quantity -= sellOrdrersTotalQuantity - buyOrdrersTotalQuantity;
+    }
+
+    return {
+      ...Asset,
+      Orders: buyOrdrers,
+      PositionDetails: convertIntoAvg(buyOrdrers),
+    };
+  });
+}

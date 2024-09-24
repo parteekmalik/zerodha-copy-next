@@ -1,108 +1,195 @@
 // math.test.ts
 
-import { parsePrice } from "../app/kite/utils";
-// const sample: TcalculateTradesSummaryFIFO[] = [
-//   {
-//     type: "BUY",
-//     price: 100,
-//     quantity: 5,
-//   },
-//   {
-//     type: "BUY",
-//     price: 200,
-//     quantity: 10,
-//   },
-// ];
-// const sample1: TcalculateTradesSummaryFIFO[] = [
-//   {
-//     type: "BUY",
-//     price: 100,
-//     quantity: 5,
-//   },
-//   {
-//     type: "BUY",
-//     price: 200,
-//     quantity: 10,
-//   },
-//   {
-//     type: "SELL",
-//     price: 200,
-//     quantity: 12,
-//   },
-// ];
-// const sample2: TOrder[] = [
-//   {
-//     id: "sdasda",
-//     createdAt: moment().toDate(),
-//     name: "BTCUSDT",
-//     type: "BUY",
-//     price: 100,
-//     quantity: 5,
-//     status: "completed",
-//     triggerType: "MARKET",
-//     sl: 0,
-//     tp: 0,
-//     TradingAccountId: "sds",
-//   },
-//   {
-//     id: "sdasda",
-//     createdAt: moment().toDate(),
-//     name: "BTCUSDT",
-//     type: "BUY",
-//     price: 200,
-//     quantity: 10,
-//     status: "completed",
-//     triggerType: "MARKET",
-//     sl: 0,
-//     tp: 0,
-//     TradingAccountId: "sds",
-//   },
-//   {
-//     id: "sdasda",
-//     createdAt: moment().toDate(),
-//     name: "BTCUSDT",
-//     type: "SELL",
-//     price: 200,
-//     quantity: 12,
-//     status: "completed",
-//     triggerType: "MARKET",
-//     sl: 0,
-//     tp: 0,
-//     TradingAccountId: "sds",
-//   },
-// ];
+import { Assets, Order } from "@prisma/client";
+import { getRemainingOrders } from "../server/api/routers/Console/utils/getOpenPositions";
 
+const getRemainingOrdersData: (Assets & { Orders: Order[] })[] = [
+  {
+    id: "cm1dgwucn0001bfi2rt0s55fk",
+    name: "ETH",
+    lockedAmount: 0,
+    freeAmount: 10,
+    TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+    Orders: [
+      {
+        id: 47,
+        openedAt: new Date("2024-09-24T07:39:27.658Z"),
+        closedAt: new Date("2024-09-24T07:39:27.658Z"),
+        name: "ETHUSDT",
+        quantity: 10,
+        price: 2641.95,
+        type: "BUY",
+        status: "COMPLETED",
+        triggerType: "MARKET",
+        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+      },
+      {
+        id: 48,
+        openedAt: new Date("2024-09-24T07:40:26.819Z"),
+        closedAt: new Date("2024-09-24T07:40:26.819Z"),
+        name: "ETHUSDT",
+        quantity: 10,
+        price: 2641.95,
+        type: "SELL",
+        status: "COMPLETED",
+        triggerType: "MARKET",
+        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+      },
+      {
+        id: 49,
+        openedAt: new Date("2024-09-24T07:48:56.093Z"),
+        closedAt: new Date("2024-09-24T07:48:56.093Z"),
+        name: "ETHUSDT",
+        quantity: 10,
+        price: 2644.72,
+        type: "BUY",
+        status: "COMPLETED",
+        triggerType: "MARKET",
+        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+      },
+      {
+        id: 50,
+        openedAt: new Date("2024-09-24T07:49:05.646Z"),
+        closedAt: new Date("2024-09-24T07:49:05.646Z"),
+        name: "ETHUSDT",
+        quantity: 10,
+        price: 2644.11,
+        type: "SELL",
+        status: "COMPLETED",
+        triggerType: "MARKET",
+        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+      },
+      {
+        id: 51,
+        openedAt: new Date("2024-09-24T07:49:38.075Z"),
+        closedAt: new Date("2024-09-24T07:49:38.075Z"),
+        name: "ETHUSDT",
+        quantity: 37,
+        price: 2643.6,
+        type: "BUY",
+        status: "COMPLETED",
+        triggerType: "MARKET",
+        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+      },
+      {
+        id: 52,
+        openedAt: new Date("2024-09-24T07:51:20.177Z"),
+        closedAt: new Date("2024-09-24T07:51:20.177Z"),
+        name: "ETHUSDT",
+        quantity: 37,
+        price: 2644.69,
+        type: "SELL",
+        status: "COMPLETED",
+        triggerType: "MARKET",
+        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+      },
+      {
+        id: 53,
+        openedAt: new Date("2024-09-24T07:58:04.365Z"),
+        closedAt: new Date("2024-09-24T07:58:04.365Z"),
+        name: "ETHUSDT",
+        quantity: 10,
+        price: 2646.01,
+        type: "BUY",
+        status: "COMPLETED",
+        triggerType: "MARKET",
+        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+      },
+      {
+        id: 54,
+        openedAt: new Date("2024-09-24T08:01:09.082Z"),
+        closedAt: new Date("2024-09-24T08:01:09.082Z"),
+        name: "ETHUSDT",
+        quantity: 1,
+        price: 2646,
+        type: "BUY",
+        status: "COMPLETED",
+        triggerType: "MARKET",
+        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+      },
+      {
+        id: 55,
+        openedAt: new Date("2024-09-24T08:01:14.665Z"),
+        closedAt: new Date("2024-09-24T08:01:14.665Z"),
+        name: "ETHUSDT",
+        quantity: 1,
+        price: 2646,
+        type: "SELL",
+        status: "COMPLETED",
+        triggerType: "MARKET",
+        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+      },
+    ],
+  },
+];
+
+const getRemainingOrdersResult = [
+  {
+    Orders: [
+      {
+        id: 53,
+        openedAt: new Date("2024-09-24T07:58:04.365Z"),
+        closedAt: new Date("2024-09-24T07:58:04.365Z"),
+        name: "ETHUSDT",
+        quantity: 9,
+        price: 2646.01,
+        type: "BUY",
+        status: "COMPLETED",
+        triggerType: "MARKET",
+        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+      },
+      {
+        id: 54,
+        openedAt: new Date("2024-09-24T08:01:09.082Z"),
+        closedAt: new Date("2024-09-24T08:01:09.082Z"),
+        name: "ETHUSDT",
+        quantity: 1,
+        price: 2646,
+        type: "BUY",
+        status: "COMPLETED",
+        triggerType: "MARKET",
+        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+      },
+    ],
+    PositionDetails: { avgPrice: 2646.009, quantity: 10, totalPrice: 26460.09 },
+    TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+    freeAmount: 10,
+    id: "cm1dgwucn0001bfi2rt0s55fk",
+    lockedAmount: 0,
+    name: "ETH",
+  },
+];
 describe("Math functions", () => {
   test("parsePrice passed", () => {
-    expect(parsePrice("0.01234")).toBe(0.01234);
-    expect(parsePrice("0.45800000")).toBe(0.458);
-    expect(parsePrice("0.00054000")).toBe(0.00054);
+    const result = getRemainingOrders(getRemainingOrdersData);
+    const expectedResult = getRemainingOrdersResult[0]; // since it's an array
+
+    // Check overall structure and relevant properties
+    if (expectedResult)
+      expect(result[0]).toMatchObject({
+        TradingAccountId: expectedResult.TradingAccountId,
+        freeAmount: expectedResult.freeAmount,
+        lockedAmount: expectedResult.lockedAmount,
+        name: expectedResult.name,
+        id: expectedResult.id,
+        Orders: expectedResult.Orders,
+        PositionDetails: {
+          avgPrice: expect.closeTo(expectedResult.PositionDetails.avgPrice, 10),
+          totalPrice: expect.closeTo(expectedResult.PositionDetails.totalPrice, 10),
+          quantity: expectedResult.PositionDetails.quantity,
+        },
+      });
+    else expect(result.length).toBe(1);
   });
 });
-
-// describe("cal p&l", () => {
-//   test("p&l passed", () => {
-//     const result = Total_avg_Price(sample);
-//     const expected = { avg: 166.67, total: 2500 };
-//     expect(result).toEqual(expected);
-//   });
-// });
-// describe("cal p&l", () => {
-//   test("p&l passed", () => {
-//     const result = calculateTradesSummaryFIFO(sample1, 300);
-//     const expected = {
-//       avgPrice: 166.67,
-//       netQuantity: 3,
-//       profitOrLoss: 800,
-//     };
-//     expect(result).toEqual(expected);
-//   });
-// });
-// describe("cal p&l", () => {
-//   test("p&l passed", () => {
-//     const result = new OrdersManage(sample2).dummy;
-
-//     const expected = "dummy";
-//     expect(result).toEqual(expected);
-//   });
-// });

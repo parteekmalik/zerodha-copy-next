@@ -8,14 +8,8 @@ import { useToast } from "~/components/zerodha/_contexts/Toast/toast-context";
 import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
 import { AppDispatch } from "~/components/zerodha/_redux/store";
 import { FormSchema } from "~/components/zerodha/OrderForm/FormSchema";
-import {
-  GridColDef,
-  PositionRow,
-  TableDefaultstyles,
-} from "~/components/zerodha/Table/defaultStylexAndTypes";
-import MobileTable, {
-  MobileRowType,
-} from "~/components/zerodha/Table/mobileTable/MobileTable";
+import { GridColDef, PositionRow, TableDefaultstyles } from "~/components/zerodha/Table/defaultStylexAndTypes";
+import MobileTable, { MobileRowType } from "~/components/zerodha/Table/mobileTable/MobileTable";
 import DataGrid from "~/components/zerodha/Table/table";
 import { sumByKey } from "~/lib/zerodha/utils";
 import { api } from "~/trpc/react";
@@ -32,9 +26,7 @@ export default function DefaultComonent() {
       dispatch(
         updateSeprateSubscriptions({
           name: "positions",
-          subsription: Positions.map((i) => i.name).filter(
-            (i) => i.toLowerCase() !== "usdt",
-          ),
+          subsription: Positions.map((i) => i.name).filter((i) => i.toLowerCase() !== "usdt"),
         }),
       );
     return () => {
@@ -55,10 +47,10 @@ export default function DefaultComonent() {
       messages.map((msg) => {
         if (msg && toast) {
           console.log("mutation nsucess -> ", msg);
-          if (typeof msg === "string") {
+          if (typeof msg === "string" || "error" in msg) {
             toast.open({
               state: "error",
-              errorMessage: msg,
+              errorMessage: JSON.stringify(msg),
             });
           } else {
             toast.open({
@@ -80,12 +72,8 @@ export default function DefaultComonent() {
     },
     onSettled() {
       APIutils.Order.getOrders.refetch().catch((err) => console.log(err));
-      APIutils.Console.getRemainingFilledOrders
-        .refetch()
-        .catch((err) => console.log(err));
-      APIutils.getAccountInfo.getAllBalance
-        .refetch()
-        .catch((err) => console.log(err));
+      APIutils.Console.getRemainingFilledOrders.refetch().catch((err) => console.log(err));
+      APIutils.getAccountInfo.getAllBalance.refetch().catch((err) => console.log(err));
     },
   });
 
@@ -142,10 +130,7 @@ export default function DefaultComonent() {
 
   const positiveAndColor = (value: unknown, styles: string) => {
     const newValue = Number(value);
-    const result: [string, string] = [
-      String(newValue),
-      twMerge(styles, getColor(newValue)),
-    ];
+    const result: [string, string] = [String(newValue), twMerge(styles, getColor(newValue))];
     return result;
   };
   const MobileTableData = PositionsList.map((position) => {
@@ -182,10 +167,7 @@ export default function DefaultComonent() {
         first: [
           <div key={"Invested"} className="flex gap-1">
             <span>Invested</span>
-            <div className="text-textDark/60">
-              {" "}
-              {position.totalPrice.toFixed(2)}
-            </div>
+            <div className="text-textDark/60"> {position.totalPrice.toFixed(2)}</div>
           </div>,
         ],
         second: [
@@ -193,12 +175,7 @@ export default function DefaultComonent() {
             <span>LTP</span>
             <div className="text-textDark/60"> {position.LTP}</div>
           </div>,
-          <div
-            key={"PriceChangePercent"}
-            className={getColor(
-              Number(Livestream[position.name]?.PriceChangePercent),
-            )}
-          >
+          <div key={"PriceChangePercent"} className={getColor(Number(Livestream[position.name]?.PriceChangePercent))}>
             ({Livestream[position.name]?.PriceChangePercent}%)
           </div>,
         ],
@@ -209,9 +186,7 @@ export default function DefaultComonent() {
   return (
     <div className=" w-full p-4">
       <div className="flex py-2">
-        <h1 className="text-xl opacity-80">
-          Positions({Positions ? Positions.length : 0})
-        </h1>
+        <h1 className="text-xl opacity-80">Positions({Positions ? Positions.length : 0})</h1>
       </div>
       <div className="hidden lg:block">
         <DataGrid<PositionRow>
