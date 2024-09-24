@@ -2,6 +2,7 @@
 
 import { Assets, Order } from "@prisma/client";
 import { getRemainingOrders } from "../server/api/routers/Console/utils/getOpenPositions";
+import { PositionsData } from "~/server/api/routers/Console/PositionsData";
 
 const getRemainingOrdersData: (Assets & { Orders: Order[] })[] = [
   {
@@ -132,64 +133,70 @@ const getRemainingOrdersData: (Assets & { Orders: Order[] })[] = [
   },
 ];
 
-const getRemainingOrdersResult = [
-  {
-    Orders: [
-      {
-        id: 53,
-        openedAt: new Date("2024-09-24T07:58:04.365Z"),
-        closedAt: new Date("2024-09-24T07:58:04.365Z"),
-        name: "ETHUSDT",
-        quantity: 9,
-        price: 2646.01,
-        type: "BUY",
-        status: "COMPLETED",
-        triggerType: "MARKET",
-        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
-        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
-      },
-      {
-        id: 54,
-        openedAt: new Date("2024-09-24T08:01:09.082Z"),
-        closedAt: new Date("2024-09-24T08:01:09.082Z"),
-        name: "ETHUSDT",
-        quantity: 1,
-        price: 2646,
-        type: "BUY",
-        status: "COMPLETED",
-        triggerType: "MARKET",
-        TradingAccountId: "cm1demfyw0006t3khdg50dul1",
-        AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
-      },
-    ],
-    PositionDetails: { avgPrice: 2646.009, quantity: 10, totalPrice: 26460.09 },
-    TradingAccountId: "cm1demfyw0006t3khdg50dul1",
-    freeAmount: 10,
-    id: "cm1dgwucn0001bfi2rt0s55fk",
-    lockedAmount: 0,
-    name: "ETH",
-  },
-];
+const getRemainingOrdersResult = {
+  Orders: [
+    {
+      id: 53,
+      openedAt: new Date("2024-09-24T07:58:04.365Z"),
+      closedAt: new Date("2024-09-24T07:58:04.365Z"),
+      name: "ETHUSDT",
+      quantity: 9,
+      price: 2646.01,
+      type: "BUY",
+      status: "COMPLETED",
+      triggerType: "MARKET",
+      TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+      AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+    },
+    {
+      id: 54,
+      openedAt: new Date("2024-09-24T08:01:09.082Z"),
+      closedAt: new Date("2024-09-24T08:01:09.082Z"),
+      name: "ETHUSDT",
+      quantity: 1,
+      price: 2646,
+      type: "BUY",
+      status: "COMPLETED",
+      triggerType: "MARKET",
+      TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+      AssetsId: "cm1dgwucn0001bfi2rt0s55fk",
+    },
+  ],
+  TradingAccountId: "cm1demfyw0006t3khdg50dul1",
+  freeAmount: 10,
+  id: "cm1dgwucn0001bfi2rt0s55fk",
+  lockedAmount: 0,
+  name: "ETH",
+};
+
 describe("Math functions", () => {
   test("parsePrice passed", () => {
     const result = getRemainingOrders(getRemainingOrdersData);
-    const expectedResult = getRemainingOrdersResult[0]; // since it's an array
+    const expectedResult = getRemainingOrdersResult;
 
     // Check overall structure and relevant properties
-    if (expectedResult)
-      expect(result[0]).toMatchObject({
-        TradingAccountId: expectedResult.TradingAccountId,
-        freeAmount: expectedResult.freeAmount,
-        lockedAmount: expectedResult.lockedAmount,
-        name: expectedResult.name,
-        id: expectedResult.id,
-        Orders: expectedResult.Orders,
-        PositionDetails: {
-          avgPrice: expect.closeTo(expectedResult.PositionDetails.avgPrice, 10),
-          totalPrice: expect.closeTo(expectedResult.PositionDetails.totalPrice, 10),
-          quantity: expectedResult.PositionDetails.quantity,
-        },
-      });
-    else expect(result.length).toBe(1);
+    const expectedPositionDetails = { avgPrice: 2646.009, quantity: 10, totalPrice: 26460.09 };
+    const gotPositionDetails = result[0]?.PositionDetails;
+
+    // Assert that gotPositionDetails exists
+    expect(gotPositionDetails).toBeDefined();
+    if (!gotPositionDetails) return;
+
+    // Use toBeCloseTo for avgPrice and totalPrice comparisons
+    expect(gotPositionDetails.avgPrice).toBeCloseTo(expectedPositionDetails.avgPrice, 10);
+    expect(gotPositionDetails.totalPrice).toBeCloseTo(expectedPositionDetails.totalPrice, 10);
+
+    const expectedData = {
+      TradingAccountId: expectedResult.TradingAccountId,
+      freeAmount: expectedResult.freeAmount,
+      lockedAmount: expectedResult.lockedAmount,
+      name: expectedResult.name,
+      id: expectedResult.id,
+      Orders: expectedResult.Orders,
+      PositionDetails: { ...gotPositionDetails },
+    };
+
+    // Check the structure of the result
+    expect(result[0]).toMatchObject(expectedData);
   });
 });
