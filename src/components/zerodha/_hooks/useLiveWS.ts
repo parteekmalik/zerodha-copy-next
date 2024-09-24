@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { Options } from "react-use-websocket";
 import useWS from "./useWS";
-import { TsymbolTrade } from "../_redux/storeComponent";
-import { Twsbinance } from "../_redux/middlewares/Bnance/socket";
+import { type TsymbolTrade } from "../_redux/storeComponent";
+import { type Twsbinance } from "../_redux/middlewares/Bnance/socket";
 
 let subscriptions: string[] = [];
 
@@ -10,12 +10,7 @@ const useLiveWS = (
   url: string,
   opt: Options,
   processMessages?: (data: TsymbolTrade) => void,
-): [
-  (payload: Twsbinance) => void,
-  string[],
-  MessageEvent<string> | null,
-  string,
-] => {
+): [(payload: Twsbinance) => void, string[], MessageEvent<string> | null, string] => {
   //   const socketRef = useRef<WebSocket>(new WebSocket(url)); // Changed to allow initialization to
   const [sendMessage, connectionStatus, lastMessage] = useWS(url, {
     ...opt,
@@ -35,9 +30,7 @@ const useLiveWS = (
       }
     },
     onMessage: (event) => {
-      const data = JSON.parse(event.data as string) as
-        | TsymbolTrade
-        | { result: string[]; id: number };
+      const data = JSON.parse(event.data as string) as TsymbolTrade | { result: string[]; id: number };
       if ("id" in data) {
         if (data.id === 3) {
           subscriptions = data.result;

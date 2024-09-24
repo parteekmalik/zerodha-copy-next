@@ -1,18 +1,19 @@
 "use client";
-import { ReactNode, useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 import { twMerge } from "tailwind-merge";
 import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
 import {
-  coloredColsType,
-  FundsRow,
-  GridColDef,
+  type coloredColsType,
+  type FundsRow,
+  type GridColDef,
   TableDefaultstyles,
 } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import DataGrid from "~/components/zerodha/Table/table";
 import { api } from "~/trpc/react";
 
 function Funds() {
-  const data = api.getAccountInfo.getAllBalance.useQuery().data ?? [];
+  const { data: queryData } = api.getAccountInfo.getAllBalance.useQuery();
+  const data = useMemo(() => queryData ?? [], [queryData]);
   const FundsList: FundsRow[] = useMemo(() => {
     return data.map((item) => ({
       ...item,
@@ -45,13 +46,7 @@ const colorColsData = [
     name: "widrawal",
     fn: (value: unknown, styles: string) => {
       const text = value as string;
-      const component = (
-        <FadedColoredCell
-          text={text}
-          bgColor={"bg-redApp"}
-          textColor={"text-redApp"}
-        />
-      );
+      const component = <FadedColoredCell text={text} bgColor={"bg-redApp"} textColor={"text-redApp"} />;
       const restult: [ReactNode, string] = [component, twMerge(styles, "")];
       return restult;
     },
@@ -60,13 +55,7 @@ const colorColsData = [
     name: "deposit",
     fn: (value: unknown, styles: string) => {
       const text = value as string;
-      const component = (
-        <FadedColoredCell
-          text={text}
-          bgColor={"bg-blueApp "}
-          textColor={"text-blueApp "}
-        />
-      );
+      const component = <FadedColoredCell text={text} bgColor={"bg-blueApp "} textColor={"text-blueApp "} />;
       const restult: [ReactNode, string] = [component, twMerge(styles, "")];
       return restult;
     },

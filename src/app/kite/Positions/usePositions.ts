@@ -1,10 +1,9 @@
 import { useMemo } from "react";
-import { GridColDef, PositionRow } from "~/components/zerodha/Table/defaultStylexAndTypes";
-import { formatDate, modifyNumber } from "../utils";
-import { api } from "~/trpc/react";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
-import { $Enums } from "@prisma/client";
+import { type GridColDef, type PositionRow } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import { sumByKey } from "~/lib/zerodha/utils";
+import { api } from "~/trpc/react";
+import { modifyNumber } from "../utils";
 
 export type TPositionsList = {
   id: string;

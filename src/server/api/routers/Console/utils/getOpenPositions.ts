@@ -1,5 +1,5 @@
-import { Assets, Order, Prisma, PrismaClient } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
+import { type Assets, type Order, type Prisma, type PrismaClient } from "@prisma/client";
+import { type DefaultArgs } from "@prisma/client/runtime/library";
 import { sumByKey } from "../../../../../lib/zerodha/utils";
 
 export default async function getOpenPositions({

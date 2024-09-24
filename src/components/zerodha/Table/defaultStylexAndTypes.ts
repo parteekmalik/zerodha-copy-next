@@ -1,5 +1,5 @@
-import { $Enums } from "@prisma/client";
-import { ReactNode } from "react";
+import { type $Enums } from "@prisma/client";
+import { type ReactNode } from "react";
 
 export interface DataGridStyles {
   table?: { className?: string };

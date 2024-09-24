@@ -19,9 +19,7 @@ export const PositionsData = createTRPCRouter({
       },
     });
     return {
-      usdtBalance: (usdtBalance
-        ? usdtBalance.freeAmount + usdtBalance.lockedAmount
-        : 0).toFixed(2),
+      usdtBalance: (usdtBalance ? usdtBalance.freeAmount + usdtBalance.lockedAmount : 0).toFixed(2),
       ...(await getCurrentPositionDetails(
         (await getOpenPositions({ db: ctx.db, tradingAccountId })).map((i) => ({
           ...i.PositionDetails,

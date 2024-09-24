@@ -1,6 +1,6 @@
 // toat-context.ts
 import { createContext, useContext } from "react";
-import { messageType } from "./toast";
+import { type messageType } from "./toast";
 
 type ToastContextValue = {
   open: (message: messageType) => void;

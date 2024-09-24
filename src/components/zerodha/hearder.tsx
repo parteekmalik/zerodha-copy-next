@@ -9,7 +9,7 @@ import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { getColor } from "~/app/kite/utils";
-import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
+import { type AppDispatch, type RootState } from "~/components/zerodha/_redux/store";
 import InfoHover from "../ui/infoHover";
 import { useBackendWS } from "./_contexts/backendWS/backendWSContextComponent";
 import { useBinanceLiveData } from "./_contexts/LiveData/useBinanceLiveData";
@@ -32,7 +32,7 @@ function Header() {
         subsription: [headerPin.Pin0, headerPin.Pin1],
       }),
     );
-  }, [headerPin]);
+  }, [headerPin, dispatch]);
 
   const PinData = useMemo(
     () => ({

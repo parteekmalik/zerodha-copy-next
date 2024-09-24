@@ -3,13 +3,12 @@ import Draggable from "react-draggable";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
-import { z } from "zod";
+import { type z } from "zod";
 import { updateFormData } from "~/components/zerodha/_redux/Slices/FormData";
-import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
-import { api } from "~/trpc/react";
+import { type AppDispatch, type RootState } from "~/components/zerodha/_redux/store";
 import { websocketService } from "../_contexts/LiveData/BinanceWSContextComponent";
 import useCreateOrderApi from "../_hooks/API/useCreateOrderApi";
-import { TFormSchema } from "./FormSchema";
+import { type TFormSchema } from "./FormSchema";
 import InputDiv from "./InputDiv";
 import { OrderTypeDiv } from "./OrderTypeDiv";
 
@@ -31,7 +30,6 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
     handleSubmit,
     setValue, 
     watch,reset,
-    formState: { errors },
   } = useForm<{isMarketOrder: boolean; } & z.output<TFormSchema>>({
     defaultValues: {
       price: 0,
@@ -47,14 +45,13 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
   const style = watch().orderType === "BUY" ? { bgcolor: "bg-blueApp", textcolor: "text-blueApp", bordercolor: "border-b-blueApp" } : { bgcolor: "bg-orangeApp", textcolor: "text-orangeApp", bordercolor: "border-b-orangeApp" };
 
   const dispatch = useDispatch<AppDispatch>();
-  const APIutils = api.useUtils();
 
   const FormData = useSelector((state: RootState) => state.FormData);
 
   useEffect(() => {
     setValue("symbolName", FormData.symbol);
     setValue("orderType", FormData.type);
-  }, [FormData]);
+  }, [FormData, setValue]);
 
   const { CreateOrderAPI } = useCreateOrderApi();
 

@@ -3,8 +3,8 @@ import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { getColor } from "~/app/kite/utils";
 import {
-  ChangeState,
-  TsymbolLive,
+  type ChangeState,
+  type TsymbolLive,
 } from "../../../../components/zerodha/_contexts/LiveData/BinanceWS";
 import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
 
@@ -27,7 +27,7 @@ function Item({
       dragListener={false}
       dragControls={dragControls}
       value={symbolName}
-      onDragEnd={(e) => {
+      onDragEnd={() => {
         submitUpdate();
       }}
       className="relative touch-none bg-background"

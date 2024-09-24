@@ -4,14 +4,15 @@ import { useDispatch } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
 import useCreateOrderApi from "~/components/zerodha/_hooks/API/useCreateOrderApi";
+import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
 import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
-import { AppDispatch } from "~/components/zerodha/_redux/store";
+import { type AppDispatch } from "~/components/zerodha/_redux/store";
 import { FormSchema } from "~/components/zerodha/OrderForm/FormSchema";
-import { PositionRow, TableDefaultstyles } from "~/components/zerodha/Table/defaultStylexAndTypes";
-import MobileTable, { MobileRowType } from "~/components/zerodha/Table/mobileTable/MobileTable";
+import { type PositionRow, TableDefaultstyles } from "~/components/zerodha/Table/defaultStylexAndTypes";
+import MobileTable from "~/components/zerodha/Table/mobileTable/MobileTable";
 import DataGrid from "~/components/zerodha/Table/table";
 import { getColor, modifyNumber } from "../utils";
-import usePositions, { TPositionsList } from "./usePositions";
+import usePositions, { type TPositionsList } from "./usePositions";
 
 export default function DefaultComonent() {
   const { Positions, PositionsGridColumn, PositionsList, PositionsTotal } = usePositions();
@@ -33,7 +34,7 @@ export default function DefaultComonent() {
         }),
       );
     };
-  }, [Positions]);
+  }, [Positions, dispatch]);
 
   const { CreateOrderAPI } = useCreateOrderApi();
 
@@ -53,16 +54,15 @@ export default function DefaultComonent() {
     });
     CreateOrderAPI.mutate(orders);
   };
-  const MobileTableData = mobileData({ PositionsList });
-
+  const MobileTableData = MobileData({ PositionsList });
+  const { isDeviceCompatible } = useDeviceType();
   if (!PositionsList) return null;
   return (
     <div className=" w-full p-4">
       <div className="flex py-2">
         <h1 className="text-xl opacity-80">Positions({Positions ? Positions.length : 0})</h1>
       </div>
-      {}
-      <div className="hidden lg:block">
+      {isDeviceCompatible("lg") ? (
         <DataGrid<PositionRow>
           rows={PositionsList}
           columns={PositionsGridColumn}
@@ -75,8 +75,9 @@ export default function DefaultComonent() {
           footer={PositionsTotal}
           styles={TableDefaultstyles}
         />
-      </div>
-      <MobileTable orders={MobileTableData as MobileRowType} />
+      ) : (
+        <MobileTable orders={MobileTableData} />
+      )}
     </div>
   );
 }
@@ -85,7 +86,7 @@ const positiveAndColor = (value: unknown, styles: string) => {
   const result: [string, string] = [String(newValue), twMerge(styles, getColor(newValue))];
   return result;
 };
-function mobileData({ PositionsList }: { PositionsList: TPositionsList[] }) {
+function MobileData({ PositionsList }: { PositionsList: TPositionsList[] }) {
   const { Livestream } = useBinanceLiveData();
 
   return PositionsList.map((position) => {

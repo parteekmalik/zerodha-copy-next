@@ -1,18 +1,8 @@
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerTitle
-} from "~/components/ui/drawer"; // Assuming these components are pre-configured in your project
+import { Drawer, DrawerContent, DrawerTitle } from "~/components/ui/drawer"; // Assuming these components are pre-configured in your project
 import useDeviceType from "../../_hooks/useDeviceType";
-import { RootState } from "../../_redux/store";
+import { type RootState } from "../../_redux/store";
 import TempOrderForm from "../../OrderForm/orderForm";
 
 // Define the DrawerContext type
@@ -25,9 +15,7 @@ interface DrawerContextType {
 const DrawerContext = createContext<DrawerContextType | undefined>(undefined);
 
 // DrawerProvider component that manages state and content
-export const DrawerProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const DrawerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [drawerContent, setDrawerContent] = useState<ReactNode>(null);
   const [drawerTitle, setDrawerTitle] = useState<string | undefined>(undefined);
@@ -35,7 +23,7 @@ export const DrawerProvider: React.FC<{ children: ReactNode }> = ({
   // Function to open the drawer with content and an optional title
   const openDrawer = (content: ReactNode, title?: string) => {
     setDrawerContent(content);
-    setDrawerTitle(title ?? ""); // Set the title if provided
+    setDrawerTitle(title);
     setIsOpen(true);
   };
 
@@ -54,7 +42,7 @@ export const DrawerProvider: React.FC<{ children: ReactNode }> = ({
       Array.from(inputs).forEach((input) => input.blur());
     }, 0);
   }, [FormData]);
-  const {DeviceType,isDeviceCompatible}=useDeviceType();
+  const { isDeviceCompatible } = useDeviceType();
   return (
     <DrawerContext.Provider value={{ openDrawer, closeDrawer }}>
       {children}
@@ -62,11 +50,9 @@ export const DrawerProvider: React.FC<{ children: ReactNode }> = ({
       {/* Drawer rendering */}
       {isDeviceCompatible("lg") ? null : (
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
-          <DrawerTitle></DrawerTitle>
+          <DrawerTitle>{drawerTitle && <div>{drawerTitle}</div>}</DrawerTitle>
           <DrawerContent>
-            <div className="flex flex-col">
-              {drawerContent ?? <TempOrderForm isdraggable={false} />}
-            </div>
+            <div className="flex flex-col">{drawerContent ?? <TempOrderForm isdraggable={false} />}</div>
           </DrawerContent>
         </Drawer>
       )}

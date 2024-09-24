@@ -1,16 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 
 import {
-  TFormDataType,
+  type TFormDataType,
   updateFormData,
 } from "~/components/zerodha/_redux/Slices/FormData";
 import { updateHeaderPin } from "~/components/zerodha/_redux/Slices/headerPin";
 
 import Link from "next/link";
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
-import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
+import { type AppDispatch, type RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
-import { TsymbolLive } from "../../../../components/zerodha/_contexts/LiveData/BinanceWS";
+import { type TsymbolLive } from "../../../../components/zerodha/_contexts/LiveData/BinanceWS";
 import { twMerge } from "tailwind-merge";
 type IdataContextActions =
   | {

@@ -1,10 +1,7 @@
-import { Dispatch, Middleware, MiddlewareAPI, UnknownAction } from "redux";
+import { type Dispatch, type Middleware, type MiddlewareAPI, type UnknownAction } from "redux";
 import { websocketService } from "~/components/zerodha/_contexts/LiveData/BinanceWSContextComponent";
-import {
-  updateBinanceWSStats,
-  updateBinanceWSSubsriptions,
-} from "../../Slices/BinanceWSStats";
-import { RootState } from "../../store";
+import { updateBinanceWSStats, updateBinanceWSSubsriptions } from "../../Slices/BinanceWSStats";
+import { type RootState } from "../../store";
 
 export type TsymbolTrade = {
   e: string;
@@ -48,31 +45,24 @@ function socketSend(socket: WebSocket, payload: Twsbinance) {
 const setupSocket = (url: string) => {
   const socket: WebSocket = new WebSocket(url);
   let attachActions = false;
-  const onClose =
-    (store: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) => () => {
-      store.dispatch(updateBinanceWSStats(false));
-    };
-  const onOpen =
-    (store: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) => () => {
-      console.log("redux-middleware connected websocket to binance");
-      store.dispatch(updateBinanceWSStats(true));
-    };
-  const onMessage =
-    (store: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) =>
-    (event: { data: string }) => {
-      const data = JSON.parse(event.data) as
-        | TsymbolTrade
-        | { result: string[]; id: number };
-      if ("result" in data) {
-        if (data.result)
-          store.dispatch(updateBinanceWSSubsriptions(data.result));
-      } else {
-        websocketService.reducer({
-          action: "updateData",
-          payload: { curPrice: data.p, symbol: data.s },
-        });
-      }
-    };
+  const onClose = (store: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) => () => {
+    store.dispatch(updateBinanceWSStats(false));
+  };
+  const onOpen = (store: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) => () => {
+    console.log("redux-middleware connected websocket to binance");
+    store.dispatch(updateBinanceWSStats(true));
+  };
+  const onMessage = (store: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) => (event: { data: string }) => {
+    const data = JSON.parse(event.data) as TsymbolTrade | { result: string[]; id: number };
+    if ("result" in data) {
+      if (data.result) store.dispatch(updateBinanceWSSubsriptions(data.result));
+    } else {
+      websocketService.reducer({
+        action: "updateData",
+        payload: { curPrice: data.p, symbol: data.s },
+      });
+    }
+  };
   const subAndUnsubTimeOut: {
     sub: NodeJS.Timeout | null;
     unsub: NodeJS.Timeout | null;
@@ -83,7 +73,7 @@ const setupSocket = (url: string) => {
     list: null,
   };
   const subUnsubMddleware: Middleware = (store) => (next) => (action) => {
-    const { type, payload } = JSON.parse(JSON.stringify(action)) as {
+    const { type } = JSON.parse(JSON.stringify(action)) as {
       type: string;
       payload: unknown;
     };
@@ -98,9 +88,7 @@ const setupSocket = (url: string) => {
     if (type === "BinanceWSStatsType/updateSeprateSubscriptions") {
       const newState = store.getState() as RootState;
       const prevSubs = newState.BinanceWSStats.subsciptions;
-      const newSubs = Object.values(
-        newState.BinanceWSStats.seprateSubscriptions,
-      )
+      const newSubs = Object.values(newState.BinanceWSStats.seprateSubscriptions)
         .flat()
         .filter((i) => i !== "")
         .map((i) => SymbolsConvertor(i));
@@ -112,28 +100,19 @@ const setupSocket = (url: string) => {
         id: 1,
       };
       if (subAndUnsubTimeOut.sub) clearTimeout(subAndUnsubTimeOut.sub);
-      subAndUnsubTimeOut.sub = setTimeout(
-        () => socketSend(socket, subMsg),
-        1000,
-      );
+      subAndUnsubTimeOut.sub = setTimeout(() => socketSend(socket, subMsg), 1000);
       const unsubMsg: Twsbinance = {
         method: "UNSUBSCRIBE",
         params: prevSubs.filter((i) => !common.includes(i)),
         id: 2,
       };
       if (subAndUnsubTimeOut.unsub) clearTimeout(subAndUnsubTimeOut.unsub);
-      subAndUnsubTimeOut.unsub = setTimeout(
-        () => socketSend(socket, unsubMsg),
-        1500,
-      );
+      subAndUnsubTimeOut.unsub = setTimeout(() => socketSend(socket, unsubMsg), 1500);
 
       if (unsubMsg.params.length || subMsg.params.length) {
         if (subAndUnsubTimeOut.list) clearTimeout(subAndUnsubTimeOut.list);
         subAndUnsubTimeOut.list = setTimeout(() => {
-          sendWSBinanceMessage(
-            socket,
-            JSON.stringify({ method: "LIST_SUBSCRIPTIONS", id: 3 }),
-          );
+          sendWSBinanceMessage(socket, JSON.stringify({ method: "LIST_SUBSCRIPTIONS", id: 3 }));
         }, 2000);
       }
     }
@@ -144,7 +123,7 @@ const setupSocket = (url: string) => {
 function SymbolsConvertor(symbol: string) {
   symbol = symbol.toLowerCase();
   let [first] = symbol.split("@");
-  const [_, second] = symbol.split("@");
+  const [, second] = symbol.split("@");
   if (first && !first.endsWith("usdt")) first += "usdt";
   return (first ?? "") + (second ?? "@trade");
 }

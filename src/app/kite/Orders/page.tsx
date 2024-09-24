@@ -1,19 +1,19 @@
 "use client";
-import { $Enums, Order } from "@prisma/client";
-import { ReactNode } from "react";
+import { type $Enums } from "@prisma/client";
+import { type ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import useCancelOrders from "~/components/zerodha/_hooks/API/usecancelOrders";
+import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
 import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
 import {
-  coloredColsType,
-  OrderClosedRow,
-  OrderOpenRow,
+  type coloredColsType,
+  type OrderClosedRow,
+  type OrderOpenRow,
   TableDefaultstyles,
 } from "~/components/zerodha/Table/defaultStylexAndTypes";
-import MobileTable, { MobileRowType } from "~/components/zerodha/Table/mobileTable/MobileTable";
+import MobileTable, { type MobileRowType } from "~/components/zerodha/Table/mobileTable/MobileTable";
 import DataGrid from "~/components/zerodha/Table/table";
-import useOrder, { TclosedOrder, TopenOrders } from "./useOrder";
-import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
+import useOrder, { type TclosedOrder, type TopenOrders } from "./useOrder";
 
 function OrderPage() {
   const { closedOrders, closedOrdersColumn, openOrders, openOrdersColumn, orders } = useOrder();
@@ -60,7 +60,7 @@ function OrderPage() {
           styles={TableDefaultstyles}
         />
       ) : (
-        <MobileTable orders={closedOrderMobile as MobileRowType} />
+        <MobileTable orders={closedOrderMobile } />
       )}
     </div>
   );

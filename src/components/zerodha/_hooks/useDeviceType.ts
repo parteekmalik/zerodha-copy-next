@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
-import { RootState } from "../_redux/store";
-import { TDeviceTypeType } from "../_redux/Slices/DeviceType";
+import { type RootState } from "../_redux/store";
+import { type TDeviceTypeType } from "../_redux/Slices/DeviceType";
 const deviceSizeMap: Record<TDeviceTypeType, number> = {
   sm: 0,
   md: 1,

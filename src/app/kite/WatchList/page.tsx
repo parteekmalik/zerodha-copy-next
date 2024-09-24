@@ -2,7 +2,7 @@
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
-import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
+import { type AppDispatch, type RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
 import { shadowBox } from "../../../components/zerodha/tcss";
 import SymbolInWL from "./_drag_drop_wishlist/symbolInWL";
@@ -34,16 +34,13 @@ function WatchList() {
   });
   const submitUpdate = useCallback(
     (index: number) => {
-      console.log("UPDATING WATCHLIST -> ", search, index);
+      console.log("UPDATING WATCHLIST -> ", search.matchingSymbol, index);
       updateWatchListAPI.mutate({
-        name: [
-          ...(watchList.List[watchList.ListNo] ?? []),
-          search.matchingSymbol[index],
-        ].join(" "),
+        name: [...(watchList.List[watchList.ListNo] ?? []), search.matchingSymbol[index]].join(" "),
         row: watchList.ListNo,
       });
     },
-    [search.matchingSymbol, watchList],
+    [search.matchingSymbol, watchList, updateWatchListAPI],
   );
 
   return (
@@ -59,18 +56,9 @@ function WatchList() {
         submitUpdate={submitUpdate}
         setSearch={setSearch}
       />
-      <div
-        className="relative flex h-full w-full flex-col"
-        style={{ maxHeight: "calc(100% - 100px)" }}
-      >
-        <div
-          className=" flex  h-full  flex-col overflow-x-hidden overflow-y-scroll"
-          style={{ scrollbarWidth: "thin" }}
-        >
-            <SymbolInWL
-              list={watchList.List[watchList.ListNo] ?? []}
-              setSearch={setSearch}
-            />
+      <div className="relative flex h-full w-full flex-col" style={{ maxHeight: "calc(100% - 100px)" }}>
+        <div className=" flex  h-full  flex-col overflow-x-hidden overflow-y-scroll" style={{ scrollbarWidth: "thin" }}>
+          <SymbolInWL list={watchList.List[watchList.ListNo] ?? []} setSearch={setSearch} />
         </div>
       </div>
       <WatchlistBittom />

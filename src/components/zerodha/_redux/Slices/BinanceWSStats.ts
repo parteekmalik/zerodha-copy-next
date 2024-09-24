@@ -1,9 +1,9 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export type TBinanceWSStatsType = {
   isConnected: boolean;
   subsciptions: string[];
-  seprateSubscriptions: Record<string,string[]>;
+  seprateSubscriptions: Record<string, string[]>;
 };
 
 const initialState: TBinanceWSStatsType = {
@@ -21,21 +21,14 @@ const BinanceWSStatsSlice = createSlice({
     updateBinanceWSSubsriptions: (state, action: PayloadAction<string[]>) => {
       state.subsciptions = action.payload;
     },
-    updateSeprateSubscriptions: (
-      state,
-      action: PayloadAction<{ name: string; subsription: string[] }>,
-    ) => {
-      state.seprateSubscriptions[action.payload.name] =
-        action.payload.subsription;
+    updateSeprateSubscriptions: (state, action: PayloadAction<{ name: string; subsription: string[] }>) => {
+      state.seprateSubscriptions[action.payload.name] = action.payload.subsription;
       return state;
     },
   },
 });
 
-export const {
-  updateBinanceWSStats,
-  updateBinanceWSSubsriptions,
-  updateSeprateSubscriptions,
-} = BinanceWSStatsSlice.actions;
+export const { updateBinanceWSStats, updateBinanceWSSubsriptions, updateSeprateSubscriptions } =
+  BinanceWSStatsSlice.actions;
 
 export default BinanceWSStatsSlice.reducer;

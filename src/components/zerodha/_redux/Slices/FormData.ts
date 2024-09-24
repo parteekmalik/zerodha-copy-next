@@ -1,5 +1,5 @@
-import { Order } from "@prisma/client";
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { type Order } from "@prisma/client";
+import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export type TFormDataType = {
   isvisible: boolean;
