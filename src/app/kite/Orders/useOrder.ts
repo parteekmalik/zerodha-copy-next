@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { GridColDef } from "~/components/zerodha/Table/defaultStylexAndTypes";
+import { type GridColDef } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import { formatDate } from "../utils";
 import { api } from "~/trpc/react";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
-import { $Enums } from "@prisma/client";
+import { type $Enums } from "@prisma/client";
 
 export type TclosedOrder = {
   name: string;
