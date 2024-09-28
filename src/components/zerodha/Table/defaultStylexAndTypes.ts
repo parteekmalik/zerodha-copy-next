@@ -1,4 +1,4 @@
-import { type $Enums } from "@prisma/client";
+import { type Order, type $Enums } from "@prisma/client";
 import { type ReactNode } from "react";
 
 export interface DataGridStyles {
@@ -75,6 +75,7 @@ export type OrderClosedRow = {
   type: $Enums.OrderType;
   status: $Enums.OrderStatus;
   triggerType: $Enums.EtriggerType;
+  raw: Order;
 };
 
 export interface OrderOpenRow extends OrderClosedRow {
@@ -99,5 +100,5 @@ export interface DataGridProps<T extends RowType> {
 
 export type coloredColsType<T> = {
   name: keyof T;
-  fn: (value: unknown, styles: string) => [string | ReactNode, string];
+  fn: (row: T, key: keyof T, styles: string) => [string | ReactNode, string];
 }[];

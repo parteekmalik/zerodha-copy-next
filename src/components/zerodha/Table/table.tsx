@@ -3,14 +3,7 @@ import { getColor, modifyNumber } from "~/app/kite/utils";
 import { type DataGridProps, type RowType, TableDefaultstyles } from "./defaultStylexAndTypes";
 
 // Custom DataGrid component
-const DataGrid = <T extends RowType>({
-  rows,
-  columns,
-  selected,
-  footer,
-  coloredCols = [],
-  styles = TableDefaultstyles,
-}: DataGridProps<T>) => {
+const DataGrid = <T extends RowType>({ rows, columns, selected, footer, coloredCols = [], styles = TableDefaultstyles }: DataGridProps<T>) => {
   const [selectedIds, setSelectedIds] = React.useState<(string | number)[]>([]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>, id: number | string) => {
@@ -38,12 +31,7 @@ const DataGrid = <T extends RowType>({
         <tr className={headStyles?.row}>
           {selected && (
             <th>
-              <input
-                className={checkboxStyles}
-                onChange={(e) => onChange(e, "all")}
-                type="checkbox"
-                checked={selectedIds.length === rows.length}
-              />
+              <input className={checkboxStyles} onChange={(e) => onChange(e, "all")} type="checkbox" checked={selectedIds.length === rows.length} />
             </th>
           )}
           {columns.map((item, i) => (
@@ -65,7 +53,7 @@ const DataGrid = <T extends RowType>({
               // Declare variables correctly inside map
               const coloredColsItem = coloredCols.find((it) => it.name === col.field);
               const [cellContent, cellAdditionalStyles] = coloredColsItem
-                ? coloredColsItem.fn(row[col.field], bodyStyles?.cell ?? "")
+                ? coloredColsItem.fn(row, col.field, bodyStyles?.cell ?? "")
                 : [String(row[col.field]), bodyStyles?.cell];
 
               return (
@@ -96,9 +84,7 @@ const DataGrid = <T extends RowType>({
           {footer && (
             <>
               <td className={bodyStyles?.cell}>{footer.LTP}</td>
-              <td className={bodyStyles?.cell + ` ${getColor(Number(footer["P&L"]))}`}>
-                {modifyNumber(footer["P&L"])}
-              </td>
+              <td className={bodyStyles?.cell + ` ${getColor(Number(footer["P&L"]))}`}>{modifyNumber(footer["P&L"])}</td>
             </>
           )}
         </tr>

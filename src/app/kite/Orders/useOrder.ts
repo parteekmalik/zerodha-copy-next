@@ -46,6 +46,7 @@ export default function useOrder() {
                 type,
                 status,
                 triggerType,
+                raw: it,
               };
             })
         : [],
@@ -68,6 +69,7 @@ export default function useOrder() {
                 type,
                 status,
                 triggerType,
+                raw: it,
               };
             })
         : [],

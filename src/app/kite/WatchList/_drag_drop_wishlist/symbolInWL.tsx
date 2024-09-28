@@ -1,11 +1,5 @@
 import { Reorder } from "framer-motion";
-import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
 import { type AppDispatch, type RootState } from "~/components/zerodha/_redux/store";
@@ -43,10 +37,8 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     setLocalList(list);
-    dispatch(
-      updateSeprateSubscriptions({ name: "watchList", subsription: list }),
-    );
-  }, [list,dispatch,setLocalList]);
+    dispatch(updateSeprateSubscriptions({ name: "watchList", subsription: list }));
+  }, [list, dispatch, setLocalList]);
 
   const listNo = useSelector((state: RootState) => state.watchList.ListNo);
 
@@ -61,17 +53,12 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
         name: LocalList.join(" "),
         row: listNo,
       }),
-    [listNo, LocalList,updateWatchListAPI],
+    [listNo, LocalList, updateWatchListAPI],
   );
 
   if (LocalList.length)
     return (
-      <Reorder.Group
-        values={LocalList}
-        onReorder={(e) => setLocalList(e)}
-        axis="y"
-        dragMomentum={false}
-      >
+      <Reorder.Group values={LocalList} onReorder={(e) => setLocalList(e)} axis="y" dragMomentum={false}>
         {LocalList.map((symbol) => {
           const symbolName = symbol.toUpperCase();
           return (
@@ -89,18 +76,10 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
   else
     return (
       <div className="flex w-full  flex-col items-center justify-center ">
-        <Image
-          style={{ width: "100px", height: "100px" }}
-          src="https://kite.zerodha.com/static/images/illustrations/marketwatch.svg"
-          alt="Market Watch"
-        />
+        <Image width={100} height={100} src="https://kite.zerodha.com/static/images/illustrations/marketwatch.svg" alt="Market Watch" />
         <div className=" mb-[20px]">
-          <h2 className="text-center text-[1.225rem] text-textDark">
-            Nothing here
-          </h2>
-          <p className="text-center text-[.8125rem] text-darkGrayApp">
-            Use the search bar to add instruments.
-          </p>
+          <h2 className="text-center text-[1.225rem] text-textDark">Nothing here</h2>
+          <p className="text-center text-[.8125rem] text-darkGrayApp">Use the search bar to add instruments.</p>
         </div>
         <button
           className="cursor-pointer rounded bg-blueApp p-[10px_20px] text-[.925rem] text-white opacity-90"

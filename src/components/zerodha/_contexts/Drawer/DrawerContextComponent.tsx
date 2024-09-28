@@ -4,6 +4,8 @@ import { Drawer, DrawerContent, DrawerTitle } from "~/components/ui/drawer"; // 
 import useDeviceType from "../../_hooks/useDeviceType";
 import { type RootState } from "../../_redux/store";
 import TempOrderForm from "../../OrderForm/orderForm";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/modal";
+import { Button } from "@nextui-org/react";
 
 // Define the DrawerContext type
 interface DrawerContextType {
@@ -14,9 +16,10 @@ interface DrawerContextType {
 // Create the DrawerContext
 const DrawerContext = createContext<DrawerContextType | undefined>(undefined);
 
+type sizes = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "full";
 // DrawerProvider component that manages state and content
 export const DrawerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
   const [drawerContent, setDrawerContent] = useState<ReactNode>(null);
   const [drawerTitle, setDrawerTitle] = useState<string | undefined>(undefined);
 
@@ -24,32 +27,51 @@ export const DrawerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const openDrawer = (content: ReactNode, title?: string) => {
     setDrawerContent(content);
     setDrawerTitle(title);
-    setIsOpen(true);
+    // setIsOpen(true);
+    onOpen();
   };
 
   // Function to close the drawer
   const closeDrawer = () => {
-    setIsOpen(false);
+    // setIsOpen(false);
+    onClose();
     setDrawerContent(null);
     setDrawerTitle(undefined);
   };
   const FormData = useSelector((state: RootState) => state.FormData);
 
   useEffect(() => {
-    setIsOpen(FormData.isvisible);
+    // setIsOpen(FormData.isvisible);
     setTimeout(() => {
       const inputs = document.getElementsByTagName("input");
       Array.from(inputs).forEach((input) => input.blur());
     }, 0);
   }, [FormData]);
   const { isDeviceCompatible } = useDeviceType();
+  const { onOpenChange, isOpen, onClose, onOpen } = useDisclosure();
+  const [size, setSize] = useState<sizes>("md");
+
   return (
     <DrawerContext.Provider value={{ openDrawer, closeDrawer }}>
       {children}
 
-      {/* Drawer rendering */}
-      {isDeviceCompatible("lg") ? null : (
-        <Drawer open={isOpen} onOpenChange={setIsOpen}>
+      {isDeviceCompatible("lg") ? (
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} size={size}>
+          <ModalContent>
+            <ModalHeader className="flex flex-col gap-1">{drawerTitle}</ModalHeader>
+            <ModalBody className="h-fit w-fit">{"drawerContent"}</ModalBody>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={closeDrawer}>
+                Close
+              </Button>
+              <Button color="primary" onPress={closeDrawer}>
+                Action
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      ) : (
+        <Drawer open={isOpen} onOpenChange={onOpenChange}>
           <DrawerTitle>{drawerTitle && <div>{drawerTitle}</div>}</DrawerTitle>
           <DrawerContent>
             <div className="flex flex-col">{drawerContent ?? <TempOrderForm isdraggable={false} />}</div>

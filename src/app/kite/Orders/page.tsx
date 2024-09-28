@@ -1,16 +1,12 @@
 "use client";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { type $Enums } from "@prisma/client";
 import { type ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import useCancelOrders from "~/components/zerodha/_hooks/API/usecancelOrders";
 import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
 import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
-import {
-  type coloredColsType,
-  type OrderClosedRow,
-  type OrderOpenRow,
-  TableDefaultstyles,
-} from "~/components/zerodha/Table/defaultStylexAndTypes";
+import { type coloredColsType, type OrderClosedRow, type OrderOpenRow, TableDefaultstyles } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import MobileTable, { type MobileRowType } from "~/components/zerodha/Table/mobileTable/MobileTable";
 import DataGrid from "~/components/zerodha/Table/table";
 import useOrder, { type TclosedOrder, type TopenOrders } from "./useOrder";
@@ -28,8 +24,9 @@ function OrderPage() {
   const { closedOrderMobile, openOrderMobile } = convertIntoMobileData({ openOrders, closedOrders });
   const { isDeviceCompatible } = useDeviceType();
 
-  if (typeof orders === "string" || orders === undefined) return <>{orders}</>;
-  return (
+  return typeof orders === "string" || orders === undefined ? (
+    <div>{orders}</div>
+  ) : (
     <div className="flex  h-full w-full flex-col p-4">
       {openOrders.length ? (
         <>
@@ -40,7 +37,7 @@ function OrderPage() {
             <DataGrid<OrderOpenRow>
               rows={openOrders}
               columns={openOrdersColumn}
-              coloredCols={colorColsData as coloredColsType<OrderOpenRow>}
+              coloredCols={colorColsData}
               selected={{ handleFn, text: "cancel Orders" }}
               styles={TableDefaultstyles}
             />
@@ -53,25 +50,20 @@ function OrderPage() {
         <span className="grow text-lg text-textDark">Executed Trades ({closedOrders.length})</span>
       </div>
       {isDeviceCompatible("lg") ? (
-        <DataGrid<OrderClosedRow>
-          rows={closedOrders}
-          columns={closedOrdersColumn}
-          coloredCols={colorColsData as coloredColsType<OrderClosedRow>}
-          styles={TableDefaultstyles}
-        />
+        <DataGrid<OrderClosedRow> rows={closedOrders} columns={closedOrdersColumn} styles={TableDefaultstyles} />
       ) : (
-        <MobileTable orders={closedOrderMobile } />
+        <MobileTable orders={closedOrderMobile} />
       )}
     </div>
   );
 }
 
 export default OrderPage;
-const colorColsData = [
+const colorColsData: coloredColsType<OrderOpenRow> = [
   {
     name: "type",
-    fn: (value: unknown, styles: string) => {
-      const orderType = value as $Enums.OrderType;
+    fn: (row: OrderOpenRow, key: keyof OrderOpenRow, styles: string) => {
+      const orderType = row[key] as $Enums.OrderType;
       const component = (
         <FadedColoredCell
           text={orderType}
@@ -85,8 +77,8 @@ const colorColsData = [
   },
   {
     name: "status",
-    fn: (value: unknown, styles: string) => {
-      const orderType = value as $Enums.OrderStatus;
+    fn: (row: OrderOpenRow, key: keyof OrderOpenRow, styles: string) => {
+      const orderType = row[key] as $Enums.OrderStatus;
       const component = (
         <FadedColoredCell
           text={orderType}
@@ -98,14 +90,27 @@ const colorColsData = [
       return restult;
     },
   },
+  {
+    name: "openedAt",
+    fn: (row: OrderOpenRow, key: keyof OrderOpenRow, styles: string) => {
+      const openedAt = row[key] as string;
+      const handelClick = () => {
+        openedAt;
+      };
+      const component = (
+        <>
+          <span className="">{openedAt}</span>
+          <div className="invisible hover:cursor-pointer group-hover:visible " onClick={handelClick}>
+            <MoreHorizIcon />
+          </div>
+        </>
+      );
+      const restult: [ReactNode, string] = [component, twMerge(styles, "flex flex-row gap-2 justify-center")];
+      return restult;
+    },
+  },
 ];
-function convertIntoMobileData({
-  openOrders,
-  closedOrders,
-}: {
-  openOrders: TopenOrders[];
-  closedOrders: TclosedOrder[];
-}) {
+function convertIntoMobileData({ openOrders, closedOrders }: { openOrders: TopenOrders[]; closedOrders: TclosedOrder[] }) {
   const openOrderMobile = openOrders.map((order) => {
     return [
       {

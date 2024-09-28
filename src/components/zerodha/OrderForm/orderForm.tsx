@@ -64,10 +64,10 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
       trigerType:
         data.price === 0
           ? "MARKET"
-          : websocketService.reducer({
+          : (websocketService.reducer({
               action: "comparePrice",
               payload: { name: data.symbolName, price: data.price },
-            }) ?? "MARKET",
+            }) ?? "MARKET"),
     });
 
     reset();
@@ -84,18 +84,11 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
     <Draggable handle=".drag-handle" disabled={!isdraggable} bounds="parent">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className={twMerge(
-          "  w-full max-w-[600px] bg-background text-xs ",
-          "lg:absolute lg:bottom-0 lg:left-1/3 lg:z-50 ",
-        )}
+        className={twMerge("  w-full max-w-[600px] bg-background text-xs ", "lg:absolute lg:bottom-0 lg:left-1/3 lg:z-50 ")}
       >
-        <header
-          className={`drag-handle cursor-default rounded-[3px_3px_0px_0px]  p-[15px_20px] text-white lg:hover:cursor-move ${style.bgcolor}`}
-        >
+        <header className={`drag-handle cursor-default rounded-[3px_3px_0px_0px]  p-[15px_20px] text-white lg:hover:cursor-move ${style.bgcolor}`}>
           <div className="text-sm font-semibold">
-            {`${FormData.editOrder ? "EDIT " : ""}${watch().orderType} ${watch().symbolName.toUpperCase()}  x ${
-              watch().quantity
-            } Qty`}
+            {`${FormData.editOrder ? "EDIT " : ""}${watch().orderType} ${watch().symbolName.toUpperCase()}  x ${watch().quantity} Qty`}
           </div>
           <div></div>
         </header>
@@ -136,7 +129,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
               <InputDiv
                 className="flex w-full justify-center"
                 Type="float"
-                step={Number(`0.${"0".repeat(FormData.decimal - 1)}1`)}
+                step={Number(`0.${"0".repeat((FormData.decimal ?? 1) - 1)}1`)}
                 data={{
                   label: "Price",
                   isDisabled: watch().isMarketOrder,
@@ -161,10 +154,7 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
             <div className="flex gap-1">
               <p>Total </p>{" "}
               <div className={"" + style.textcolor}>
-                $
-                {(Number(watch().quantity) * (watch().isMarketOrder ? FormData.curPrice : watch().price)).toFixed(
-                  FormData.decimal,
-                )}
+                ${(Number(watch().quantity) * (watch().isMarketOrder ? FormData.curPrice : watch().price)).toFixed(FormData.decimal)}
               </div>
             </div>
             <div className="flex gap-1">
