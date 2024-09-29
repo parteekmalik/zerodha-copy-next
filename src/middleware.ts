@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
-  const publicPaths = ["/api/auth/signin", "/api/auth/signin/discord", "/api/auth/callback/discord"];
+  const publicPaths = ["/api/auth/signin","/api/auth/signin/discord","/api/auth/callback/discord"];
   const isPublicPath = publicPaths.includes(path);
 
   const token =
