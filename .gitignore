@@ -43,3 +43,6 @@ yarn-error.log*
 
 #db
 db.sqlite
+
+# other
+package-lock.json
