@@ -8,14 +8,18 @@ import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
 import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
 import { type AppDispatch } from "~/components/zerodha/_redux/store";
 import { FormSchema } from "~/components/zerodha/OrderForm/FormSchema";
-import { type PositionRow, TableDefaultstyles } from "~/components/zerodha/Table/defaultStylexAndTypes";
+import {
+  type PositionRow,
+  TableDefaultstyles,
+} from "~/components/zerodha/Table/defaultStylexAndTypes";
 import MobileTable from "~/components/zerodha/Table/mobileTable/MobileTable";
 import DataGrid from "~/components/zerodha/Table/table";
 import { getColor, modifyNumber } from "../utils";
 import usePositions, { type TPositionsList } from "./usePositions";
 
 export default function DefaultComonent() {
-  const { Positions, PositionsGridColumn, PositionsList, PositionsTotal } = usePositions();
+  const { Positions, PositionsGridColumn, PositionsList, PositionsTotal } =
+    usePositions();
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
@@ -23,7 +27,9 @@ export default function DefaultComonent() {
       dispatch(
         updateSeprateSubscriptions({
           name: "positions",
-          subsription: Positions.map((i) => i.name).filter((i) => i.toLowerCase() !== "usdt"),
+          subsription: Positions.map((i) => i.name).filter(
+            (i) => i.toLowerCase() !== "usdt",
+          ),
         }),
       );
     return () => {
@@ -60,7 +66,9 @@ export default function DefaultComonent() {
   return (
     <div className=" w-full p-4">
       <div className="flex py-2">
-        <h1 className="text-xl opacity-80">Positions({Positions ? Positions.length : 0})</h1>
+        <h1 className="text-xl opacity-80">
+          Positions({Positions ? Positions.length : 0})
+        </h1>
       </div>
       {isDeviceCompatible("lg") ? (
         <DataGrid<PositionRow>
@@ -81,9 +89,16 @@ export default function DefaultComonent() {
     </div>
   );
 }
-const positiveAndColor = (value: unknown, styles: string) => {
-  const newValue = Number(value);
-  const result: [string, string] = [String(newValue), twMerge(styles, getColor(newValue))];
+const positiveAndColor = (
+  row: PositionRow,
+  key: keyof PositionRow,
+  styles: string,
+) => {
+  const newValue = Number(row[key]);
+  const result: [string, string] = [
+    String(newValue),
+    twMerge(styles, getColor(newValue)),
+  ];
   return result;
 };
 function MobileData({ PositionsList }: { PositionsList: TPositionsList[] }) {
@@ -123,7 +138,10 @@ function MobileData({ PositionsList }: { PositionsList: TPositionsList[] }) {
         first: [
           <div key={"Invested"} className="flex gap-1">
             <span>Invested</span>
-            <div className="text-textDark/60"> {position.totalPrice.toFixed(2)}</div>
+            <div className="text-textDark/60">
+              {" "}
+              {position.totalPrice.toFixed(2)}
+            </div>
           </div>,
         ],
         second: [
@@ -131,7 +149,12 @@ function MobileData({ PositionsList }: { PositionsList: TPositionsList[] }) {
             <span>LTP</span>
             <div className="text-textDark/60"> {position.LTP}</div>
           </div>,
-          <div key={"PriceChangePercent"} className={getColor(Number(Livestream[position.name]?.PriceChangePercent))}>
+          <div
+            key={"PriceChangePercent"}
+            className={getColor(
+              Number(Livestream[position.name]?.PriceChangePercent),
+            )}
+          >
             ({Livestream[position.name]?.PriceChangePercent}%)
           </div>,
         ],
