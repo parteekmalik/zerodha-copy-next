@@ -4,14 +4,8 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
-  const publicPaths = [
-    "/api/auth/signin",
-    "/api/auth/signin/discord",
-    "/api/auth/callback/discord",
-    "/api/auth/signin/google",
-    "/api/auth/callback/google",
-  ];
-  const isPublicPath = publicPaths.includes(path);
+  const publicPaths: string[] = [];
+  const isPublicPath = publicPaths.includes(path) ||  path.startsWith('/api/auth/');
 
   const token =
     request.cookies.get("__Secure-next-auth.session-token")?.value ??
