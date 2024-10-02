@@ -45,8 +45,4 @@ yarn-error.log*
 db.sqlite
 
 # other
-<<<<<<< HEAD
 package-lock.json
-=======
-package-lock.json
->>>>>>> a78b60c (fix: login not working google)
