@@ -1,9 +1,19 @@
+export const calStep = (value: number) => {
+  // Default to 1 if FormData.decimal is not defined or invalid
+  const decimal = value - 1;
 
-export function searchAndSort(
-  searchTerm: string,
-  array: string[],
-  notInclude: string[],
-): string[] {
+  try {
+    // Ensure decimal is a valid number
+    if (isNaN(decimal) || decimal < 1) {
+      throw new Error(`Invalid decimal value -> ${decimal}`);
+    }
+    return Number(`0.${"0".repeat(decimal)}1`);
+  } catch (err) {
+    console.error("Error in calculating step:", err, value);
+    return 1; // Fallback value
+  }
+};
+export function searchAndSort(searchTerm: string, array: string[], notInclude: string[]): string[] {
   searchTerm = searchTerm.toUpperCase();
   const ranking: Record<number, string> = {};
   let rankinglist: string[] = [];
@@ -17,10 +27,7 @@ export function searchAndSort(
     }
   });
   Object.keys(ranking).map((key) => {
-    rankinglist = [
-      ...rankinglist,
-      ...(ranking[Number(key)]?.split(" ") ?? []).sort(),
-    ];
+    rankinglist = [...rankinglist, ...(ranking[Number(key)]?.split(" ") ?? []).sort()];
   });
   rankinglist = rankinglist.filter((item) => !notInclude.includes(item));
   return rankinglist.slice(0, 20);
@@ -69,11 +76,7 @@ export function formatDate(date: Date): string {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
-export const modifyNumber = (
-  s: string | number | undefined,
-  toFixed?: number,
-  isPositiveSign?: boolean,
-) => {
+export const modifyNumber = (s: string | number | undefined, toFixed?: number, isPositiveSign?: boolean) => {
   if (typeof s === "string") s = Number(s);
   else if (!s) s = 0;
 

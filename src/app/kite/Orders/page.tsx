@@ -3,13 +3,16 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { type $Enums } from "@prisma/client";
 import { type ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
+import InfoHover from "~/components/ui/infoHover";
 import useCancelOrders from "~/components/zerodha/_hooks/API/usecancelOrders";
 import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
 import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
 import { type coloredColsType, type OrderClosedRow, type OrderOpenRow, TableDefaultstyles } from "~/components/zerodha/Table/defaultStylexAndTypes";
-import MobileTable, { type MobileRowType } from "~/components/zerodha/Table/mobileTable/MobileTable";
+import MobileTable from "~/components/zerodha/Table/mobileTable/MobileTable";
+import OrderOptionsList from "~/components/zerodha/Table/OrderOptions";
 import DataGrid from "~/components/zerodha/Table/table";
-import useOrder, { type TclosedOrder, type TopenOrders } from "./useOrder";
+import useOrder from "./useOrder";
+import { useconvertIntoMobileData } from "./utils";
 
 function OrderPage() {
   const { closedOrders, closedOrdersColumn, openOrders, openOrdersColumn, orders } = useOrder();
@@ -21,7 +24,7 @@ function OrderPage() {
     cancelOrdersAPI.mutate({ orderids });
   };
 
-  const { closedOrderMobile, openOrderMobile } = convertIntoMobileData({ openOrders, closedOrders });
+  const { closedOrderMobile, openOrderMobile } = useconvertIntoMobileData({ openOrders, closedOrders });
   const { isDeviceCompatible } = useDeviceType();
 
   return typeof orders === "string" || orders === undefined ? (
@@ -37,12 +40,12 @@ function OrderPage() {
             <DataGrid<OrderOpenRow>
               rows={openOrders}
               columns={openOrdersColumn}
-              coloredCols={colorColsData}
+              coloredCols={colorColsDataOpen}
               selected={{ handleFn, text: "cancel Orders" }}
               styles={TableDefaultstyles}
             />
           ) : (
-            <MobileTable orders={openOrderMobile as MobileRowType} />
+            <MobileTable orders={openOrderMobile} options={{ Cancel: true, Modify: true }} />
           )}
         </>
       ) : null}
@@ -50,7 +53,7 @@ function OrderPage() {
         <span className="grow text-lg text-textDark">Executed Trades ({closedOrders.length})</span>
       </div>
       {isDeviceCompatible("lg") ? (
-        <DataGrid<OrderClosedRow> rows={closedOrders} columns={closedOrdersColumn} styles={TableDefaultstyles} />
+        <DataGrid<OrderClosedRow> rows={closedOrders} coloredCols={colorColsDataClosed} columns={closedOrdersColumn} styles={TableDefaultstyles} />
       ) : (
         <MobileTable orders={closedOrderMobile} />
       )}
@@ -59,10 +62,10 @@ function OrderPage() {
 }
 
 export default OrderPage;
-const colorColsData: coloredColsType<OrderOpenRow> = [
+const colorColsDataClosed: coloredColsType<OrderClosedRow> = [
   {
     name: "type",
-    fn: (row: OrderOpenRow, key: keyof OrderOpenRow, styles: string) => {
+    fn: (row: OrderClosedRow, key: keyof OrderClosedRow, styles: string) => {
       const orderType = row[key] as $Enums.OrderType;
       const component = (
         <FadedColoredCell
@@ -77,7 +80,7 @@ const colorColsData: coloredColsType<OrderOpenRow> = [
   },
   {
     name: "status",
-    fn: (row: OrderOpenRow, key: keyof OrderOpenRow, styles: string) => {
+    fn: (row: OrderClosedRow, key: keyof OrderClosedRow, styles: string) => {
       const orderType = row[key] as $Enums.OrderStatus;
       const component = (
         <FadedColoredCell
@@ -90,19 +93,26 @@ const colorColsData: coloredColsType<OrderOpenRow> = [
       return restult;
     },
   },
+];
+const colorColsDataOpen: coloredColsType<OrderOpenRow> = [
+  ...(colorColsDataClosed as coloredColsType<OrderOpenRow>),
   {
     name: "openedAt",
     fn: (row: OrderOpenRow, key: keyof OrderOpenRow, styles: string) => {
       const openedAt = row[key] as string;
-      const handelClick = () => {
-        openedAt;
-      };
       const component = (
         <>
           <span className="">{openedAt}</span>
-          <div className="invisible hover:cursor-pointer group-hover:visible " onClick={handelClick}>
-            <MoreHorizIcon />
-          </div>
+          <InfoHover
+            options={{ isClickEnabled: true }}
+            info={
+              <div className="invisible hover:cursor-pointer group-hover:visible ">
+                <MoreHorizIcon />
+              </div>
+            }
+          >
+            <OrderOptionsList options={{ Add: true, Close: true, Cancel: true }} order={row} />
+          </InfoHover>
         </>
       );
       const restult: [ReactNode, string] = [component, twMerge(styles, "flex flex-row gap-2 justify-center")];
@@ -110,62 +120,3 @@ const colorColsData: coloredColsType<OrderOpenRow> = [
     },
   },
 ];
-function convertIntoMobileData({ openOrders, closedOrders }: { openOrders: TopenOrders[]; closedOrders: TclosedOrder[] }) {
-  const openOrderMobile = openOrders.map((order) => {
-    return [
-      {
-        first: [
-          <FadedColoredCell
-            key={"quantity"}
-            parentStyle="px-1"
-            text={order.type}
-            bgColor={order.type === "BUY" ? "bg-blueApp " : "bg-redApp "}
-            textColor={order.type === "BUY" ? "text-blueApp " : "text-redApp "}
-          />,
-          order.quantity,
-        ],
-        second: [
-          order.openedAt.split(" ")[1],
-          <FadedColoredCell
-            key={"status"}
-            parentStyle="px-1"
-            text={order.status}
-            bgColor={order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "}
-            textColor={order.status === "COMPLETED" ? "text-greenApp " : "text-foreground "}
-          />,
-        ],
-      },
-      { first: [order.name], second: [order.price] },
-      { first: ["SPOT", order.triggerType], second: ["LTP " + order.LTP] },
-    ];
-  });
-  const closedOrderMobile = closedOrders.map((order) => {
-    return [
-      {
-        first: [
-          <FadedColoredCell
-            key={"quantity"}
-            parentStyle="px-1"
-            text={order.type}
-            bgColor={order.type === "BUY" ? "bg-blueApp " : "bg-redApp "}
-            textColor={order.type === "BUY" ? "text-blueApp " : "text-redApp "}
-          />,
-          order.quantity,
-        ],
-        second: [
-          order.openedAt.split(" ")[1],
-          <FadedColoredCell
-            key={"status"}
-            parentStyle="px-1"
-            text={order.status}
-            bgColor={order.status === "COMPLETED" ? "bg-greenApp " : "bg-foreground "}
-            textColor={order.status === "COMPLETED" ? "text-greenApp " : "text-foreground "}
-          />,
-        ],
-      },
-      { first: [order.name], second: [order.price] },
-      { first: ["SPOT"], second: [order.triggerType] },
-    ];
-  });
-  return { closedOrderMobile, openOrderMobile };
-}

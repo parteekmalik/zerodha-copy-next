@@ -1,5 +1,5 @@
 // src/components/DragContext.tsx
-import React, { createContext, useContext, useEffect } from "react";
+import React, { createContext, useContext } from "react";
 import { useDrag } from "./useDrag";
 
 interface DragContextType {
@@ -11,7 +11,7 @@ interface DragContextType {
 const DragContext = createContext<DragContextType | undefined>(undefined);
 
 export const DragProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { position, isDragging,boxSize , parentDivRef, handleMouseDown } = useDrag();
+  const { position, isDragging, boxSize, parentDivRef, handleMouseDown } = useDrag();
 
   return (
     <DragContext.Provider value={{ position, isDragging, handleMouseDown }}>
@@ -25,7 +25,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({ children
               }
             : {
                 bottom: 0,
-                left: `calc(50% - ${boxSize? boxSize.width / 2 : 0}px)`, // Center horizontally
+                left: `calc(50% - ${boxSize ? boxSize.width / 2 : 0}px)`, // Center horizontally
               }
         }
         ref={parentDivRef}
@@ -39,7 +39,7 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useDragContext = () => {
   const context = useContext(DragContext);
   if (!context) {
-    throw new Error("useDragContext must be used within a DragProvider");
+    console.error("useDragContext must be used within a DragProvider");
   }
   return context;
 };

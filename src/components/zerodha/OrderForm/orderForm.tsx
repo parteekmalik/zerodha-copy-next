@@ -12,6 +12,7 @@ import useCreateOrderApi from "../_hooks/API/useCreateOrderApi";
 import { type TFormSchema } from "./FormSchema";
 import InputDiv from "./InputDiv";
 import { OrderTypeDiv } from "./OrderTypeDiv";
+import { useDrawer } from "../_contexts/Drawer/DrawerContextComponent";
 
 export type TOrderType = "LIMIT" | "MARKET" | "STOP";
 // export const OrderTypeList: TOrderType[] = ["LIMIT", "MARKET", "STOP"];
@@ -24,7 +25,7 @@ export type TorderForm = {
 };
 type TmarketType = "SPOT" | "MARGIN";
 
-function TempOrderForm({}: {}) {
+function TempOrderForm() {
   // prettier-ignore
   const {
     register,
@@ -71,6 +72,7 @@ function TempOrderForm({}: {}) {
             }) ?? "MARKET"),
     });
 
+    closeDrawer();
     reset();
     dispatch(
       updateFormData({
@@ -80,13 +82,14 @@ function TempOrderForm({}: {}) {
       }),
     );
   };
-  const { handleMouseDown } = useDragContext();
+  const useDragContextDAta = useDragContext();
+  const { closeDrawer } = useDrawer();
   if (!FormData.isvisible) return null;
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={twMerge("  w-full bg-background text-xs lg:max-w-[600px] ")}>
       <header
         id="drag-handle"
-        onMouseDown={handleMouseDown} // Allow dragging on the entire box
+        onMouseDown={useDragContextDAta?.handleMouseDown} // Allow dragging on the entire box
         className={` cursor-default rounded-[3px_3px_0px_0px]  p-[15px_20px] text-white lg:hover:cursor-move ${style.bgcolor}`}
       >
         <div className="text-sm font-semibold">
@@ -177,6 +180,7 @@ function TempOrderForm({}: {}) {
           <div
             className="grow cursor-pointer border border-borderApp bg-background p-[8px_12px] text-center font-medium  text-textDark hover:bg-borderApp hover:text-white lg:grow-0"
             onClick={() => {
+              closeDrawer();
               reset();
               dispatch(
                 updateFormData({

@@ -7,7 +7,7 @@ function InfoHover({
   options = { position: "center", isHoverEnabled: true },
 }: {
   info: string | ReactNode;
-  children: ReactNode;
+  children?: ReactNode;
   options?: {
     isClickEnabled?: boolean;
     isHoverEnabled?: boolean;

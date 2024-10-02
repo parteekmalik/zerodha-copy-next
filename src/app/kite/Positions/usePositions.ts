@@ -48,10 +48,7 @@ export default function usePositions() {
     { headerName: "P&L", field: "P&L", width: 0 },
     { headerName: "Change", field: "change", width: 0 },
   ];
-  const PositionsTotal = useMemo(
-    () => ({ "P&L": sumByKey(PositionsList, "P&L"), LTP: "TOTAL", skip: 3 }),
-    [PositionsList],
-  );
+  const PositionsTotal = useMemo(() => ({ "P&L": sumByKey(PositionsList, "P&L"), LTP: "TOTAL", skip: 3 }), [PositionsList]);
 
   return { Positions, PositionsList, PositionsTotal, PositionsGridColumn };
 }

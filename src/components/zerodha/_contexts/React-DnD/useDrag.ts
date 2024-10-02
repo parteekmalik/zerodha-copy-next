@@ -4,12 +4,14 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 export const useDrag = () => {
   // Calculate initial position to be in the middle bottom of the viewport
   const parentDivRef = useRef<HTMLDivElement | null>(null);
-  const [position, setPosition] = useState<{ x: number, y: number }|null>(null);
-  const [boxSize,setboxSize] = useState<null|DOMRect>(null);
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+  const [boxSize, setboxSize] = useState<null | DOMRect>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-  useLayoutEffect(()=>{if(parentDivRef.current)setboxSize(parentDivRef.current.getBoundingClientRect())},[])
+  useLayoutEffect(() => {
+    if (parentDivRef.current) setboxSize(parentDivRef.current.getBoundingClientRect());
+  }, []);
   const handleMouseDown = (event: React.MouseEvent) => {
     if (parentDivRef.current && parentDivRef.current.contains(event.target as Node)) {
       setIsDragging(true);
@@ -25,34 +27,11 @@ export const useDrag = () => {
     setIsDragging(false);
   };
 
-  // New function to calculate the new position based on the mouse movement
-  const calculateNewPosition = (event: MouseEvent) => {
-    if (!parentDivRef.current) return;
-
-    const { width, height } = parentDivRef.current.getBoundingClientRect();
-
-    // Calculate new position
-    let newX = event.clientX - offset.x;
-    let newY = event.clientY - offset.y;
-
-    // Boundary checks
-    const minX = 0; // Minimum X position
-    const minY = 0; // Minimum Y position
-    const maxX = window.innerWidth - width; // Maximum X position
-    const maxY = window.innerHeight - height; // Maximum Y position
-
-    // Constrain the position within the boundaries
-    newX = Math.max(minX, Math.min(newX, maxX));
-    newY = Math.max(minY, Math.min(newY, maxY));
-
-    return { newX, newY };
-  };
-
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
-      if (!isDragging) return;
+      if (!isDragging || !parentDivRef.current) return;
 
-      const newPosition = calculateNewPosition(event);
+      const newPosition = calculateNewPosition(event, parentDivRef.current.getBoundingClientRect(), offset);
       if (newPosition) setPosition({ x: newPosition.newX, y: newPosition.newY });
     },
     [isDragging, offset],
@@ -70,5 +49,24 @@ export const useDrag = () => {
     };
   }, [isDragging, handleMouseMove]);
 
-  return { position, isDragging, handleMouseDown, parentDivRef,boxSize };
+  return { position, isDragging, handleMouseDown, parentDivRef, boxSize };
+};
+
+// New function to calculate the new position based on the mouse movement
+const calculateNewPosition = (event: MouseEvent, { width, height }: DOMRect, offset: { x: number; y: number }) => {
+  // Calculate new position
+  let newX = event.clientX - offset.x;
+  let newY = event.clientY - offset.y;
+
+  // Boundary checks
+  const minX = 0; // Minimum X position
+  const minY = 0; // Minimum Y position
+  const maxX = window.innerWidth - width; // Maximum X position
+  const maxY = window.innerHeight - height; // Maximum Y position
+
+  // Constrain the position within the boundaries
+  newX = Math.max(minX, Math.min(newX, maxX));
+  newY = Math.max(minY, Math.min(newY, maxY));
+
+  return { newX, newY };
 };
