@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import Draggable from "react-draggable";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { type z } from "zod";
+import { calStep } from "~/app/kite/utils";
+import { useDragContext } from "~/components/zerodha/_contexts/React-DnD/DragContext";
 import { updateFormData } from "~/components/zerodha/_redux/Slices/FormData";
 import { type AppDispatch, type RootState } from "~/components/zerodha/_redux/store";
 import { websocketService } from "../_contexts/LiveData/BinanceWSContextComponent";
@@ -23,7 +24,7 @@ export type TorderForm = {
 };
 type TmarketType = "SPOT" | "MARGIN";
 
-function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
+function TempOrderForm({}: {}) {
   // prettier-ignore
   const {
     register,
@@ -79,118 +80,118 @@ function TempOrderForm({ isdraggable = true }: { isdraggable?: boolean }) {
       }),
     );
   };
+  const { handleMouseDown } = useDragContext();
   if (!FormData.isvisible) return null;
   return (
-    <Draggable handle=".drag-handle" disabled={!isdraggable} bounds="parent">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className={twMerge("  w-full max-w-[600px] bg-background text-xs ", "lg:absolute lg:bottom-0 lg:left-1/3 lg:z-50 ")}
+    <form onSubmit={handleSubmit(onSubmit)} className={twMerge("  w-full bg-background text-xs lg:max-w-[600px] ")}>
+      <header
+        id="drag-handle"
+        onMouseDown={handleMouseDown} // Allow dragging on the entire box
+        className={` cursor-default rounded-[3px_3px_0px_0px]  p-[15px_20px] text-white lg:hover:cursor-move ${style.bgcolor}`}
       >
-        <header className={`drag-handle cursor-default rounded-[3px_3px_0px_0px]  p-[15px_20px] text-white lg:hover:cursor-move ${style.bgcolor}`}>
-          <div className="text-sm font-semibold">
-            {`${FormData.editOrder ? "EDIT " : ""}${watch().orderType} ${watch().symbolName.toUpperCase()}  x ${watch().quantity} Qty`}
-          </div>
-          <div></div>
-        </header>
-
-        <div className={"flex w-full bg-lightGrayApp  "}>
-          {(["SPOT", "MARGIN"] as TmarketType[]).map((x) => {
-            return (
-              <div
-                key={"form" + x}
-                onClick={() => {
-                  setValue("marketType", x);
-                }}
-                className={
-                  "cursor-pointer border-b-2  p-[10px_20px]  " +
-                  ` ${x === watch().marketType ? `${style.textcolor} ${style.bordercolor}` : "text-darkGrayApp"} `
-                }
-              >
-                {x}
-              </div>
-            );
-          })}
-          <div className=" grow p-[10px_20px] text-right text-blueApp">Tags</div>
+        <div className="text-sm font-semibold">
+          {`${FormData.editOrder ? "EDIT " : ""}${watch().orderType} ${watch().symbolName.toUpperCase()}  x ${watch().quantity} Qty`}
         </div>
+        <div></div>
+      </header>
 
-        <div className="m-2 p-5">
-          <div className="flex flex-col gap-5">
-            <div className="grid w-full grid-cols-1 gap-5 lg:w-fit lg:grid-cols-2 ">
-              <InputDiv
-                className="flex w-full justify-center"
-                Type="float"
-                data={{
-                  label: "Qty.",
-                  isDisabled: false,
-                }}
-                step={0.00001}
-                register={register("quantity")}
-              />
-              <InputDiv
-                className="flex w-full justify-center"
-                Type="float"
-                step={Number(`0.${"0".repeat((FormData.decimal ?? 1) - 1)}1`)}
-                data={{
-                  label: "Price",
-                  isDisabled: watch().isMarketOrder,
-                }}
-                register={register("price")}
-              />
-              <OrderTypeDiv
-                className=" lg:col-start-2  "
-                isMarketOrder={watch().isMarketOrder}
-                setFormdata={(isSelected: boolean) => {
-                  setValue("isMarketOrder", isSelected);
-                  if (!isSelected) setValue("price", FormData.curPrice);
-                  else setValue("price", 0);
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="relative flex w-full  flex-col gap-2 bg-lightGrayApp p-[15px_20px] text-textDark lg:flex-row ">
-          <div className="flex grow gap-1">
-            <div className="flex gap-1">
-              <p>Total </p>{" "}
-              <div className={"" + style.textcolor}>
-                ${(Number(watch().quantity) * (watch().isMarketOrder ? FormData.curPrice : watch().price)).toFixed(FormData.decimal)}
-              </div>
-            </div>
-            <div className="flex gap-1">
-              <p>Charges </p>
-              <div className={"flex gap-2"}>
-                <span className={style.textcolor}>${0}</span>
-                <p className=" text-white">(*for limited time)</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-2 text-right">
-            {/* make input stop updation on every render */}
-            <input
-              type="submit"
-              className={twMerge("grow cursor-pointer p-[8px_12px] font-medium  text-white lg:grow-0 ", style.bgcolor)}
-              value={watch().orderType}
-            />
+      <div className={"flex w-full bg-lightGrayApp  "}>
+        {(["SPOT", "MARGIN"] as TmarketType[]).map((x) => {
+          return (
             <div
-              className="grow cursor-pointer border border-borderApp bg-background p-[8px_12px] text-center font-medium  text-textDark hover:bg-borderApp hover:text-white lg:grow-0"
+              key={"form" + x}
               onClick={() => {
-                reset();
-                dispatch(
-                  updateFormData({
-                    ...FormData,
-                    editOrder: undefined,
-                    isvisible: false,
-                  }),
-                );
+                setValue("marketType", x);
               }}
+              className={
+                "cursor-pointer border-b-2  p-[10px_20px]  " +
+                ` ${x === watch().marketType ? `${style.textcolor} ${style.bordercolor}` : "text-darkGrayApp"} `
+              }
             >
-              Cancel
+              {x}
+            </div>
+          );
+        })}
+        <div className=" grow p-[10px_20px] text-right text-blueApp">Tags</div>
+      </div>
+
+      <div className="m-2 p-5">
+        <div className="flex flex-col gap-5">
+          <div className="grid w-full grid-cols-1 gap-5 lg:w-fit lg:grid-cols-2 ">
+            <InputDiv
+              className="flex w-full justify-center"
+              Type="float"
+              data={{
+                label: "Qty.",
+                isDisabled: false,
+              }}
+              step={0.00001}
+              register={register("quantity")}
+            />
+            <InputDiv
+              className="flex w-full justify-center"
+              Type="float"
+              step={calStep(FormData.decimal)}
+              data={{
+                label: "Price",
+                isDisabled: watch().isMarketOrder,
+              }}
+              register={register("price")}
+            />
+            <OrderTypeDiv
+              className=" lg:col-start-2  "
+              isMarketOrder={watch().isMarketOrder}
+              setFormdata={(isSelected: boolean) => {
+                setValue("isMarketOrder", isSelected);
+                if (!isSelected) setValue("price", FormData.curPrice);
+                else setValue("price", 0);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="relative flex w-full  flex-col gap-2 bg-lightGrayApp p-[15px_20px] text-textDark lg:flex-row ">
+        <div className="flex grow gap-1">
+          <div className="flex gap-1">
+            <p>Total </p>{" "}
+            <div className={"" + style.textcolor}>
+              ${(Number(watch().quantity) * (watch().isMarketOrder ? FormData.curPrice : watch().price)).toFixed(FormData.decimal)}
+            </div>
+          </div>
+          <div className="flex gap-1">
+            <p>Charges </p>
+            <div className={"flex gap-2"}>
+              <span className={style.textcolor}>${0}</span>
+              <p className=" text-white">(*for limited time)</p>
             </div>
           </div>
         </div>
-      </form>
-    </Draggable>
+        <div className="flex gap-2 text-right">
+          {/* make input stop updation on every render */}
+          <input
+            type="submit"
+            className={twMerge("grow cursor-pointer p-[8px_12px] font-medium  text-white lg:grow-0 ", style.bgcolor)}
+            value={watch().orderType}
+          />
+          <div
+            className="grow cursor-pointer border border-borderApp bg-background p-[8px_12px] text-center font-medium  text-textDark hover:bg-borderApp hover:text-white lg:grow-0"
+            onClick={() => {
+              reset();
+              dispatch(
+                updateFormData({
+                  ...FormData,
+                  editOrder: undefined,
+                  isvisible: false,
+                }),
+              );
+            }}
+          >
+            Cancel
+          </div>
+        </div>
+      </div>
+    </form>
   );
 }
 
