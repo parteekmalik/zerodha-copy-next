@@ -1,7 +1,7 @@
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { searchAndSort } from "~/app/kite/utils";
-import { RootState } from "../../../../components/zerodha/_redux/store";
+import { type RootState } from "../../../../components/zerodha/_redux/store";
 import { SearchIcon } from "../../../../components/zerodha/savages/searchIcon";
 import SearchList from "./searchList";
 
@@ -36,17 +36,13 @@ function SearchInput({
 
   const symbolsList = useSelector((state: RootState) => state.symbolsList);
   useEffect(() => {
-    const temp = searchAndSort(
-      search.data,
-      Object.keys(symbolsList),
-      watchList,
-    );
+    const temp = searchAndSort(search.data, Object.keys(symbolsList), watchList);
 
     if (temp.length > 0)
       setSearch((prev) => {
         return { ...prev, matchingSymbol: temp };
       });
-  }, [search.data, search.focus]);
+  }, [search.data, search.focus, watchList, symbolsList, setSearch]);
 
   return (
     <div className=" relative z-10 min-h-[50px] min-w-[0px]">
@@ -97,11 +93,7 @@ function SearchInput({
             scrollbarWidth: "thin",
           }}
         >
-          <SearchList
-            search={search}
-            updateWatchList={submitUpdate}
-            setSearch={setSearch}
-          />
+          <SearchList search={search} updateWatchList={submitUpdate} setSearch={setSearch} />
         </div>
       ) : null}
     </div>

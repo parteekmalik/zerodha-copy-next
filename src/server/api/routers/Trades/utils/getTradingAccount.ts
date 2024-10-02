@@ -1,21 +1,20 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
-import { JWT } from "next-auth/jwt";
+import { type Prisma, type PrismaClient } from "@prisma/client";
+import { type DefaultArgs } from "@prisma/client/runtime/library";
+import { type ISODateString } from "next-auth";
 import { db } from "~/server/db";
 import createTradingAccount from "./createTradingAccount";
-import { ISODateString } from "next-auth";
 
-export async function getTradingAccount(ctx:  {
+export async function getTradingAccount(ctx: {
   session: {
-      user: {
-          id: string;
-          token: string;
-      } & {
-          name?: string | null;
-          email?: string | null;
-          image?: string | null;
-      };
-      expires: ISODateString;
+    user: {
+      id: string;
+      token: string;
+    } & {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+    expires: ISODateString;
   };
   headers: Headers;
   db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>;

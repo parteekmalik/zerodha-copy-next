@@ -1,4 +1,4 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export type TheaderPinType = { Pin0: string; Pin1: string };
 
@@ -8,7 +8,7 @@ const headerPinSlice = createSlice({
   initialState,
   reducers: {
     updateHeaderPin: (state, action: PayloadAction<TheaderPinType>) => {
-       return action.payload;
+      return action.payload;
     },
   },
 });

@@ -2,7 +2,7 @@
 
 import { useSelector } from "react-redux";
 import { useBinanceLiveData } from "~/components/zerodha/_contexts/LiveData/useBinanceLiveData";
-import { RootState } from "~/components/zerodha/_redux/store";
+import { type RootState } from "~/components/zerodha/_redux/store";
 
 export default function DefaultComonent() {
   const { Livestream } = useBinanceLiveData();

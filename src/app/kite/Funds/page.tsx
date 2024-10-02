@@ -1,18 +1,14 @@
 "use client";
-import { ReactNode, useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 import { twMerge } from "tailwind-merge";
 import { FadedColoredCell } from "~/components/zerodha/Table/cellStyledComponents";
-import {
-  coloredColsType,
-  FundsRow,
-  GridColDef,
-  TableDefaultstyles,
-} from "~/components/zerodha/Table/defaultStylexAndTypes";
+import { type coloredColsType, type FundsRow, type GridColDef, TableDefaultstyles } from "~/components/zerodha/Table/defaultStylexAndTypes";
 import DataGrid from "~/components/zerodha/Table/table";
 import { api } from "~/trpc/react";
 
 function Funds() {
-  const data = api.getAccountInfo.getAllBalance.useQuery().data ?? [];
+  const { data: queryData } = api.getAccountInfo.getAllBalance.useQuery();
+  const data = useMemo(() => queryData ?? [], [queryData]);
   const FundsList: FundsRow[] = useMemo(() => {
     return data.map((item) => ({
       ...item,
@@ -30,43 +26,26 @@ function Funds() {
 
   return (
     <div className="w-full">
-      <DataGrid<FundsRow>
-        rows={FundsList}
-        columns={FundsGridColumn}
-        coloredCols={colorColsData as coloredColsType<FundsRow>}
-        styles={TableDefaultstyles}
-      />
+      <DataGrid<FundsRow> rows={FundsList} columns={FundsGridColumn} coloredCols={colorColsData} styles={TableDefaultstyles} />
     </div>
   );
 }
 export default Funds;
-const colorColsData = [
+const colorColsData: coloredColsType<FundsRow> = [
   {
     name: "widrawal",
-    fn: (value: unknown, styles: string) => {
-      const text = value as string;
-      const component = (
-        <FadedColoredCell
-          text={text}
-          bgColor={"bg-redApp"}
-          textColor={"text-redApp"}
-        />
-      );
+    fn: (row: FundsRow, key: keyof FundsRow, styles: string) => {
+      const text = row[key] as string;
+      const component = <FadedColoredCell text={text} bgColor={"bg-redApp"} textColor={"text-redApp"} />;
       const restult: [ReactNode, string] = [component, twMerge(styles, "")];
       return restult;
     },
   },
   {
     name: "deposit",
-    fn: (value: unknown, styles: string) => {
-      const text = value as string;
-      const component = (
-        <FadedColoredCell
-          text={text}
-          bgColor={"bg-blueApp "}
-          textColor={"text-blueApp "}
-        />
-      );
+    fn: (row: FundsRow, key: keyof FundsRow, styles: string) => {
+      const text = row[key] as string;
+      const component = <FadedColoredCell text={text} bgColor={"bg-blueApp "} textColor={"text-blueApp "} />;
       const restult: [ReactNode, string] = [component, twMerge(styles, "")];
       return restult;
     },

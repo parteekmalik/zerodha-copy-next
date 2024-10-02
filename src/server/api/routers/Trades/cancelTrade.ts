@@ -1,5 +1,5 @@
-import { $Enums, Prisma, PrismaClient } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
+import { type Prisma, type PrismaClient } from "@prisma/client";
+import { type DefaultArgs } from "@prisma/client/runtime/library";
 
 // TODO: add logic for limit orders (add lockedBalance)
 export default async function cancelOrderTranection(

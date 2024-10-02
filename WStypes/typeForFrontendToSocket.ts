@@ -1,4 +1,4 @@
-import { Order } from "@prisma/client";
+import { type Order } from "@prisma/client";
 
 export const BACKEND_SERVER_UPDATE = "BACKEND_SERVER_UPDATE";
 export type BACKEND_SERVER_UPDATE_PAYLOAD = "connected" | "disconneted";

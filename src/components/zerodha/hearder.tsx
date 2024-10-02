@@ -9,7 +9,7 @@ import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { getColor } from "~/app/kite/utils";
-import { AppDispatch, RootState } from "~/components/zerodha/_redux/store";
+import { type AppDispatch, type RootState } from "~/components/zerodha/_redux/store";
 import InfoHover from "../ui/infoHover";
 import { useBackendWS } from "./_contexts/backendWS/backendWSContextComponent";
 import { useBinanceLiveData } from "./_contexts/LiveData/useBinanceLiveData";
@@ -32,7 +32,7 @@ function Header() {
         subsription: [headerPin.Pin0, headerPin.Pin1],
       }),
     );
-  }, [headerPin]);
+  }, [headerPin, dispatch]);
 
   const PinData = useMemo(
     () => ({
@@ -55,31 +55,25 @@ function Header() {
   const route = usePathname().split("/").pop();
 
   return (
-    <header
-      className={twMerge("flex w-full justify-center bg-background", shadowBox)}
-    >
+    <header className={twMerge("flex w-full justify-center bg-background", shadowBox)}>
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
-        <div className="hidden h-full min-w-[430px] items-center justify-around gap-5 border-b border-r border-borderApp text-base uppercase lg:flex">
+        <div className="hidden h-full min-w-[430px] items-center justify-around gap-5 border-b border-l border-r border-borderApp text-base uppercase lg:flex">
           <div className="flex cursor-pointer gap-2 ">
-            <Link href={`Chart?symbol=${PinData.first.name}&TimeFrame=${5}`}>
-              {PinData.first.name}
-            </Link>
+            <Link href={`Chart?symbol=${PinData.first.name}&TimeFrame=${5}`}>{PinData.first.name}</Link>
             <div className={`flex gap-1 ${getColor(PinData.first.isgreen)} `}>
               <p>{PinData.first.price}</p>
               <span>({PinData.first.change}%)</span>
             </div>
           </div>
           <div className="flex cursor-pointer gap-2">
-            <Link href={`Chart?symbol=${PinData.second.name}&TimeFrame=${5}`}>
-              {PinData.second.name}
-            </Link>
+            <Link href={`Chart?symbol=${PinData.second.name}&TimeFrame=${5}`}>{PinData.second.name}</Link>
             <div className={`flex gap-1 ${getColor(PinData.second.isgreen)}`}>
               <p>{PinData.second.price}</p>
               <span>({PinData.second.change}%)</span>
             </div>
           </div>
         </div>
-        <div className="relative flex h-full grow items-center border-b  border-borderApp ">
+        <div className="relative flex h-full grow items-center border-b border-r  border-borderApp ">
           <div className="flex grow items-center justify-center gap-5  p-4 lg:grow-0">
             <Image
               className=" "
@@ -90,18 +84,9 @@ function Header() {
             />
 
             <InfoHover
-              info={
-                <WifiIcon
-                  color={
-                    backendServerConnection === "connected" ? "green" : "red"
-                  }
-                  size={"20px"}
-                />
-              }
+              info={<WifiIcon color={backendServerConnection === "connected" ? "green" : "red"} size={"20px"} />}
             >
-              {backendServerConnection === "connected"
-                ? "backend server is up"
-                : "backend server is down"}
+              {backendServerConnection === "connected" ? "backend server is up" : "backend server is down"}
               {/* TODO: ( pending order will execute while page is open ) */}
             </InfoHover>
             <p className="mx-auto lg:hidden">{route}</p>
@@ -152,15 +137,11 @@ function NavigationNav({ route }: { route: string }) {
             <div className="flex gap-4 hover:cursor-pointer hover:text-orangeApp">
               <Avatar
                 sx={{ width: 24, height: 24 }}
-                {...(UserInfo.image && UserInfo.image !== "not_found"
-                  ? { src: UserInfo.image }
-                  : { children: "N" })}
+                {...(UserInfo.image && UserInfo.image !== "not_found" ? { src: UserInfo.image } : { children: "N" })}
                 alt="user-icon"
               />
 
-              <div className="hidden max-w-[100px] truncate md:block">
-                #{UserInfo.TradingAccountId}
-              </div>
+              <div className="hidden max-w-[100px] truncate md:block">#{UserInfo.TradingAccountId}</div>
             </div>
           }
         >
@@ -168,41 +149,23 @@ function NavigationNav({ route }: { route: string }) {
             <div className="m-1 flex items-center justify-between bg-blueApp/10 p-1 px-2 ">
               <div className="flex flex-col">
                 <span className="uppercase">{UserInfo.name}</span>
-                <span className="text-foreground/75">
-                  {UserInfo.email ?? "not provided"}
-                </span>
+                <span className="text-foreground/75">{UserInfo.email ?? "not provided"}</span>
               </div>
               <Link href={"/kite/Profile"}>{">"}</Link>
             </div>
 
             <ul className="w-full appearance-none lg:hidden ">
-              {[{ name: "WatchList", icon: "" }, ...rightSideItems].map(
-                (item) => (
-                  <Link
-                    href={item.name}
-                    key={item.name}
-                    className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
-                  >
-                    {item.icon && (
-                      <div className="fill-foreground ">{item.icon}</div>
-                    )}
-                    <span> {item.name}</span>
-                  </Link>
-                ),
-              )}
+              {[{ name: "WatchList", icon: "" }, ...rightSideItems].map((item) => (
+                <Link href={item.name} key={item.name} className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10">
+                  {item.icon && <div className="fill-foreground ">{item.icon}</div>}
+                  <span> {item.name}</span>
+                </Link>
+              ))}
             </ul>
             <ul className="w-full appearance-none ">
-              {[
-                { url: "/console", name: "Console", icon: <SupportIcon /> },
-              ].map((item) => (
-                <Link
-                  href={item.url}
-                  key={item.name}
-                  className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
-                >
-                  {item.icon && (
-                    <div className="fill-foreground ">{item.icon}</div>
-                  )}
+              {[{ url: "/console", name: "Console", icon: <SupportIcon /> }].map((item) => (
+                <Link href={item.url} key={item.name} className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10">
+                  {item.icon && <div className="fill-foreground ">{item.icon}</div>}
                   <span> {item.name}</span>
                 </Link>
               ))}
@@ -212,14 +175,8 @@ function NavigationNav({ route }: { route: string }) {
                 { url: "/support", name: "Support", icon: <SupportIcon /> },
                 { url: "/api/auth/signout", name: "Logout", icon: <Logout /> },
               ].map((item) => (
-                <Link
-                  href={item.url}
-                  key={item.name}
-                  className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10"
-                >
-                  {item.icon && (
-                    <div className="fill-foreground ">{item.icon}</div>
-                  )}
+                <Link href={item.url} key={item.name} className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10">
+                  {item.icon && <div className="fill-foreground ">{item.icon}</div>}
                   <span> {item.name}</span>
                 </Link>
               ))}
@@ -233,10 +190,7 @@ function NavigationNav({ route }: { route: string }) {
 function Notifications({ className }: { className?: string }) {
   return (
     <NotificationsNoneIcon
-      className={twMerge(
-        "fill-foreground hover:cursor-pointer hover:fill-orangeApp",
-        className,
-      )}
+      className={twMerge("fill-foreground hover:cursor-pointer hover:fill-orangeApp", className)}
     />
   );
 }

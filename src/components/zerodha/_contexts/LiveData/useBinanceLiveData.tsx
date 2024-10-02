@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import BinanceWSContext from "./BinanceWS";
 
 // Custom hook for safely using the WebSocket context values

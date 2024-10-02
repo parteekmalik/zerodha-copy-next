@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 function InfoHover({
@@ -7,7 +7,7 @@ function InfoHover({
   options = { position: "center", isHoverEnabled: true },
 }: {
   info: string | ReactNode;
-  children: ReactNode;
+  children?: ReactNode;
   options?: {
     isClickEnabled?: boolean;
     isHoverEnabled?: boolean;

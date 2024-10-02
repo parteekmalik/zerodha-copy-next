@@ -49,7 +49,7 @@ function TradingViewWidget() {
         }`;
     container.current?.appendChild(script);
     // console.log("Chart modified", container.current);
-  }, [charteheight, symbolName,resolvedTheme]);
+  }, [charteheight, symbolName, resolvedTheme, TimeFrame]);
   return (
     <div
       className="tradingview-widget-container h-[100vh] min-h-[100%]  min-w-[100%]"

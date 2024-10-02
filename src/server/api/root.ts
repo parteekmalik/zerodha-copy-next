@@ -1,9 +1,9 @@
 import { createTRPCRouter } from "~/server/api/trpc";
+import { PositionsData } from "./routers/Console/PositionsData";
 import { SymbolList } from "./routers/symbolList";
 import { OrderRouter } from "./routers/Trades/Order";
 import { getAccountInfoRouter } from "./routers/TradingAccount/accountInfo";
 import { updateAccountInfoRouter } from "./routers/TradingAccount/UpdateaccountInfo";
-import { PositionsData } from "./routers/Console/PositionsData";
 
 /**
  * This is the primary router for your server.

@@ -1,4 +1,4 @@
-import { Order } from "@prisma/client";
+import { type Order } from "@prisma/client";
 
 export const UPDATE_ORDER = "UPDATE_ORDER";
 export const NOTIFY_USER = "NOTIFY_USER";

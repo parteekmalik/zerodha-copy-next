@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 // Define the type for the device type
 export type TDeviceTypeType = "sm" | "md" | "lg" | "xl" | "2xl";
@@ -22,17 +22,5 @@ const DeviceTypeSlice = createSlice({
 // Export the actions
 export const { updateDeviceType } = DeviceTypeSlice.actions;
 
-const deviceSizeMap: Record<TDeviceTypeType, number> = {
-  sm: 0,
-  md: 1,
-  lg: 2,
-  xl: 3,
-  "2xl": 4,
-};
-
-export function greaterThan(size: TDeviceTypeType, currentSize: TDeviceTypeType) {
-  // Compare the numerical values of the input size and the current screen size
-  return deviceSizeMap[currentSize] > deviceSizeMap[size];
-}
 // Export the reducer
 export default DeviceTypeSlice.reducer;

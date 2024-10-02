@@ -1,5 +1,5 @@
 // toast.tsx
-import { $Enums } from "@prisma/client";
+import { type $Enums } from "@prisma/client";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ToastContext } from "./toast-context";
 import { twMerge } from "tailwind-merge";
@@ -13,7 +13,7 @@ function useTimeout(callbackFunction: () => void, duration: number) {
   useEffect(() => {
     const functionId = setTimeout(() => SavedCallback.current(), duration);
     return () => clearTimeout(functionId);
-  }, []);
+  }, [duration]);
 }
 type stateType = "sucess" | "placed" | "cancelled" | "update";
 export type messageType =
@@ -67,11 +67,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
           <div className="fixed bottom-0 right-0 z-50 flex flex-col gap-2 ">
             {toasts.map((toast) => {
               return (
-                <Toast
-                  key={"toast" + toast.id}
-                  message={toast.message}
-                  close={() => closeToast(toast.id)}
-                ></Toast>
+                <Toast key={"toast" + toast.id} message={toast.message} close={() => closeToast(toast.id)}></Toast>
               );
             })}
           </div>
@@ -118,9 +114,7 @@ function Toast({ message, close }: ToastProperties) {
       )}
       style={{ wordWrap: "break-word" }}
     >
-      <h4 className="m-[5px_0px_10px_0px] text-[16px] font-bold">
-        {ToastStaticData[message.state].heading}
-      </h4>
+      <h4 className="m-[5px_0px_10px_0px] text-[16px] font-bold">{ToastStaticData[message.state].heading}</h4>
       {message.state === "sucess" && (
         <div className="text-sm">
           {message.type} {message.name} is Sucessful.
@@ -137,9 +131,7 @@ function Toast({ message, close }: ToastProperties) {
           <span className="m-t-[10px] text-xs">#{message.orderId}</span>
         </div>
       )}
-      {message.state === "error" && (
-        <div className="text-sm">{message.errorMessage}</div>
-      )}
+      {message.state === "error" && <div className="text-sm">{message.errorMessage}</div>}
       {message.state === "placed" && (
         <div className="text-sm">
           {message.type} {message.name} is Placed.
@@ -158,10 +150,7 @@ function Toast({ message, close }: ToastProperties) {
           <span className="m-t-[10px] text-xs">#{message.orderId}</span>
         </div>
       )}
-      <div
-        className="absolute right-[10px] top-[15px] hover:cursor-pointer"
-        onClick={() => close()}
-      >
+      <div className="absolute right-[10px] top-[15px] hover:cursor-pointer" onClick={() => close()}>
         x
       </div>
     </div>

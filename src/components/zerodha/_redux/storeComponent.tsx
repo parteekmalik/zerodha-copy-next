@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
+import type React from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "~/trpc/react";
 import { updateHeaderPin } from "./Slices/headerPin";
 import { updateSymbolsList } from "./Slices/symbolsList";
 import { updateUserInfo } from "./Slices/userInfo";
 import { updateWatchList } from "./Slices/watchList";
-import { AppDispatch, RootState } from "./store";
+import { type AppDispatch, type RootState } from "./store";
 import { updateDeviceType } from "./Slices/DeviceType";
 
 export type TsymbolTrade = {
@@ -39,11 +40,11 @@ const StoreComponent: React.FunctionComponent = () => {
       dispatch(updateHeaderPin(initData.Pins));
       dispatch(updateUserInfo(initData.userInfo));
     }
-  }, [initData]);
+  }, [initData, dispatch, symbolList, userDetails?.name]);
 
   useEffect(() => {
     if (symbolList) dispatch(updateSymbolsList(symbolList));
-  }, [symbolList]);
+  }, [symbolList, dispatch]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -74,7 +75,7 @@ const StoreComponent: React.FunctionComponent = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [dispatch]);
-  
+
   return null;
 };
 export default StoreComponent;

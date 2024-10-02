@@ -1,8 +1,7 @@
 // math.test.ts
 
-import { Assets, Order } from "@prisma/client";
+import { type Assets, type Order } from "@prisma/client";
 import { getRemainingOrders } from "../server/api/routers/Console/utils/getOpenPositions";
-import { PositionsData } from "~/server/api/routers/Console/PositionsData";
 
 const getRemainingOrdersData: (Assets & { Orders: Order[] })[] = [
   {

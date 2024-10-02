@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { type Dispatch, type SetStateAction, useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "~/components/zerodha/_redux/store";
+import { type RootState } from "~/components/zerodha/_redux/store";
 
 function SearchList({
   search,
@@ -25,51 +25,43 @@ function SearchList({
 }) {
   const symbolsList = useSelector((state: RootState) => state.symbolsList);
 
-  const handleClickOutside = (event: globalThis.KeyboardEvent) => {
-    if (event.key === "ArrowUp")
-      setSearch((prev) => ({
-        ...prev,
-        Selected:
-          prev.Selected === 0
-            ? prev.matchingSymbol.length - 1
-            : prev.Selected - 1,
-      }));
-    else if (event.key === "ArrowDown")
-      setSearch((prev) => ({
-        ...prev,
-        Selected:
-          prev.Selected === prev.matchingSymbol.length - 1
-            ? 0
-            : prev.Selected + 1,
-      }));
-  };
+  const handleClickOutside = useCallback(
+    (event: globalThis.KeyboardEvent) => {
+      if (event.key === "ArrowUp")
+        setSearch((prev) => ({
+          ...prev,
+          Selected: prev.Selected === 0 ? prev.matchingSymbol.length - 1 : prev.Selected - 1,
+        }));
+      else if (event.key === "ArrowDown")
+        setSearch((prev) => ({
+          ...prev,
+          Selected: prev.Selected === prev.matchingSymbol.length - 1 ? 0 : prev.Selected + 1,
+        }));
+    },
+    [setSearch],
+  );
   useEffect(() => {
-    console.log(search);
-
     window.addEventListener("keydown", handleClickOutside);
     return () => {
       window.removeEventListener("keydown", handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
   return (
     <>
       {search.matchingSymbol.map((name, i) => {
         return (
           <div
-            className={
-              "flex w-full  p-[6px_15px] " +
-              (i === search.Selected ? " bg-lightGrayApp" : " bg-background")
-            }
-            onMouseDown={(e) => {
+            className={"flex w-full  p-[6px_15px] " + (i === search.Selected ? " bg-lightGrayApp" : " bg-background")}
+            onMouseDown={() => {
               // console.log("mouse click")
               updateWatchList(i);
             }}
-            onMouseEnter={(e) => {
+            onMouseEnter={() => {
               setSearch((prev) => {
                 return { ...prev, Selected: i };
               });
             }}
-            onMouseLeave={(e) => {
+            onMouseLeave={() => {
               setSearch((prev) => {
                 return { ...prev, Selected: 0 };
               });

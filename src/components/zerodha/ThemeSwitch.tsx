@@ -26,14 +26,7 @@ export default function ThemeSwitch() {
 
   if (resolvedTheme === "dark") {
     return (
-      <InfoHover
-        info={
-          <DarkModeIcon
-            onClick={() => setTheme("light")}
-            className="hover:cursor-pointer "
-          />
-        }
-      >
+      <InfoHover info={<DarkModeIcon onClick={() => setTheme("light")} className="hover:cursor-pointer " />}>
         dark mode
       </InfoHover>
     );
@@ -41,14 +34,7 @@ export default function ThemeSwitch() {
 
   if (resolvedTheme === "light") {
     return (
-      <InfoHover
-        info={
-          <LightModeIcon
-            onClick={() => setTheme("dark")}
-            className="hover:cursor-pointer "
-          />
-        }
-      >
+      <InfoHover info={<LightModeIcon onClick={() => setTheme("dark")} className="hover:cursor-pointer " />}>
         light mode
       </InfoHover>
     );

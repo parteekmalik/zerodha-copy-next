@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useMemo } from "react";
 import { env } from "~/env";
 import { api } from "~/trpc/react";
 import { useToast } from "../Toast/toast-context";
-import useSocket, { socketSendType } from "./useSocket";
+import useSocket, { type socketSendType } from "./useSocket";
 
 interface IWSContext {
   WSsendOrder: ({ type, payload }: socketSendType) => void;
@@ -17,7 +17,7 @@ export const BackendWSProvider: React.FC<{ children: ReactNode }> = (props) => {
   const { children } = props;
 
   const toast = useToast();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const opts = useMemo(
     () => ({
@@ -29,14 +29,10 @@ export const BackendWSProvider: React.FC<{ children: ReactNode }> = (props) => {
     }),
     [session?.user.token],
   );
-  const { SocketEmiter, backendServerConnection, isConnected, lastMessage } =
-    useSocket(env.NEXT_PUBLIC_BACKEND_WS, opts);
+  const { SocketEmiter, backendServerConnection, lastMessage } = useSocket(env.NEXT_PUBLIC_BACKEND_WS, opts);
   const APIutils = api.useUtils();
 
-  useEffect(
-    () => console.log("backendServerConnection", backendServerConnection),
-    [backendServerConnection],
-  );
+  useEffect(() => console.log("backendServerConnection", backendServerConnection), [backendServerConnection]);
   useEffect(() => {
     if (toast && lastMessage) {
       console.log("lastMessage -> ", typeof lastMessage, lastMessage);
@@ -49,17 +45,13 @@ export const BackendWSProvider: React.FC<{ children: ReactNode }> = (props) => {
           type: lastMessage.type,
         });
         APIutils.Order.getOrders.refetch().catch((err) => console.log(err));
-        APIutils.Console.getRemainingFilledOrders
-          .refetch()
-          .catch((err) => console.log(err));
+        APIutils.Console.getRemainingFilledOrders.refetch().catch((err) => console.log(err));
       }
     }
-  }, [lastMessage]);
+  }, [lastMessage, toast, APIutils]);
 
   return (
-    <BackndWSContext.Provider
-      value={{ WSsendOrder: SocketEmiter, backendServerConnection }}
-    >
+    <BackndWSContext.Provider value={{ WSsendOrder: SocketEmiter, backendServerConnection }}>
       {children}
     </BackndWSContext.Provider>
   );

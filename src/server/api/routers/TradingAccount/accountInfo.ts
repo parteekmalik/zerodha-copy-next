@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { getTradingAccount } from "../Trades/utils/getTradingAccount";
 

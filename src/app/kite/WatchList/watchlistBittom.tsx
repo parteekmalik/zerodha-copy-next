@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { updateWatchListNo } from "~/components/zerodha/_redux/Slices/watchList";
-import { RootState } from "~/components/zerodha/_redux/store";
+import { type RootState } from "~/components/zerodha/_redux/store";
 
 function WatchlistBittom() {
   const watchListNo = useSelector((state: RootState) => state.watchList.ListNo);

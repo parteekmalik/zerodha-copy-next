@@ -1,5 +1,5 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Order } from "@prisma/client";
+import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { type Order } from "@prisma/client";
 
 export type TordersType = Order[][];
 
