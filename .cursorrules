@@ -1,0 +1,12 @@
+using nextjs 14
+using tailwindcss
+using shadcn/ui
+using prisma
+using next-auth
+using next-themes
+using next-seo
+using next-sitemap
+using next-pwa
+using nextjs app router
+
+use eslint rules

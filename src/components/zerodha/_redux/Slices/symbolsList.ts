@@ -1,6 +1,6 @@
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { type JSONType } from "public/symbolNameType";
-import { listToRecord } from "../../../../app/kite/utils";
+import { listToRecord } from "~/app/v1/utils";
 type TtickerChangeType = {
   quoteAsset: string;
   status: string;

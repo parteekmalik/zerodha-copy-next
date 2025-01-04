@@ -1,5 +1,5 @@
 import * as React from "react";
-import { getColor, modifyNumber } from "~/app/kite/utils";
+import { getColor, modifyNumber } from "~/app/v1/utils";
 import { type DataGridProps, type RowType, TableDefaultstyles } from "./defaultStylexAndTypes";
 
 // Custom DataGrid component

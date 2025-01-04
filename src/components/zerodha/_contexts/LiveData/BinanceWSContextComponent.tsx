@@ -1,14 +1,8 @@
 "use client";
 import type { PropsWithChildren } from "react";
 import React, { useEffect, useState } from "react";
-import {
-  BackndWSContextProvider,
-  type TLivestreamType,
-  type Tsymbol24hr,
-  type TsymbolLive,
-  type TsymbolTrade,
-} from "./BinanceWS";
-import { modifyNumber } from "~/app/kite/utils";
+import { BackndWSContextProvider, type TLivestreamType, type Tsymbol24hr, type TsymbolLive, type TsymbolTrade } from "./BinanceWS";
+import { modifyNumber } from "~/app/v1/utils";
 
 const initialState: TLivestreamType = {};
 function getChange(prevPrice: number | string, curPrice: number | string) {
@@ -102,7 +96,7 @@ export const websocketService = {
             ...payload,
             curPrice: price.toFixed(decimal),
             decimal,
-            isup: diff > 0 ? "up" : diff === 0 ? data?.isup ?? "same" : "down",
+            isup: diff > 0 ? "up" : diff === 0 ? (data?.isup ?? "same") : "down",
           };
           if (data?.prevPrice) temp = { ...temp, ...getChange(data.prevPrice, data.curPrice) };
 

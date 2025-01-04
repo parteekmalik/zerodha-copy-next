@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
-import { getColor } from "~/app/kite/utils";
+import { getColor } from "~/app/v1/utils";
 import { type AppDispatch, type RootState } from "~/components/zerodha/_redux/store";
 import InfoHover from "../ui/infoHover";
 import { useBackendWS } from "./_contexts/backendWS/backendWSContextComponent";
@@ -18,7 +18,7 @@ import WifiIcon from "./savages/WifiIcon";
 import { shadowBox } from "./tcss";
 import ThemeSwitch from "./ThemeSwitch";
 
-const baseURL = "/kite/";
+const baseURL = "/v1/";
 
 function Header() {
   const { backendServerConnection } = useBackendWS();
@@ -151,7 +151,7 @@ function NavigationNav({ route }: { route: string }) {
                 <span className="uppercase">{UserInfo.name}</span>
                 <span className="text-foreground/75">{UserInfo.email ?? "not provided"}</span>
               </div>
-              <Link href={"/kite/Profile"}>{">"}</Link>
+              <Link href={"/v1/Profile"}>{">"}</Link>
             </div>
 
             <ul className="w-full appearance-none lg:hidden ">

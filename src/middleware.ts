@@ -12,8 +12,8 @@ export function middleware(request: NextRequest) {
     request.cookies.get("next-auth.session-token")?.value;
 
   // Redirect from root ("/") to "/Dashboard"
-  if (path === "/kite" || path === "/") {
-    return NextResponse.redirect(new URL("/kite/Dashboard", request.nextUrl));
+  if (path === "/v1" || path === "/") {
+    return NextResponse.redirect(new URL("/v1/Dashboard", request.nextUrl));
   }
 
   if (!isPublicPath && !token) {
@@ -27,5 +27,5 @@ export function middleware(request: NextRequest) {
 
 // Apply middleware to all paths except those starting with "/_next"
 export const config = {
-  matcher: ["/", "/kite", "/kite/(.*)", "/api/(.*)"],
+  matcher: ["/", "/v1", "/v1/(.*)", "/api/(.*)"],
 };
