@@ -15,7 +15,7 @@ function ThemeSwitch({ className }: { className: string }) {
       <Switch
         checked={theme === "dark"}
         onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
-        className="data-[state=checked]:bg-slate-700 data-[state=unchecked]:bg-slate-200"
+        className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-secondary"
         aria-label="Toggle theme"
       />
     </div>

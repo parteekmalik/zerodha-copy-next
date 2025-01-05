@@ -27,6 +27,7 @@ const config = {
   			textDark: 'rgba(var(--textDark))',
   			greenApp: '#4caf50',
   			redApp: '#df514c',
+        
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

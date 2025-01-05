@@ -46,7 +46,7 @@ function SearchInput({
 
   return (
     <div className=" relative z-10 min-h-[50px] min-w-[0px]">
-      <div className="  flex  items-center justify-center border-b border-borderApp p-3">
+      <div className="  flex  items-center justify-center p-3">
         <div className=" h-[15px] w-[15px]">
           <SearchIcon fill="fill-foreground" />
         </div>

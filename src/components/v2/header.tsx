@@ -8,13 +8,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { type RootState } from "~/components/zerodha/_redux/store";
-import { shadowBox } from "~/components/zerodha/tcss";
 import ThemeSwitch from "~/components/zerodha/ThemeSwitch";
 
-import { Button } from "~/components/v2/ui/button";
-import { Separator } from "~/components/v2/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/v2/ui/popover";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/v2/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "~/components/v2/ui/tabs";
 
 const baseURL = "/v2/";
 
@@ -22,7 +19,7 @@ function Header() {
   const route = usePathname().split("/").pop();
 
   return (
-    <header className={twMerge("flex w-full justify-center border-b-2 border-blue-500 bg-background", shadowBox)}>
+    <header className={twMerge("flex w-full justify-center border-b-2 border-blue-500 bg-background")}>
       <div className="flex w-full p-2 px-4 pb-0">
         <div className="relative flex h-full grow items-center">
           <div className="flex grow items-center justify-center gap-5  lg:grow-0">
@@ -59,11 +56,11 @@ function NavigationButtons({ lastRoute, fullRoute }: { lastRoute: string; fullRo
           <Link
             href={baseURL + x.name}
             className={twMerge(
-              "relative mx-2 rounded-t-lg px-4 py-2",
+              "relative mx-2 rounded-t-lg px-5 py-2",
               lastRoute === x.name && [
-                "relative bg-blue-500",
-                "before:absolute before:bottom-0 before:left-[-30px] before:h-[30px] before:w-[30px] before:rounded-full before:bg-background before:shadow-[15px_15px_0_#3B82F6]",
-                "after:absolute after:bottom-0 after:right-[-30px] after:h-[30px] after:w-[30px] after:rounded-full after:bg-background after:shadow-[-15px_15px_0_#3B82F6] ",
+                "relative bg-primary text-white",
+                "before:absolute before:bottom-0 before:left-[-30px] before:h-[30px] before:w-[30px] before:rounded-full before:bg-background before:shadow-[15px_15px_0_hsl(var(--primary))]",
+                "after:absolute after:bottom-0 after:right-[-30px] after:h-[30px] after:w-[30px] after:rounded-full after:bg-background after:shadow-[-15px_15px_0_hsl(var(--primary))] ",
               ],
             )}
             key={x.name}
@@ -77,8 +74,8 @@ function NavigationButtons({ lastRoute, fullRoute }: { lastRoute: string; fullRo
         <ThemeSwitch className="border-r px-2" />
         <Tabs onValueChange={changeVersion} defaultValue={currentVersion} className="">
           <TabsList>
-            <TabsTrigger value="v1">V1</TabsTrigger>
-            <TabsTrigger value="v2">V2</TabsTrigger>
+            <TabsTrigger className="dark:data-[state=active]:bg-primary" value="v1">V1</TabsTrigger>
+            <TabsTrigger className="dark:data-[state=active]:bg-primary" value="v2">V2</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
