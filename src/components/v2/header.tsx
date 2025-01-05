@@ -19,7 +19,12 @@ function Header() {
   const lastRoute = usePathname().split("/").pop();
 
   return (
-    <header className={twMerge("flex w-full justify-center border-b-2 border-primary bg-background")}>
+    <header
+      className={twMerge(
+        "relative flex w-full justify-center border-b-2 border-primary bg-background",
+        "after:h-[50px] after:absolute after:top-[calc(100%+1px)] after:left-0 after:w-full after:bg-[#1a283f]",
+      )}
+    >
       <div className="flex w-full p-2 px-4 pb-0">
         <div className="relative flex h-full grow items-center">
           <div className="flex grow items-center justify-center gap-5  lg:grow-0">
@@ -36,9 +41,9 @@ function Header() {
 
 export default Header;
 const Routes = [
-  { url: "spot",name: "Spot", icon: "" },
-  { url: "quick",name: "Quick", icon: "" },
-  { url: "wallet",name: "Wallet", icon: "" },
+  { url: "spot", name: "Spot", icon: "" },
+  { url: "quick", name: "Quick", icon: "" },
+  { url: "wallet", name: "Wallet", icon: "" },
 ];
 function NavigationButtons({ lastRoute, fullRoute }: { lastRoute?: string; fullRoute: string }) {
   const router = useRouter();
@@ -74,8 +79,12 @@ function NavigationButtons({ lastRoute, fullRoute }: { lastRoute?: string; fullR
         <ThemeSwitch className="border-r px-2" />
         <Tabs onValueChange={changeVersion} defaultValue={currentVersion} className="">
           <TabsList>
-            <TabsTrigger className="dark:data-[state=active]:bg-primary" value="v1">V1</TabsTrigger>
-            <TabsTrigger className="dark:data-[state=active]:bg-primary" value="v2">V2</TabsTrigger>
+            <TabsTrigger className="dark:data-[state=active]:bg-primary" value="v1">
+              V1
+            </TabsTrigger>
+            <TabsTrigger className="dark:data-[state=active]:bg-primary" value="v2">
+              V2
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
