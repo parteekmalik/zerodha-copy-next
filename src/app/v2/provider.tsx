@@ -8,6 +8,7 @@ import { DrawerProvider } from "~/components/zerodha/_contexts/Drawer/DrawerCont
 import BinanceWSContextComponent from "~/components/zerodha/_contexts/LiveData/BinanceWSContextComponent";
 import { store } from "../../components/zerodha/_redux/store";
 import StoreComponent from "../../components/zerodha/_redux/storeComponent";
+import { ChartProvider } from "~/components/v2/contexts/chartContext";
 
 export default function ContextLayer({ children }: { children: React.ReactNode }) {
   return (
@@ -17,7 +18,9 @@ export default function ContextLayer({ children }: { children: React.ReactNode }
           <Provider store={store}>
             <BackendWSProvider>
               <StoreComponent />
-              <DrawerProvider>{children}</DrawerProvider>
+              <DrawerProvider>
+                <ChartProvider>{children}</ChartProvider>
+              </DrawerProvider>
             </BackendWSProvider>
           </Provider>
         </BinanceWSContextComponent>

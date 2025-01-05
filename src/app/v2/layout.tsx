@@ -3,13 +3,13 @@ import "~/styles/globals.css";
 import Providers from "~/app/v2/provider";
 import Header from "~/components/v2/header";
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center overflow-hidden  bg-background font-['Open_Sans','sans-serif']  ">
-      <Providers>
+    <Providers>
+      <main className=" max-w-screen flex h-screen max-h-screen w-screen flex-col items-center  bg-background font-['Open_Sans','sans-serif']  ">
         <Header />
-        {children}
-      </Providers>
-    </main>
+        <div className="z-10 flex w-full grow flex-col">{children}</div>
+      </main>
+    </Providers>
   );
 }

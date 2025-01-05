@@ -16,18 +16,18 @@ import { Tabs, TabsList, TabsTrigger } from "~/components/v2/ui/tabs";
 const baseURL = "/v2/";
 
 function Header() {
-  const route = usePathname().split("/").pop();
+  const lastRoute = usePathname().split("/").pop();
 
   return (
-    <header className={twMerge("flex w-full justify-center border-b-2 border-blue-500 bg-background")}>
+    <header className={twMerge("flex w-full justify-center border-b-2 border-primary bg-background")}>
       <div className="flex w-full p-2 px-4 pb-0">
         <div className="relative flex h-full grow items-center">
           <div className="flex grow items-center justify-center gap-5  lg:grow-0">
             <Image className=" " src="https://kite.zerodha.com/static/images/kite-logo.svg" alt="" width={30} height={20} />
 
-            <p className="mx-auto lg:hidden">{route}</p>
+            <p className="mx-auto lg:hidden">{lastRoute}</p>
           </div>
-          <NavigationButtons lastRoute={"Spot"} fullRoute={usePathname()} />
+          <NavigationButtons lastRoute={lastRoute} fullRoute={usePathname()} />
         </div>
       </div>
     </header>
@@ -36,11 +36,11 @@ function Header() {
 
 export default Header;
 const Routes = [
-  { name: "Spot", icon: "" },
-  { name: "Quick", icon: "" },
-  { name: "Wallet", icon: "" },
+  { url: "spot",name: "Spot", icon: "" },
+  { url: "quick",name: "Quick", icon: "" },
+  { url: "wallet",name: "Wallet", icon: "" },
 ];
-function NavigationButtons({ lastRoute, fullRoute }: { lastRoute: string; fullRoute: string }) {
+function NavigationButtons({ lastRoute, fullRoute }: { lastRoute?: string; fullRoute: string }) {
   const router = useRouter();
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
   const currentVersion = fullRoute.split("/").includes("v1") ? "v1" : "v2";
@@ -54,10 +54,10 @@ function NavigationButtons({ lastRoute, fullRoute }: { lastRoute: string; fullRo
       <div className="relative hidden h-full  items-center lg:flex  ">
         {Routes.map((x) => (
           <Link
-            href={baseURL + x.name}
+            href={baseURL + x.url}
             className={twMerge(
               "relative mx-2 rounded-t-lg px-5 py-2",
-              lastRoute === x.name && [
+              lastRoute === x.url && [
                 "relative bg-primary text-white",
                 "before:absolute before:bottom-0 before:left-[-30px] before:h-[30px] before:w-[30px] before:rounded-full before:bg-background before:shadow-[15px_15px_0_hsl(var(--primary))]",
                 "after:absolute after:bottom-0 after:right-[-30px] after:h-[30px] after:w-[30px] after:rounded-full after:bg-background after:shadow-[-15px_15px_0_hsl(var(--primary))] ",

@@ -4,9 +4,17 @@ import { useTheme } from "next-themes";
 import { Switch } from "~/components/v2/ui/switch";
 import { Sun, Moon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+import { useMemo, useEffect, useState } from "react";
 
-function ThemeSwitch({ className }: { className: string }) {
+function ThemeSwitch({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
 
   return (
     <div className={twMerge("flex items-center gap-2", className)}>

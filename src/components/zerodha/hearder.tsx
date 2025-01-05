@@ -4,7 +4,7 @@ import SupportIcon from "@mui/icons-material/Support";
 import Avatar from "@mui/material/Avatar";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
@@ -17,6 +17,7 @@ import { updateSeprateSubscriptions } from "./_redux/Slices/BinanceWSStats";
 import WifiIcon from "./savages/WifiIcon";
 import { shadowBox } from "./tcss";
 import ThemeSwitch from "./ThemeSwitch";
+import { Tabs, TabsTrigger, TabsList } from "../v2/ui/tabs";
 
 const baseURL = "/v1/";
 
@@ -52,8 +53,15 @@ function Header() {
     [Livestream, headerPin],
   );
   // ff5722
-  const route = usePathname().split("/").pop();
-
+  const lastRoute = usePathname().split("/").pop();
+  const fullRoute = usePathname();
+  const router = useRouter();
+  const currentVersion = fullRoute.split("/").includes("v1") ? "v1" : "v2";
+  const changeVersion = (value: string) => {
+    if (currentVersion !== value) {
+      router.push(fullRoute.replace(currentVersion, value));
+    }
+  };
   return (
     <header className={twMerge("flex w-full justify-center bg-background", shadowBox)}>
       <div className="flex min-h-[60px] w-full max-w-[1536px]">
@@ -75,24 +83,26 @@ function Header() {
         </div>
         <div className="relative flex h-full grow items-center border-b border-r  border-borderApp ">
           <div className="flex grow items-center justify-center gap-5  p-4 lg:grow-0">
-            <Image
-              className=" "
-              src="https://kite.zerodha.com/static/images/kite-logo.svg"
-              alt=""
-              width={30}
-              height={20}
-            />
+            <Image className=" " src="https://kite.zerodha.com/static/images/kite-logo.svg" alt="" width={30} height={20} />
 
-            <InfoHover
-              info={<WifiIcon color={backendServerConnection === "connected" ? "green" : "red"} size={"20px"} />}
-            >
+            <InfoHover info={<WifiIcon color={backendServerConnection === "connected" ? "green" : "red"} size={"20px"} />}>
               {backendServerConnection === "connected" ? "backend server is up" : "backend server is down"}
               {/* TODO: ( pending order will execute while page is open ) */}
             </InfoHover>
-            <p className="mx-auto lg:hidden">{route}</p>
+            <p className="mx-auto lg:hidden">{lastRoute}</p>
             <ThemeSwitch />
+            <Tabs onValueChange={changeVersion} defaultValue={currentVersion} className="">
+              <TabsList>
+                <TabsTrigger className="dark:data-[state=active]:bg-primary" value="v1">
+                  V1
+                </TabsTrigger>
+                <TabsTrigger className="dark:data-[state=active]:bg-primary" value="v2">
+                  V2
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
-          <NavigationNav route={route ?? "404"} />
+          <NavigationNav route={lastRoute ?? "404"} />
         </div>
       </div>
     </header>
@@ -117,10 +127,7 @@ function NavigationNav({ route }: { route: string }) {
             {rightSideItems.map((x) => (
               <Link
                 href={baseURL + x.name}
-                className={
-                  "cursor-pointer select-none px-[15px] text-center hover:text-orangeApp " +
-                  (route === x.name ? "text-orangeApp" : "")
-                }
+                className={"cursor-pointer select-none px-[15px] text-center hover:text-orangeApp " + (route === x.name ? "text-orangeApp" : "")}
                 key={x.name}
               >
                 {x.name}
@@ -188,9 +195,5 @@ function NavigationNav({ route }: { route: string }) {
   );
 }
 function Notifications({ className }: { className?: string }) {
-  return (
-    <NotificationsNoneIcon
-      className={twMerge("fill-foreground hover:cursor-pointer hover:fill-orangeApp", className)}
-    />
-  );
+  return <NotificationsNoneIcon className={twMerge("fill-foreground hover:cursor-pointer hover:fill-orangeApp", className)} />;
 }
