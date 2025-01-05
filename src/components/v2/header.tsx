@@ -4,13 +4,17 @@ import SupportIcon from "@mui/icons-material/Support";
 import Avatar from "@mui/material/Avatar";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 import { type RootState } from "~/components/zerodha/_redux/store";
 import { shadowBox } from "~/components/zerodha/tcss";
 import ThemeSwitch from "~/components/zerodha/ThemeSwitch";
-import InfoHover from "../ui/infoHover";
+
+import { Button } from "~/components/v2/ui/button";
+import { Separator } from "~/components/v2/ui/separator";
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/v2/ui/popover";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/v2/ui/tabs";
 
 const baseURL = "/v2/";
 
@@ -26,7 +30,7 @@ function Header() {
 
             <p className="mx-auto lg:hidden">{route}</p>
           </div>
-          <NavigationButtons route={"Spot"} />
+          <NavigationButtons lastRoute={"Spot"} fullRoute={usePathname()} />
         </div>
       </div>
     </header>
@@ -39,18 +43,25 @@ const Routes = [
   { name: "Quick", icon: "" },
   { name: "Wallet", icon: "" },
 ];
-function NavigationButtons({ route }: { route: string }) {
+function NavigationButtons({ lastRoute, fullRoute }: { lastRoute: string; fullRoute: string }) {
+  const router = useRouter();
   const UserInfo = useSelector((state: RootState) => state.UserInfo);
+  const currentVersion = fullRoute.split("/").includes("v1") ? "v1" : "v2";
+  const changeVersion = (value: string) => {
+    if (currentVersion !== value) {
+      router.push(fullRoute.replace(currentVersion, value));
+    }
+  };
   return (
-    <nav className="flex justify-between items-center grow mx-6">
+    <nav className="mx-6 flex grow items-center justify-between">
       <div className="relative hidden h-full  items-center lg:flex  ">
         {Routes.map((x) => (
           <Link
             href={baseURL + x.name}
             className={twMerge(
-              "relative rounded-t-lg px-4 mx-2 py-2",
-              route === x.name && [
-                "bg-blue-500 relative",
+              "relative mx-2 rounded-t-lg px-4 py-2",
+              lastRoute === x.name && [
+                "relative bg-blue-500",
                 "before:absolute before:bottom-0 before:left-[-30px] before:h-[30px] before:w-[30px] before:rounded-full before:bg-background before:shadow-[15px_15px_0_#3B82F6]",
                 "after:absolute after:bottom-0 after:right-[-30px] after:h-[30px] after:w-[30px] after:rounded-full after:bg-background after:shadow-[-15px_15px_0_#3B82F6] ",
               ],
@@ -62,64 +73,66 @@ function NavigationButtons({ route }: { route: string }) {
         ))}
       </div>
 
-      <div>
-        <ThemeSwitch />
+      <div className="flex h-full flex-row items-center gap-2">
+        <ThemeSwitch className="border-r px-2" />
+        <Tabs onValueChange={changeVersion} defaultValue={currentVersion} className="">
+          <TabsList>
+            <TabsTrigger value="v1">V1</TabsTrigger>
+            <TabsTrigger value="v2">V2</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
-      <div className="flex gap-4">
-        <InfoHover
-          options={{ isClickEnabled: true, position: "right" }}
-          info={
-            <div className="flex gap-4 hover:cursor-pointer hover:text-orangeApp">
-              <Avatar
-                sx={{ width: 24, height: 24 }}
-                {...(UserInfo.image && UserInfo.image !== "not_found" ? { src: UserInfo.image } : { children: "N" })}
-                alt="user-icon"
-              />
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className="flex gap-4 hover:cursor-pointer hover:text-orangeApp">
+            <Avatar
+              sx={{ width: 24, height: 24 }}
+              {...(UserInfo.image && UserInfo.image !== "not_found" ? { src: UserInfo.image } : { children: "N" })}
+              alt="user-icon"
+            />
 
-              <div className="hidden max-w-[100px] truncate md:block">#{UserInfo.TradingAccountId}</div>
-            </div>
-          }
-        >
-          <div className="mt-4  min-w-[200px] rounded-md border border-borderApp bg-background py-1  text-foreground ">
-            <div className="m-1 flex items-center justify-between bg-blueApp/10 p-1 px-2 ">
-              <div className="flex flex-col">
-                <span className="uppercase">{UserInfo.name}</span>
-                <span className="text-foreground/75">{UserInfo.email ?? "not provided"}</span>
-              </div>
-              <Link href={"/v1/Profile"}>{">"}</Link>
-            </div>
-
-            <ul className="w-full appearance-none lg:hidden ">
-              {[{ name: "WatchList", icon: "" }, ...Routes].map((item) => (
-                <Link href={item.name} key={item.name} className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10">
-                  {item.icon && <div className="fill-foreground ">{item.icon}</div>}
-                  <span> {item.name}</span>
-                </Link>
-              ))}
-            </ul>
-            <ul className="w-full appearance-none ">
-              {[{ url: "/console", name: "Console", icon: <SupportIcon /> }].map((item) => (
-                <Link href={item.url} key={item.name} className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10">
-                  {item.icon && <div className="fill-foreground ">{item.icon}</div>}
-                  <span> {item.name}</span>
-                </Link>
-              ))}
-            </ul>
-            <ul className="w-full appearance-none ">
-              {[
-                { url: "/support", name: "Support", icon: <SupportIcon /> },
-                { url: "/api/auth/signout", name: "Logout", icon: <Logout /> },
-              ].map((item) => (
-                <Link href={item.url} key={item.name} className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10">
-                  {item.icon && <div className="fill-foreground ">{item.icon}</div>}
-                  <span> {item.name}</span>
-                </Link>
-              ))}
-            </ul>
+            <div className="hidden max-w-[100px] truncate md:block">#{UserInfo.TradingAccountId}</div>
           </div>
-        </InfoHover>
-      </div>
+        </PopoverTrigger>
+        <PopoverContent className="mt-4 min-w-[200px] rounded-md border border-borderApp bg-background py-1 text-foreground">
+          <div className="m-1 flex items-center justify-between bg-blueApp/10 p-1 px-2 ">
+            <div className="flex flex-col">
+              <span className="uppercase">{UserInfo.name}</span>
+              <span className="text-foreground/75">{UserInfo.email ?? "not provided"}</span>
+            </div>
+            <Link href={"/v1/Profile"}>{">"}</Link>
+          </div>
+
+          <ul className="w-full appearance-none lg:hidden ">
+            {[{ name: "WatchList", icon: "" }, ...Routes].map((item) => (
+              <Link href={item.name} key={item.name} className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10">
+                {item.icon && <div className="fill-foreground ">{item.icon}</div>}
+                <span> {item.name}</span>
+              </Link>
+            ))}
+          </ul>
+          <ul className="w-full appearance-none ">
+            {[{ url: "/console", name: "Console", icon: <SupportIcon /> }].map((item) => (
+              <Link href={item.url} key={item.name} className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10">
+                {item.icon && <div className="fill-foreground ">{item.icon}</div>}
+                <span> {item.name}</span>
+              </Link>
+            ))}
+          </ul>
+          <ul className="w-full appearance-none ">
+            {[
+              { url: "/support", name: "Support", icon: <SupportIcon /> },
+              { url: "/api/auth/signout", name: "Logout", icon: <Logout /> },
+            ].map((item) => (
+              <Link href={item.url} key={item.name} className="flex w-full gap-4 p-1 px-3 hover:bg-blueApp/10">
+                {item.icon && <div className="fill-foreground ">{item.icon}</div>}
+                <span> {item.name}</span>
+              </Link>
+            ))}
+          </ul>
+        </PopoverContent>
+      </Popover>
     </nav>
   );
 }

@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.light {
+/* .light {
   --background: 255, 255, 255;
   --foreground: 0, 0, 0;
 
@@ -73,7 +73,7 @@
 
   background-color: rgba(var(--background));
   color: white;
-}
+} */
 
 @layer base {
   :root {

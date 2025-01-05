@@ -1,42 +1,25 @@
-import { useState, useEffect } from "react";
+"use client";
+
 import { useTheme } from "next-themes";
-import Image from "next/image";
-import InfoHover from "../ui/infoHover";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { Switch } from "~/components/v2/ui/switch";
+import { Sun, Moon } from "lucide-react";
+import { twMerge } from "tailwind-merge";
 
-export default function ThemeSwitch() {
-  const [mounted, setMounted] = useState(false);
-  const { setTheme, resolvedTheme } = useTheme();
+function ThemeSwitch({ className }: { className: string }) {
+  const { theme, setTheme } = useTheme();
 
-  useEffect(() => setMounted(true), []);
-
-  if (!mounted)
-    return (
-      <Image
-        src="data:image/svg+xml;base64,PHN2ZyBzdHJva2U9IiNGRkZGRkYiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMCIgdmlld0JveD0iMCAwIDI0IDI0IiBoZWlnaHQ9IjIwMHB4IiB3aWR0aD0iMjAwcHgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB4PSIyIiB5PSIyIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiIHJ4PSIyIj48L3JlY3Q+PC9zdmc+Cg=="
-        width={36}
-        height={36}
-        sizes="36x36"
-        alt="Loading Light/Dark Toggle"
-        priority={false}
-        title="Loading Light/Dark Toggle"
+  return (
+    <div className={twMerge("flex items-center gap-2", className)}>
+      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <Switch
+        checked={theme === "dark"}
+        onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+        className="data-[state=checked]:bg-slate-700 data-[state=unchecked]:bg-slate-200"
+        aria-label="Toggle theme"
       />
-    );
-
-  if (resolvedTheme === "dark") {
-    return (
-      <InfoHover info={<DarkModeIcon onClick={() => setTheme("light")} className="hover:cursor-pointer " />}>
-        dark mode
-      </InfoHover>
-    );
-  }
-
-  if (resolvedTheme === "light") {
-    return (
-      <InfoHover info={<LightModeIcon onClick={() => setTheme("dark")} className="hover:cursor-pointer " />}>
-        light mode
-      </InfoHover>
-    );
-  }
+    </div>
+  );
 }
+
+export default ThemeSwitch;
