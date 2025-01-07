@@ -1,10 +1,12 @@
 "use client";
-import React, { useContext, useState } from "react";
-import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
+import React from "react";
 import WatchList from "~/components/v2/WatchList/page";
 import TradingViewWidget from "~/components/v2/chart";
 import { useChart } from "~/components/v2/contexts/chartContext";
 import { Card, CardContent } from "~/components/v2/ui/card";
+import OrderForm from "~/components/v2/OrderForm";
+import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
+import OrderBook from "~/components/v2/OrderHistory";
 
 function Main({ children }: { children: React.ReactNode }) {
   const { isDeviceCompatible } = useDeviceType();
@@ -17,13 +19,18 @@ function Main({ children }: { children: React.ReactNode }) {
           <div className="flex grow">
             <div className="m-2 ml-0 flex grow flex-col">
               <TradingViewWidget symbol={symbolSelected} timeFrame={"1D"} height="75%" />
-              <Card className="mt-2 h-1/4 border-border">
-                <CardContent></CardContent>
+              <Card className="mt-1 h-1/4 border-border overflow-y-auto">
+                <CardContent className="p-3">
+                  <OrderBook />
+                </CardContent>
               </Card>
             </div>
-            <Card className="w-[450px] m-2 ml-0 border-border">
-              <CardContent></CardContent>
-            </Card>
+            <div className="m-2 ml-0 flex w-[450px] flex-col">
+              <Card className="mb-2 grow-[3] border-border">
+                <CardContent></CardContent>
+              </Card>
+              <OrderForm className="max-h-fit" />
+            </div>
             <div className=""></div>
           </div>
         </div>
