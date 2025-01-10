@@ -43,7 +43,7 @@ function TradingViewWidget({ symbol = "BTCUSDT", timeFrame = "5", height = "100%
     container.current?.appendChild(script);
   }, [height, symbol, resolvedTheme, timeFrame]);
 
-  return <div className={`tradingview-widget-container`} ref={container}></div>;
+  return <div className={`tradingview-widget-container`} style={{height}} ref={container}></div>;
 }
 
 export default TradingViewWidget;
