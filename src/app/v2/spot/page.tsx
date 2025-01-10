@@ -17,7 +17,7 @@ export default function Main() {
         <div className="hidden w-full grow lg:flex ">
           <WatchList />
           <div className="flex grow">
-            <div className="m-2 ml-0 flex grow flex-col">
+            <div className="flex grow flex-col">
               <TradingViewWidget symbol={symbolSelected} timeFrame={"1D"} height="75%" />
               <Card className="mt-1 h-1/4 border-border overflow-y-auto">
                 <CardContent className="p-3">
@@ -25,8 +25,8 @@ export default function Main() {
                 </CardContent>
               </Card>
             </div>
-            <div className="m-2 ml-0 flex w-[450px] flex-col">
-              <Card className="mb-2 grow-[3] border-border">
+            <div className="ml-1 flex w-[450px] flex-col">
+              <Card className="mb-1 grow-[3] border-border">
                 <CardContent></CardContent>
               </Card>
               <OrderForm className="max-h-fit" />

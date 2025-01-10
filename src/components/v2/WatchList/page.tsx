@@ -1,14 +1,13 @@
 "use client";
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Card, CardContent } from "~/components/v2/ui/card";
 import { updateWatchList } from "~/components/zerodha/_redux/Slices/watchList";
 import { type AppDispatch, type RootState } from "~/components/zerodha/_redux/store";
 import { api } from "~/trpc/react";
-import { shadowBox } from "../../../components/zerodha/tcss";
 import SymbolInWL from "./_drag_drop_wishlist/symbolInWL";
 import SearchInput from "./_search/searchInput";
 import WatchlistBittom from "./watchlistBittom";
-import { Card, CardContent } from "~/components/v2/ui/card";
 
 export type Tsymbol = string;
 
@@ -45,7 +44,7 @@ function WatchList() {
   );
 
   return (
-    <Card className="m-2  overflow-hidden border-2 border-border">
+    <Card className="mr-1 overflow-hidden border-2 border-border">
       <CardContent className="flex h-full select-none flex-col bg-background p-0 lg:w-[400px]">
         <SearchInput watchList={watchList.List[watchList.ListNo] ?? []} search={search} submitUpdate={submitUpdate} setSearch={setSearch} />
         <div className="relative flex w-full grow flex-col" style={{ maxHeight: "calc(100% - 100px)" }}>

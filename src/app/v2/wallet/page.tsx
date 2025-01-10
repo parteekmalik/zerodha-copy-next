@@ -20,12 +20,12 @@ function Page() {
   }, [data]);
 
   return (
-    <Card>
+    <Card className="grow">
       <CardHeader>
         <CardTitle>Balance History</CardTitle>
         <CardDescription>View your balance across different currencies</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="grow">
         {isLoading ? (
           <div className="flex h-24 items-center justify-center">
             <Icons.spinner className="h-6 w-6 animate-spin" />
