@@ -1,5 +1,3 @@
-import "~/styles/globals.css";
-
 import Providers from "~/app/v2/provider";
 import Header from "~/components/v2/header";
 

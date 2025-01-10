@@ -8,7 +8,6 @@ import { shadowBox } from "../../../components/zerodha/tcss";
 import SymbolInWL from "./_drag_drop_wishlist/symbolInWL";
 import SearchInput from "./_search/searchInput";
 import WatchlistBittom from "./watchlistBittom";
-import { Card, CardContent } from "~/components/v2/ui/card";
 
 export type Tsymbol = string;
 
@@ -45,17 +44,25 @@ function WatchList() {
   );
 
   return (
-    <Card className="m-2  overflow-hidden border-2 border-border">
-      <CardContent className="flex h-full w-full select-none flex-col bg-background p-0 lg:max-w-[430px]">
-        <SearchInput watchList={watchList.List[watchList.ListNo] ?? []} search={search} submitUpdate={submitUpdate} setSearch={setSearch} />
-        <div className="relative flex w-full grow flex-col" style={{ maxHeight: "calc(100% - 100px)" }}>
-          <div className="flex h-full flex-col " style={{ scrollbarWidth: "thin" }}>
-            <SymbolInWL list={watchList.List[watchList.ListNo] ?? []} setSearch={setSearch} />
-          </div>
+    <div
+      className={
+        "flex h-full min-w-full select-none  flex-col border border-t-0 border-borderApp bg-background lg:min-w-[430px] " +
+        shadowBox
+      }
+    >
+      <SearchInput
+        watchList={watchList.List[watchList.ListNo] ?? []}
+        search={search}
+        submitUpdate={submitUpdate}
+        setSearch={setSearch}
+      />
+      <div className="relative flex h-full w-full flex-col" style={{ maxHeight: "calc(100% - 100px)" }}>
+        <div className=" flex  h-full  flex-col overflow-x-hidden overflow-y-scroll" style={{ scrollbarWidth: "thin" }}>
+          <SymbolInWL list={watchList.List[watchList.ListNo] ?? []} setSearch={setSearch} />
         </div>
-        <WatchlistBittom />
-      </CardContent>
-    </Card>
+      </div>
+      <WatchlistBittom />
+    </div>
   );
 }
 
