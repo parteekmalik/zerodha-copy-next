@@ -34,13 +34,13 @@ export default function OrderBook({ filterFor }: { filterFor?: string }) {
 const getStatusColor = (status: string) => {
   switch (status) {
     case "COMPLETED":
-      return "bg-green-500";
+      return "bg-green-700 text-white";
     case "OPEN":
-      return "bg-yellow-500";
+      return "bg-yellow-700 text-white";
     case "CANCELLED":
-      return "bg-red-500";
+      return "bg-red-700 text-white";
     default:
-      return "bg-gray-500";
+      return "bg-gray-700";
   }
 };
 
@@ -78,7 +78,7 @@ const OrderTable = ({
             <TableCell className="text-center">${order.price.toLocaleString()}</TableCell>
             <TableCell className="text-center">{orderType === "OPEN" ? (order as TopenOrder).LTP : null}</TableCell>
             <TableCell className="text-center">
-              <Badge className={`${getStatusColor(order.status)} text-white`}>{order.status}</Badge>
+              <Badge className={`${getStatusColor(order.status)}`}>{order.status}</Badge>
             </TableCell>
             <TableCell className="text-center">
               {formatDistance(new Date(order.openedAt), new Date(), {
