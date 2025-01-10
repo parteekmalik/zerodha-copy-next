@@ -5,16 +5,14 @@ export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   const publicPaths: string[] = [];
-  const isPublicPath = publicPaths.includes(path) ||  path.startsWith('/api/auth/');
+  const isPublicPath = publicPaths.includes(path) || path.startsWith("/api/auth/");
 
-  const token =
-    request.cookies.get("__Secure-next-auth.session-token")?.value ??
-    request.cookies.get("next-auth.session-token")?.value;
+  const token = request.cookies.get("__Secure-next-auth.session-token")?.value ?? request.cookies.get("next-auth.session-token")?.value;
 
   // Redirect from root ("/") to "/Dashboard"
-  if (path === "/v1" || path === "/") {
-    return NextResponse.redirect(new URL("/v1/Dashboard", request.nextUrl));
-  }
+  if (path === "/") return NextResponse.redirect(new URL("/v2/spot", request.nextUrl));
+  else if (path === "/v1") return NextResponse.redirect(new URL("/v1/Dashboard", request.nextUrl));
+  else if (path === "/v2") return NextResponse.redirect(new URL("/v2/spot", request.nextUrl));
 
   if (!isPublicPath && !token) {
     // If user is not authenticated, store the requested page and redirect to login
@@ -27,5 +25,5 @@ export function middleware(request: NextRequest) {
 
 // Apply middleware to all paths except those starting with "/_next"
 export const config = {
-  matcher: ["/", "/v1", "/v1/(.*)", "/api/(.*)"],
+  matcher: ["/", "/v1", "/v1/(.*)","/v2", "/v2/(.*)", "/api/(.*)"],
 };
