@@ -8,7 +8,7 @@ import OrderForm from "~/components/v2/OrderForm";
 import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
 import OrderBook from "~/components/v2/OrderHistory";
 
-function Main({ children }: { children: React.ReactNode }) {
+export default function Main() {
   const { isDeviceCompatible } = useDeviceType();
   const { symbolSelected } = useChart();
   return (
@@ -38,5 +38,3 @@ function Main({ children }: { children: React.ReactNode }) {
     </>
   );
 }
-
-export default Main;
