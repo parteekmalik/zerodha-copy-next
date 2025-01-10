@@ -4,10 +4,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/v2/ui/tab
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/v2/ui/table";
 import { Badge } from "~/components/v2/ui/badge";
 import { formatDistance } from "date-fns";
-import useOrder, { TclosedOrder, TopenOrder } from "~/app/v1/Orders/useOrder";
+import useOrder, { type TclosedOrder, type TopenOrder } from "~/components/v2/hooks/useOrder";
 
-export default function OrderBook() {
-  const { openOrders, closedOrders } = useOrder();
+export default function OrderBook({ filterFor }: { filterFor?: string }) {
+  const { openOrders, closedOrders } = useOrder(filterFor);
 
   return (
     <Tabs defaultValue="open" className="w-full">
@@ -19,7 +19,7 @@ export default function OrderBook() {
         <OrderTable orders={openOrders} orderType="OPEN" />
       </TabsContent>
       <TabsContent value="closed">
-        <OrderTable orders={closedOrders} orderType="CLOSED"/>
+        <OrderTable orders={closedOrders} orderType="CLOSED" />
       </TabsContent>
     </Tabs>
   );

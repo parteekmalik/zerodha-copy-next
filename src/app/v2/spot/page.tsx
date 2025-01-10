@@ -21,7 +21,7 @@ function Main({ children }: { children: React.ReactNode }) {
               <TradingViewWidget symbol={symbolSelected} timeFrame={"1D"} height="75%" />
               <Card className="mt-1 h-1/4 border-border overflow-y-auto">
                 <CardContent className="p-3">
-                  <OrderBook />
+                  <OrderBook filterFor={symbolSelected}/>
                 </CardContent>
               </Card>
             </div>
