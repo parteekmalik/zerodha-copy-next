@@ -8,6 +8,7 @@ import { X } from "lucide-react";
 import { Button } from "~/components/v2/ui/button";
 import { useChart } from "~/components/v2/contexts/chartContext";
 import useCreateOrderApi from "~/components/zerodha/_hooks/API/useCreateOrderApi";
+import { ScrollArea } from "~/components/v2/ui/scroll-area";
 
 function Positions({ className }: { className?: string }) {
   const positions = usePositions();
@@ -48,7 +49,7 @@ function Positions({ className }: { className?: string }) {
             <TableHead className="text-right">LTP</TableHead>
             <TableHead className="text-right">P&L</TableHead>
             <TableHead className="text-right">Change</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+            <TableHead className="text-right"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -64,7 +65,7 @@ function Positions({ className }: { className?: string }) {
               <TableCell className="text-right">
                 <Badge variant={Number(position.change) >= 0 ? "success" : "destructive"}>{position.change}%</Badge>
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell className="text-center">
                 <Button
                   variant="destructive"
                   size="icon"

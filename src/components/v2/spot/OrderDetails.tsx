@@ -11,6 +11,7 @@ import { X } from "lucide-react";
 import Positions from "./Positions";
 import { Card } from "~/components/v2/ui/card";
 import { CardContent } from "~/components/v2/ui/card";
+import { ScrollArea } from "~/components/v2/ui/scroll-area";
 
 export default function OrderBook({ filterFor }: { filterFor?: string }) {
   const { openOrders, closedOrders } = useOrder(filterFor);
@@ -20,23 +21,25 @@ export default function OrderBook({ filterFor }: { filterFor?: string }) {
   };
 
   return (
-    <Card className="mt-1 h-1/4 overflow-y-auto border-border">
-      <CardContent className="p-3">
-        <Tabs defaultValue="positions" className="w-full">
+    <Card className="mt-1 h-1/4 ">
+      <CardContent className="h-full p-3">
+        <Tabs defaultValue="positions" className="flex h-full w-full flex-col">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="positions">Positions</TabsTrigger>
             <TabsTrigger value="open">Open Orders</TabsTrigger>
             <TabsTrigger value="closed">Closed Orders</TabsTrigger>
           </TabsList>
-          <TabsContent value="positions">
-            <Positions />
-          </TabsContent>
-          <TabsContent value="open">
-            <OrderTable handleCloseOrder={handleCloseOrder} orders={openOrders} orderType="OPEN" />
-          </TabsContent>
-          <TabsContent value="closed">
-            <OrderTable orders={closedOrders} orderType="CLOSED" />
-          </TabsContent>
+          <ScrollArea className="h-full pr-1">
+            <TabsContent value="positions">
+              <Positions />
+            </TabsContent>
+            <TabsContent value="open">
+              <OrderTable handleCloseOrder={handleCloseOrder} orders={openOrders} orderType="OPEN" />
+            </TabsContent>
+            <TabsContent value="closed">
+              <OrderTable orders={closedOrders} orderType="CLOSED" />
+            </TabsContent>
+          </ScrollArea>
         </Tabs>
       </CardContent>
     </Card>
