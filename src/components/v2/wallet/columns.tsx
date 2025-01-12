@@ -2,16 +2,23 @@
 
 import { Button } from "~/components/ui/button";
 import { type ColumnDef } from "@tanstack/react-table";
-import { type FundsRow } from "~/components/zerodha/Table/defaultStylexAndTypes";
+import { type FundsRow } from "~/components/v2/wallet/defaultStylexAndTypes";
 import { ArrowUpDown } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "~/components/zerodha/_redux/store";
 
+function CoinName({coinName}:{coinName:string}) {
+  const symbolsList = useSelector((state: RootState) => state.symbolsList);
+  return (
+    <div className="text-center">
+      {coinName} ({coinName === "USDT" ? "Tether" : symbolsList[coinName + "USDT"]?.name})
+    </div>
+  );
+}
 export const columns: ColumnDef<FundsRow>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => {
-      
       return (
         <div className="text-center">
           <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
@@ -22,9 +29,7 @@ export const columns: ColumnDef<FundsRow>[] = [
       );
     },
     cell: ({ row }) => {
-      const symbolsList = useSelector((state: RootState) => state.symbolsList);
-      const coinName = row.getValue("name") as string;
-      return <div className="text-center">{coinName} ({coinName === "USDT" ? "Tether" : symbolsList[coinName + "USDT"]?.name})</div>;
+      return <CoinName coinName={row.getValue("name")}/>
     },
   },
   {

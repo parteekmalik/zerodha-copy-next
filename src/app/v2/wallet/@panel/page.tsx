@@ -1,15 +1,14 @@
 "use client";
+import { FaCopy } from "react-icons/fa";
+import QRCode from "react-qr-code";
 import { useSelector } from "react-redux";
+import { Badge } from "~/components/v2/ui/badge";
+import { Button } from "~/components/v2/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/v2/ui/card";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/v2/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/v2/ui/tabs";
 import { RootState } from "~/components/zerodha/_redux/store";
 import { useCoin } from "../provider";
-import QRCode from "react-qr-code";
-import { Badge } from "~/components/v2/ui/badge";
-import { useState } from "react";
-import { FaCopy } from "react-icons/fa";
-import { Button } from "~/components/v2/ui/button";
 
 export default function Page() {
   const { coinName, tabOpened, setTabOpened, setCoinName } = useCoin();
@@ -17,7 +16,7 @@ export default function Page() {
   const randomString = Array.from({ length: 64 }, () => Math.random().toString(36)[2]).join("");
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(randomString);
+    navigator.clipboard.writeText(randomString).catch((error) => console.log(error));
     alert("Copied to clipboard!");
   };
 

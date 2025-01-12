@@ -64,6 +64,7 @@ export type FundsRow = {
   lockedAmount: number;
   widrawal: string;
   deposit: string;
+  history: string;
 };
 
 export type OrderClosedRow = {

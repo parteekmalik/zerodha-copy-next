@@ -2,7 +2,7 @@
 
 import { api } from "~/trpc/react";
 import { useMemo } from "react";
-import { type FundsRow } from "~/components/zerodha/Table/defaultStylexAndTypes";
+import { type FundsRow } from "~/components/v2/wallet/defaultStylexAndTypes";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Icons } from "~/components/icons";
 import { columns } from "~/components/v2/wallet/columns";
