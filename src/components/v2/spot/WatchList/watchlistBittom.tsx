@@ -6,7 +6,7 @@ function WatchlistBittom() {
   const watchListNo = useSelector((state: RootState) => state.watchList.ListNo);
   const dispatch = useDispatch();
   return (
-    <div className="mt-auto flex h-[100px] w-full cursor-pointer border-y-[1px]  ">
+    <div className="mt-auto flex w-full cursor-pointer border-y-[1px]  ">
       {Array.from({ length: 7 }).map((_, i) => {
         return (
           <div

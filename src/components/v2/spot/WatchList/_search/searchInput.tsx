@@ -9,10 +9,8 @@ import { ScrollArea } from "~/components/v2/ui/scroll-area";
 function SearchInput({
   submitUpdate,
   setSearch,
-  watchList,
   search,
 }: {
-  watchList: string[];
   submitUpdate: (index: number) => void;
   search: {
     focus: boolean;
@@ -29,6 +27,10 @@ function SearchInput({
     }>
   >;
 }) {
+  const watchLists = useSelector((state: RootState) => state.watchList);
+  const watchList = watchLists.List[watchLists.ListNo] ?? [];
+
+  
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (search.focus) inputRef.current?.focus();

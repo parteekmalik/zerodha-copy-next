@@ -2,79 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* .light {
-  --background: 255, 255, 255;
-  --foreground: 0, 0, 0;
-
-  --card: 255, 255, 255;
-  --card-foreground: 255, 255, 255;
-
-  --popover: 255, 255, 255;
-  --popover-foreground: 255, 255, 255;
-
-  --primary: 255, 255, 255;
-  --primary-foreground: 255, 255, 255;
-
-  --secondary: 255, 255, 255;
-  --secondary-foreground: 255, 255, 255;
-
-  --muted: 255, 255, 255;
-  --muted-foreground: 255, 255, 255;
-
-  --accent: 255, 255, 255;
-  --accent-foreground: 255, 255, 255;
-
-  --destructive: 255, 255, 255;
-  --destructive-foreground: 255, 255, 255;
-
-  --border: 187, 187, 187;
-  --input: 255, 255, 255;
-  --ring: 255, 255, 255;
-
-  --textDark: 68, 68, 68;
-  --lightGrayApp: 249, 249, 249;
-  --darkGrayApp: 155, 155, 155;
-
-  background-color: rgba(var(--background));
-  color: black;
-}
-.dark {
-  --background: 0, 0, 0;
-  --foreground: 255, 255, 255;
-
-  --card: 255, 255, 255;
-  --card-foreground: 255, 255, 255;
-
-  --popover: 255, 255, 255;
-  --popover-foreground: 255, 255, 255;
-
-  --primary: 255, 255, 255;
-  --primary-foreground: 255, 255, 255;
-
-  --secondary: 255, 255, 255;
-  --secondary-foreground: 255, 255, 255;
-
-  --muted: 255, 255, 255;
-  --muted-foreground: 255, 255, 255;
-
-  --accent: 255, 255, 255;
-  --accent-foreground: 255, 255, 255;
-
-  --destructive: 255, 255, 255;
-  --destructive-foreground: 255, 255, 255;
-
-  --border: 68, 68, 68;
-  --input: 255, 255, 255;
-  --ring: 255, 255, 255;
-
-  --textDark: 187, 187, 187;
-  --lightGrayApp: 16, 16, 16;
-  --darkGrayApp: 100, 100, 100;
-
-  background-color: rgba(var(--background));
-  color: white;
-} */
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -129,5 +56,11 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+  }
+}
+
+@layer utilities {
+  .hide-last-of-first-child > :first-child > :last-child {
+    display: none;
   }
 }

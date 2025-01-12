@@ -9,6 +9,8 @@ import type { Tsymbol } from "../page";
 import Item from "./Item";
 import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
 import Image from "next/image";
+import { FaPlus } from "react-icons/fa";
+import { Button } from "~/components/v2/ui/button";
 
 export type WS_method = "SUBSCRIBE" | "UNSUBSCRIBE";
 export type Twsbinance = {
@@ -58,20 +60,37 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
 
   if (LocalList.length)
     return (
-      <Reorder.Group values={LocalList} onReorder={(e) => setLocalList(e)} axis="y" dragMomentum={false}>
-        {LocalList.map((symbol) => {
-          const symbolName = symbol.toUpperCase();
-          return (
-            <Item
-              isup={Livestream[symbolName]?.isup ?? "same"}
-              symbolLiveTemp={Livestream[symbolName]}
-              symbolName={symbolName}
-              submitUpdate={submitUpdate}
-              key={symbolName}
-            />
-          );
-        })}
-      </Reorder.Group>
+      <>
+        <Reorder.Group values={LocalList} onReorder={(e) => setLocalList(e)} axis="y" dragMomentum={false}>
+          {LocalList.map((symbol) => {
+            const symbolName = symbol.toUpperCase();
+            return (
+              <Item
+                isup={Livestream[symbolName]?.isup ?? "same"}
+                symbolLiveTemp={Livestream[symbolName]}
+                symbolName={symbolName}
+                submitUpdate={submitUpdate}
+                key={symbolName}
+              />
+            );
+          })}
+        </Reorder.Group>
+        <Button
+          variant={"outline"}
+          className="mt-4 flex w-fit cursor-pointer border-primary/50 hover:border-primary/20 items-center self-center rounded  p-[10px_20px] text-[.925rem] font-semibold text-white"
+          onClick={() =>
+            setSearch({
+              focus: true,
+              matchingSymbol: [],
+              data: "",
+              Selected: 0,
+            })
+          }
+        >
+          <FaPlus className="mr-2" />
+          ADD instrument
+        </Button>
+      </>
     );
   else
     return (
@@ -82,7 +101,7 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
           <p className="text-center text-[.8125rem] text-darkGrayApp">Use the search bar to add instruments.</p>
         </div>
         <button
-          className="cursor-pointer rounded bg-blueApp p-[10px_20px] text-[.925rem] text-white opacity-90"
+          className="flex cursor-pointer items-center rounded bg-primary p-[10px_20px] text-[.925rem] font-semibold text-white opacity-90"
           onClick={() =>
             setSearch({
               focus: true,
@@ -92,6 +111,7 @@ function SymbolInWL({ list, setSearch }: ISymbolInWL) {
             })
           }
         >
+          <FaPlus className="mr-2" />
           ADD instrument
         </button>
       </div>
