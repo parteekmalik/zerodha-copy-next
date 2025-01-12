@@ -21,8 +21,6 @@ function WatchlistBittom() {
           </div>
         );
       })}
-      {/* implement setting popup */}
-      <div className=" w-[90px] p-2 text-right">settings</div>
     </div>
   );
 }
