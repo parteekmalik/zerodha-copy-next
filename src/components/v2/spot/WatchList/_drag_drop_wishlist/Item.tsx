@@ -2,7 +2,7 @@ import { Reorder, useDragControls } from "framer-motion";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { getColor } from "~/app/v1/utils";
-import { type ChangeState, type TsymbolLive } from "../../../../components/zerodha/_contexts/LiveData/BinanceWS";
+import { type ChangeState, type TsymbolLive } from "~/components/zerodha/_contexts/LiveData/BinanceWS";
 import { BaseSymbolLayout, HiddenLayout } from "./HiddenLayout";
 
 function Item({
