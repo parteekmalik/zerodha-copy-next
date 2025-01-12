@@ -8,6 +8,9 @@ import useOrder, { type TclosedOrder, type TopenOrder } from "~/components/v2/ho
 import { useCancelOrders } from "~/components/v2/hooks/usecancelOrders";
 import { Button } from "~/components/v2/ui/button";
 import { X } from "lucide-react";
+import Positions from "./Positions";
+import { Card } from "~/components/v2/ui/card";
+import { CardContent } from "~/components/v2/ui/card";
 
 export default function OrderBook({ filterFor }: { filterFor?: string }) {
   const { openOrders, closedOrders } = useOrder(filterFor);
@@ -17,18 +20,26 @@ export default function OrderBook({ filterFor }: { filterFor?: string }) {
   };
 
   return (
-    <Tabs defaultValue="open" className="w-full">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="open">Open Orders</TabsTrigger>
-        <TabsTrigger value="closed">Closed Orders</TabsTrigger>
-      </TabsList>
-      <TabsContent value="open">
-        <OrderTable handleCloseOrder={handleCloseOrder} orders={openOrders} orderType="OPEN" />
-      </TabsContent>
-      <TabsContent value="closed">
-        <OrderTable orders={closedOrders} orderType="CLOSED" />
-      </TabsContent>
-    </Tabs>
+    <Card className="mt-1 h-1/4 overflow-y-auto border-border">
+      <CardContent className="p-3">
+        <Tabs defaultValue="positions" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="positions">Positions</TabsTrigger>
+            <TabsTrigger value="open">Open Orders</TabsTrigger>
+            <TabsTrigger value="closed">Closed Orders</TabsTrigger>
+          </TabsList>
+          <TabsContent value="positions">
+            <Positions />
+          </TabsContent>
+          <TabsContent value="open">
+            <OrderTable handleCloseOrder={handleCloseOrder} orders={openOrders} orderType="OPEN" />
+          </TabsContent>
+          <TabsContent value="closed">
+            <OrderTable orders={closedOrders} orderType="CLOSED" />
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
 }
 const getStatusColor = (status: string) => {
@@ -87,12 +98,7 @@ const OrderTable = ({
             </TableCell>
             <TableCell className="text-center">
               {orderType === "OPEN" && (
-                <Button 
-                  variant="destructive" 
-                  size="icon"
-                  onClick={() => handleCloseOrder && handleCloseOrder(order.id)}
-                  className="h-8 w-8"
-                >
+                <Button variant="destructive" size="icon" onClick={() => handleCloseOrder && handleCloseOrder(order.id)} className="h-8 w-8">
                   <X className="h-4 w-4" />
                 </Button>
               )}

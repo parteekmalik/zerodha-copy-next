@@ -1,12 +1,11 @@
 "use client";
-import React from "react";
+import { useChart } from "~/components/v2/contexts/chartContext";
+import OrderForm from "~/components/v2/spot/OrderForm";
+import OrderBook from "~/components/v2/spot/OrderDetails";
+import SymbolDetails from "~/components/v2/spot/SymbolDetails";
 import WatchList from "~/components/v2/spot/WatchList/page";
 import TradingViewWidget from "~/components/v2/spot/chart";
-import { useChart } from "~/components/v2/contexts/chartContext";
-import { Card, CardContent } from "~/components/v2/ui/card";
-import OrderForm from "~/components/v2/spot/OrderForm";
 import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
-import OrderBook from "~/components/v2/spot/OrderHistory";
 
 export default function Main() {
   const { isDeviceCompatible } = useDeviceType();
@@ -19,16 +18,10 @@ export default function Main() {
           <div className="flex grow">
             <div className="flex grow flex-col">
               <TradingViewWidget symbol={symbolSelected} timeFrame={"1D"} height="75%" />
-              <Card className="mt-1 h-1/4 border-border overflow-y-auto">
-                <CardContent className="p-3">
-                  <OrderBook filterFor={symbolSelected}/>
-                </CardContent>
-              </Card>
+              <OrderBook filterFor={symbolSelected} />
             </div>
             <div className="ml-1 flex w-[450px] flex-col">
-              <Card className="mb-1 grow-[3] border-border">
-                <CardContent></CardContent>
-              </Card>
+              <SymbolDetails />
               <OrderForm className="max-h-fit" />
             </div>
             <div className=""></div>
