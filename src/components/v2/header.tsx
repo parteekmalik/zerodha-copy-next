@@ -21,8 +21,8 @@ function Header() {
   return (
     <header
       className={twMerge(
-        "relative flex w-full justify-center border-b-2 border-primary bg-background",
-        "after:h-[50px] after:absolute after:top-[calc(100%+1px)] after:left-0 after:w-full after:bg-[#1a283f]",
+        "relative flex w-full justify-center border-b-4 border-primary bg-background",
+        "after:h-[50px] after:absolute after:top-[calc(100%+3px)] after:left-0 after:w-full after:bg-[#1a283f]",
       )}
     >
       <div className="flex w-full p-2 px-4 pb-0">

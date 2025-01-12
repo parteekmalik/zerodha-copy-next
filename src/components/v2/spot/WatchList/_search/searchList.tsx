@@ -51,9 +51,8 @@ function SearchList({
       {search.matchingSymbol.map((name, i) => {
         return (
           <div
-            className={"flex w-full  p-[6px_15px] " + (i === search.Selected ? " bg-lightGrayApp" : " bg-background")}
+            className={"flex w-full  p-[6px_15px] " + (i === search.Selected ? " bg-[#1F365B]" : " bg-background")}
             onMouseDown={() => {
-              // console.log("mouse click")
               updateWatchList(i);
             }}
             onMouseEnter={() => {

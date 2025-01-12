@@ -30,7 +30,7 @@ function Item({
       className="relative touch-none bg-background last:border-b last:border-border"
     >
       <div
-        className={twMerge(" relative flex border-t border-border p-[12px_15px] hover:bg-lightGrayApp ", getColor(diff))}
+        className={twMerge(" relative flex border-t p-[12px_15px] hover:bg-primary/15 ", getColor(diff))}
         style={{ fontSize: ".8125rem" }}
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}

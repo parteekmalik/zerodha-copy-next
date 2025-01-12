@@ -4,6 +4,7 @@ import { searchAndSort } from "~/app/v1/utils";
 import { type RootState } from "~/components/zerodha/_redux/store";
 import { SearchIcon } from "~/components/zerodha/savages/searchIcon";
 import SearchList from "./searchList";
+import { ScrollArea } from "~/components/v2/ui/scroll-area";
 
 function SearchInput({
   submitUpdate,
@@ -46,7 +47,7 @@ function SearchInput({
 
   return (
     <div className=" relative z-10 min-h-[50px] min-w-[0px]">
-      <div className="  flex  items-center justify-center p-3">
+      <div className="flex items-center justify-center p-3">
         <div className=" h-[15px] w-[15px]">
           <SearchIcon fill="fill-foreground" />
         </div>
@@ -87,13 +88,10 @@ function SearchInput({
         <div className="text-darkGrayApp">{watchList.length} / 50</div>
       </div>
       {search.focus ? (
-        <div
-          className="absolute h-[40vh] w-full overflow-y-auto text-[.8125rem]"
-          style={{
-            scrollbarWidth: "thin",
-          }}
-        >
-          <SearchList search={search} updateWatchList={submitUpdate} setSearch={setSearch} />
+        <div className="absolute w-full text-[.8125rem]">
+          <ScrollArea className="h-[40vh] overflow-y-auto">
+            <SearchList search={search} updateWatchList={submitUpdate} setSearch={setSearch} />
+          </ScrollArea>
         </div>
       ) : null}
     </div>
