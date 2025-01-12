@@ -11,8 +11,9 @@ import { Button } from "~/components/v2/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
-import { z } from "zod";
+import { type z } from "zod";
 import { useChart } from "~/components/v2/contexts/chartContext";
+import { useEffect } from "react";
 
 export default function OrderForm({ className }: { className?: string }) {
     const { symbolSelected } = useChart();
@@ -30,7 +31,8 @@ export default function OrderForm({ className }: { className?: string }) {
         marketType: "SPOT",
       },
     });
-  
+    
+    useEffect(() => form.setValue("symbolName", symbolSelected), [symbolSelected]);
     const currentPrice = Livestream[symbolSelected]?.curPrice;
     const orderType = form.watch("orderType");
     const triggerType = form.watch("trigerType");
@@ -137,7 +139,7 @@ export default function OrderForm({ className }: { className?: string }) {
                 </div>
   
                 <Button type="submit" className="w-full text-white" variant={orderType === "BUY" ? "default" : "destructive"}>
-                  {orderType === "BUY" ? "Buy" : "Sell"} {symbolSelected}
+                  {orderType === "BUY" ? "Buy" : "Sell"} {form.watch("symbolName")}
                 </Button>
               </form>
             </Form>

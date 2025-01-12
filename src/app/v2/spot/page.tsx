@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
-import WatchList from "~/components/v2/WatchList/page";
-import TradingViewWidget from "~/components/v2/chart";
+import WatchList from "~/components/v2/spot/WatchList/page";
+import TradingViewWidget from "~/components/v2/spot/chart";
 import { useChart } from "~/components/v2/contexts/chartContext";
 import { Card, CardContent } from "~/components/v2/ui/card";
-import OrderForm from "~/components/v2/OrderForm";
+import OrderForm from "~/components/v2/spot/OrderForm";
 import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
-import OrderBook from "~/components/v2/OrderHistory";
+import OrderBook from "~/components/v2/spot/OrderHistory";
 
 export default function Main() {
   const { isDeviceCompatible } = useDeviceType();

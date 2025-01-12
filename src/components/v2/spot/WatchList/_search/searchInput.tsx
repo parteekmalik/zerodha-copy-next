@@ -1,8 +1,8 @@
 import { type Dispatch, type SetStateAction, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { searchAndSort } from "~/app/v1/utils";
-import { type RootState } from "../../../../components/zerodha/_redux/store";
-import { SearchIcon } from "../../../../components/zerodha/savages/searchIcon";
+import { type RootState } from "~/components/zerodha/_redux/store";
+import { SearchIcon } from "~/components/zerodha/savages/searchIcon";
 import SearchList from "./searchList";
 
 function SearchInput({
