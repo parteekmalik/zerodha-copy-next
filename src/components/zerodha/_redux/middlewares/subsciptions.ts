@@ -22,6 +22,7 @@ const subsciptionsMddleware: ThunkMiddleware = (Store) => (next) => (action) => 
   }
 };
 export default subsciptionsMddleware;
+
 export const getLast24hrData = async (subscriptions: string[]) => {
   subscriptions = subscriptions.filter((i) => i !== "" && i !== " ");
   // console.log("subscriptions ->", subscriptions,subscriptions.filter((i) => i !== "" && i !== " "));

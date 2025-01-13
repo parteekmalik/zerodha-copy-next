@@ -19,7 +19,7 @@ const BinanceWSStatsSlice = createSlice({
       state.isConnected = action.payload;
     },
     updateBinanceWSSubsriptions: (state, action: PayloadAction<string[]>) => {
-      state.subsciptions = action.payload;
+      state.subsciptions = Array.from(new Set([...action.payload,...state.subsciptions]));
     },
     updateSeprateSubscriptions: (state, action: PayloadAction<{ name: string; subsription: string[] }>) => {
       state.seprateSubscriptions[action.payload.name] = action.payload.subsription;
