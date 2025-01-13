@@ -27,7 +27,7 @@ export default function usePositions() {
     const LTP = Livestream[name]?.curPrice;
     const PL = modifyNumber((Number(LTP) - avgPrice) * quantity, 2, true);
     const currentTotalPrice = Number(LTP) * quantity;
-    const change = modifyNumber(currentTotalPrice * 100 / totalPrice, 2);
+    const change = modifyNumber((currentTotalPrice / totalPrice - 1) * 100, 2);
     return {
       id,
       name,
@@ -44,7 +44,7 @@ export default function usePositions() {
     () => ({
       "P&L": sumByKey(PositionsList, "P&L"),
       LTP: "TOTAL",
-      change: (sumByKey(PositionsList, "currentTotalPrice") * 100) / sumByKey(PositionsList, "totalPrice"),
+      change: (sumByKey(PositionsList, "currentTotalPrice") / sumByKey(PositionsList, "totalPrice") - 1) * 100,
     }),
     [PositionsList],
   );
