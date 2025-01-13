@@ -26,8 +26,8 @@ export default function usePositions() {
     const name = item.Orders[0]?.name ?? "error";
     const LTP = Livestream[name]?.curPrice;
     const PL = modifyNumber((Number(LTP) - avgPrice) * quantity, 2, true);
-    const change = modifyNumber(Number(LTP) / avgPrice - 1, 2);
     const currentTotalPrice = Number(LTP) * quantity;
+    const change = modifyNumber(currentTotalPrice * 100 / totalPrice, 2);
     return {
       id,
       name,
