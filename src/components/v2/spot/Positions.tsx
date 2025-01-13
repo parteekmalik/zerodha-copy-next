@@ -95,8 +95,8 @@ function Positions({ className }: { className?: string }) {
               <TableCell className="font-medium" colSpan={3}></TableCell>
               <TableCell className="text-right font-medium">Total</TableCell>
               <TableCell className="text-right">
-                <Badge variant={positions.PositionsTotal?.["P&L"] >= 0 ? "success" : "destructive"}>
-                  {positions.PositionsTotal?.["P&L"].toFixed(2)}
+                <Badge variant={Number(positions.PositionsTotal?.["P&L"]) >= 0 ? "success" : "destructive"}>
+                  {positions.PositionsTotal?.["P&L"]}
                 </Badge>
               </TableCell>
               <TableCell className="text-right">
