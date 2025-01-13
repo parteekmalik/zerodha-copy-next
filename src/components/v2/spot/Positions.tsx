@@ -19,7 +19,7 @@ function Positions({ className }: { className?: string }) {
     const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(updateSeprateSubscriptions({ name: "spot", subsription: positions.PositionsList.map((item) => item.name) }));
+    dispatch(updateSeprateSubscriptions({ name: "spotPositions", subsription: positions.PositionsList.map((item) => item.name) }));
   }, [setSymbolSelected, dispatch, positions]);
 
   const handleClosePosition = (position: {

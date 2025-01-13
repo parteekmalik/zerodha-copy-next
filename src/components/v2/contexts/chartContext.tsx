@@ -17,7 +17,7 @@ export function ChartProvider({ children }: { children: ReactNode }) {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(updateSeprateSubscriptions({ name: "spot", subsription: [symbolSelected] }));
+    dispatch(updateSeprateSubscriptions({ name: "spotCoinSelected", subsription: [symbolSelected] }));
   }, [setSymbolSelected, dispatch, symbolSelected]);
 
   const value = {
