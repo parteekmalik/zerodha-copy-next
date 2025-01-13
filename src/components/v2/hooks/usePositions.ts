@@ -42,7 +42,7 @@ export default function usePositions() {
   });
   const PositionsTotal = useMemo(
     () => ({
-      "P&L": sumByKey(PositionsList, "P&L"),
+      "P&L": modifyNumber(sumByKey(PositionsList, "P&L"), 2, true),
       LTP: "TOTAL",
       change: (sumByKey(PositionsList, "currentTotalPrice") / sumByKey(PositionsList, "totalPrice") - 1) * 100,
     }),
