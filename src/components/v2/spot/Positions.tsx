@@ -16,11 +16,11 @@ function Positions({ className }: { className?: string }) {
   const positions = usePositions();
   const { setSymbolSelected } = useChart();
 
-    const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(updateSeprateSubscriptions({ name: "spotPositions", subsription: positions.PositionsList.map((item) => item.name) }));
-  }, [setSymbolSelected, dispatch, positions]);
+    dispatch(updateSeprateSubscriptions({ name: "spotPositions", subsription: (positions.Positions ?? []).map((item) => item.name) }));
+  }, [setSymbolSelected, dispatch, positions.Positions]);
 
   const handleClosePosition = (position: {
     id: string;
