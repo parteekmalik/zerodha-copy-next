@@ -1,18 +1,26 @@
-import React from "react";
+import { X } from "lucide-react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { twMerge } from "tailwind-merge";
+import { useChart } from "~/components/v2/contexts/chartContext";
+import usePositions from "~/components/v2/hooks/usePositions";
+import { Badge } from "~/components/v2/ui/badge";
+import { Button } from "~/components/v2/ui/button";
 import { Card } from "~/components/v2/ui/card";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "~/components/v2/ui/table";
-import { Badge } from "~/components/v2/ui/badge";
-import usePositions from "~/components/v2/hooks/usePositions";
-import { X } from "lucide-react";
-import { Button } from "~/components/v2/ui/button";
-import { useChart } from "~/components/v2/contexts/chartContext";
 import useCreateOrderApi from "~/components/zerodha/_hooks/API/useCreateOrderApi";
-import { ScrollArea } from "~/components/v2/ui/scroll-area";
+import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
+import { type AppDispatch } from "~/components/zerodha/_redux/store";
 
 function Positions({ className }: { className?: string }) {
   const positions = usePositions();
   const { setSymbolSelected } = useChart();
+
+    const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(updateSeprateSubscriptions({ name: "spot", subsription: positions.PositionsList.map((item) => item.name) }));
+  }, [setSymbolSelected, dispatch, positions]);
 
   const handleClosePosition = (position: {
     id: string;

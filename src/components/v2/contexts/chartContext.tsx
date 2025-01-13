@@ -1,5 +1,8 @@
 "use client";
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { useDispatch } from "react-redux";
+import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
+import { type AppDispatch } from "~/components/zerodha/_redux/store";
 
 interface ChartContextType {
   symbolSelected: string;
@@ -10,6 +13,12 @@ const ChartContext = createContext<ChartContextType | undefined>(undefined);
 
 export function ChartProvider({ children }: { children: ReactNode }) {
   const [symbolSelected, setSymbolSelected] = useState<string>("BTCUSDT");
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(updateSeprateSubscriptions({ name: "spot", subsription: [symbolSelected] }));
+  }, [setSymbolSelected, dispatch, symbolSelected]);
 
   const value = {
     symbolSelected,
