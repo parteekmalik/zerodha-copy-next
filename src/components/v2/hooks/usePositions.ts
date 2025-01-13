@@ -32,7 +32,7 @@ export default function usePositions() {
       id,
       name,
       quantity: modifyNumber(quantity, 2),
-      avgPrice: modifyNumber(avgPrice, 3),
+      avgPrice: modifyNumber(avgPrice, Livestream[name]?.decimal),
       totalPrice,
       currentTotalPrice,
       LTP,
