@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, Table
 import useCreateOrderApi from "~/components/zerodha/_hooks/API/useCreateOrderApi";
 import { updateSeprateSubscriptions } from "~/components/zerodha/_redux/Slices/BinanceWSStats";
 import { type AppDispatch } from "~/components/zerodha/_redux/store";
+import CoinIcon from "../CoinIcon";
 
 function Positions({ className }: { className?: string }) {
   const positions = usePositions();
@@ -63,7 +64,12 @@ function Positions({ className }: { className?: string }) {
         <TableBody>
           {positions.PositionsList?.map((position, index) => (
             <TableRow key={index} onClick={() => setSymbolSelected(position.name)}>
-              <TableCell className="font-medium">{position.name}</TableCell>
+              <TableCell className="">
+                <div className="flex items-center gap-2 font-medium">
+                  <CoinIcon coinName={position.name.slice(0, -4)} style={{ width: "auto" }} />
+                  <span>{position.name}</span>
+                </div>
+              </TableCell>
               <TableCell className="text-right">{position.quantity}</TableCell>
               <TableCell className="text-right">{position.avgPrice}</TableCell>
               <TableCell className="text-right">{position.LTP}</TableCell>

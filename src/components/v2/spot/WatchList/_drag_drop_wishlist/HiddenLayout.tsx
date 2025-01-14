@@ -9,6 +9,7 @@ import { type AppDispatch, type RootState } from "~/components/zerodha/_redux/st
 import { api } from "~/trpc/react";
 import { type TsymbolLive } from "~/components/zerodha/_contexts/LiveData/BinanceWS";
 import { useChart } from "~/components/v2/contexts/chartContext";
+import CoinIcon from "~/components/v2/CoinIcon";
 type IdataContextActions =
   | {
       type: "update_rightHandSide";
@@ -24,7 +25,10 @@ export function BaseSymbolLayout({ symbolName, symbolLiveTemp }: { symbolName: s
   const isUp = symbolLiveTemp?.isup ?? "same";
   return (
     <>
-      <div className="grow">{symbolName}</div>
+      <div className="flex grow items-center gap-2 font-medium">
+        <CoinIcon coinName={symbolName.slice(0, -4)} />
+        {symbolName}
+      </div>
       <div className="flex">
         <div className="flex opacity-[.7]">
           <div className="pr-[3px] text-foreground/65 ">{symbolLiveTemp?.PriceChange}</div>

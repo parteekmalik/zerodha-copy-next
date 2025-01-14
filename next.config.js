@@ -11,6 +11,7 @@ const config = {
       { protocol: "https", hostname: "kite.zerodha.com" },
       { protocol: "https", hostname: "img.icons8.com" },
       { protocol: "https", hostname: "cdn.discordapp.com" },
+      { protocol: "https", hostname: "s3-symbol-logo.tradingview.com" },
     ],
   },
 };

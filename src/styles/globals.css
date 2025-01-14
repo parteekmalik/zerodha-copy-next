@@ -60,7 +60,7 @@
 }
 
 @layer utilities {
-  .hide-last-of-first-child > :first-child > :last-child {
+  .hide-last-of-first-child > :first-child > :first-child > :last-child > :last-child {
     display: none;
   }
 }

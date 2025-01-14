@@ -9,6 +9,7 @@ import { type AppDispatch, type RootState } from "~/components/zerodha/_redux/st
 import { api } from "~/trpc/react";
 import SymbolInWL from "./_drag_drop_wishlist/symbolInWL";
 import WatchlistBittom from "./watchlistBittom";
+import CoinIcon from "../../CoinIcon";
 
 export type Tsymbol = string;
 
@@ -47,27 +48,32 @@ function WatchList() {
     },
     [search.matchingSymbol, watchList, updateWatchListAPI],
   );
-
+  
   return (
     <Card className="bg-baackground mr-1 flex flex-col border-2">
-      <CardHeader className="my-2 gap-1 flex flex-row p-0 space-y-0">
+      <CardHeader className="my-2 flex flex-row gap-1 space-y-0 p-0">
         <Select defaultValue="BTCUSDT" value={symbolSelected} onValueChange={(value) => setSymbolSelected(value)}>
-          <SelectTrigger className="hide-last-of-first-child  border border-primary/30 rounded-lg bg-primary/30 text-xl text-white shadow-md transition duration-200 ease-in-out hover:bg-primary/10">
+          <SelectTrigger className="hide-last-of-first-child rounded-lg border border-primary/30 bg-primary/30 text-xl text-white shadow-md transition duration-200 ease-in-out hover:bg-primary/10">
             <SelectValue placeholder="Select a symbol" />
           </SelectTrigger>
           <SelectContent className="bg-background text-foreground">
             <SelectGroup className="text-lg">
               {Object.keys(symbolsList).map((symbol) => (
                 <SelectItem key={symbol} value={symbol} className="hover:bg-primary/10">
-                  <p>{symbol}</p>
-                  <p>{symbolsList[symbol]?.name}</p>
+                  <div className="flex flex-row gap-2">
+                    <CoinIcon coinName={symbol.slice(0, -4)} />
+                    <div>
+                      <p className="flex items-center gap-2">{symbol}</p>
+                      <p className="">{symbolsList[symbol]?.name}</p>
+                    </div>
+                  </div>
                 </SelectItem>
               ))}
             </SelectGroup>
           </SelectContent>
         </Select>
         <Select defaultValue="5m" value={timeSelected} onValueChange={(value) => setTimeSelected(value as (typeof timeOptions)[number])}>
-          <SelectTrigger  className="w-fit rounded-lg border border-primary text-lg text-white shadow-md transition duration-200 ease-in-out hover:bg-primary/40">
+          <SelectTrigger className="w-fit rounded-lg border border-primary text-lg text-white shadow-md transition duration-200 ease-in-out hover:bg-primary/40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-background text-foreground">
