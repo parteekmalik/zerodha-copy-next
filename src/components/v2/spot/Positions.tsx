@@ -25,7 +25,7 @@ function Positions({ className }: { className?: string }) {
   const handleClosePosition = (position: {
     id: string;
     name: string;
-    quantity: string;
+    quantity: string | number;
     avgPrice: string;
     totalPrice: number;
     currentTotalPrice: number;
