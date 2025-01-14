@@ -9,7 +9,7 @@ import useDeviceType from "~/components/zerodha/_hooks/useDeviceType";
 
 export default function Main() {
   const { isDeviceCompatible } = useDeviceType();
-  const { symbolSelected } = useChart();
+  const { symbolSelected, timeSelected } = useChart();
   return (
     <>
       {isDeviceCompatible("lg") && (
@@ -17,7 +17,7 @@ export default function Main() {
           <WatchList />
           <div className="flex grow">
             <div className="flex grow flex-col">
-              <TradingViewWidget symbol={symbolSelected} timeFrame={"1D"} height="75%" />
+              <TradingViewWidget symbol={symbolSelected} timeFrame={timeSelected} height="75%" />
               <OrderBook filterFor={symbolSelected} />
             </div>
             <div className="ml-1 flex w-[450px] flex-col">

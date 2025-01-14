@@ -1,0 +1,12 @@
+use for icons like https://s3-symbol-logo.tradingview.com/crypto/XTVCETH.svg
+add timeframe select input
+add Coin to watchlist model design
+add trade history below watchlist 100 max history
+right top will be for algo trading for later ( for now add link to analytics page )
+add analytics page to show stats of trades
+add balance to orderform block ( total will become red if greater than balance )
+
+
+improve trade performance latency 
+add optimistic mutation after order toast to reflect in Positions 
+
