@@ -22,12 +22,11 @@ export default async function getOpenPositions({
 
 export const convertIntoAvg = (orders: Order[]) => {
   const data = {
-    quantity: 0,
+    quantity: sumByKey(orders, "quantity"),
     avgPrice: 0,
     totalPrice: 0,
   };
   orders.map((order) => {
-    data.quantity += order.quantity;
     data.totalPrice += order.quantity * order.price;
   });
   data.avgPrice = data.totalPrice / data.quantity;
